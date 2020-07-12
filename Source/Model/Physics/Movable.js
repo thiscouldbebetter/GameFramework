@@ -1,6 +1,9 @@
 
 class Movable
 {
+	accelerationPerTick;
+	accelerate;
+
 	constructor(accelerationPerTick, accelerate)
 	{
 		this.accelerationPerTick = accelerationPerTick;
@@ -9,19 +12,19 @@ class Movable
 
 	accelerateForward(universe, world, place, entityMovable)
 	{
-		var entityLoc = entityMovable.locatable.loc;
+		var entityLoc = entityMovable.locatable().loc;
 		entityLoc.accel.overwriteWith
 		(
 			entityLoc.orientation.forward
 		).multiplyScalar
 		(
-			entityMovable.movable.accelerationPerTick
+			entityMovable.movable().accelerationPerTick
 		);
 	};
 
 	// cloneable
 
-	clone = function()
+	clone()
 	{
 		return this;
 	};

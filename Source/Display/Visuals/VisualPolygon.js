@@ -1,6 +1,13 @@
 
 class VisualPolygon
 {
+	verticesAsPath;
+	colorFill;
+	colorBorder;
+
+	verticesAsPathTransformed;
+	transformTranslate;
+
 	constructor(verticesAsPath, colorFill, colorBorder)
 	{
 		this.verticesAsPath = verticesAsPath;
@@ -8,12 +15,12 @@ class VisualPolygon
 		this.colorBorder = colorBorder;
 
 		this.verticesAsPathTransformed = this.verticesAsPath.clone();
-		this.transformTranslate = new Transform_Translate(new Coords());
+		this.transformTranslate = new Transform_Translate(new Coords(0, 0, 0));
 	}
 
 	draw(universe, world, display, entity)
 	{
-		var drawablePos = entity.locatable.loc.pos;
+		var drawablePos = entity.locatable().loc.pos;
 		this.transformTranslate.displacement.overwriteWith(drawablePos);
 
 		this.verticesAsPathTransformed.overwriteWith
@@ -21,7 +28,7 @@ class VisualPolygon
 			this.verticesAsPath
 		);
 
-		Transform.applyTransformToCoordsMany
+		Transforms.applyTransformToCoordsMany
 		(
 			this.transformTranslate,
 			this.verticesAsPathTransformed.points
@@ -33,4 +40,23 @@ class VisualPolygon
 			this.colorFill, this.colorBorder
 		);
 	};
+
+	// Clonable.
+
+	clone()
+	{
+		return this; // todo
+	}
+
+	overwriteWith(other)
+	{
+		return this; // todo
+	}
+
+	// Transformable.
+
+	transform(transformToApply)
+	{
+		return this; // todo
+	}
 }

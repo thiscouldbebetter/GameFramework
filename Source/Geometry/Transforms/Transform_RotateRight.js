@@ -1,9 +1,21 @@
 
 class Transform_RotateRight
 {
+	quarterTurnsToRotate;
+
 	constructor(quarterTurnsToRotate)
 	{
 		this.quarterTurnsToRotate = quarterTurnsToRotate;
+	}
+
+	overwriteWith(other)
+	{
+		return this; // todo
+	}
+
+	transform(transformable)
+	{
+		return transformable; // todo
 	}
 
 	transformCoords(coordsToTransform)

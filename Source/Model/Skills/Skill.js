@@ -1,6 +1,10 @@
 
 class Skill
 {
+	name;
+	learningRequired;
+	namesOfPrerequisiteSkills;
+
 	constructor(name, learningRequired, namesOfPrerequisiteSkills)
 	{
 		this.name = name;

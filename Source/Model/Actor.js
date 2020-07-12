@@ -1,6 +1,11 @@
 
 class Actor
 {
+	activity;
+	target;
+
+	actions;
+
 	constructor(activity, target)
 	{
 		this.activity = activity;

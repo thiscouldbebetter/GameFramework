@@ -1,6 +1,8 @@
 
 class Modellable
 {
+	model;
+
 	constructor(model)
 	{
 		this.model = model;

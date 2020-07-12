@@ -1,6 +1,9 @@
 
 class VertexGroup
 {
+	name;
+	vertexIndices;
+
 	constructor(name, vertexIndices)
 	{
 		this.name = name;

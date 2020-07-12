@@ -1,9 +1,21 @@
 
 class Transform_Perspective
 {
+	focalLength;
+
 	constructor(focalLength)
 	{
 		this.focalLength = focalLength;
+	}
+
+	overwriteWith(other)
+	{
+		return this; // todo
+	}
+
+	transform(transformable)
+	{
+		return transformable; // todo
 	}
 
 	transformCoords(coordsToTransform)

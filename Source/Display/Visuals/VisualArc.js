@@ -1,6 +1,16 @@
 
 class VisualArc
 {
+	radiusOuter;
+	radiusInner;
+	directionMin;
+	angleSpannedInTurns;
+	colorFill;
+	colorBorder;
+
+	_drawPos;
+	_polar;
+
 	constructor(radiusOuter, radiusInner, directionMin, angleSpannedInTurns, colorFill, colorBorder)
 	{
 		this.radiusOuter = radiusOuter;
@@ -11,13 +21,13 @@ class VisualArc
 		this.colorBorder = colorBorder;
 
 		// helper variables
-		this._drawPos = new Coords();
-		this._polar = new Polar();
+		this._drawPos = new Coords(0, 0, 0);
+		this._polar = new Polar(0, 0, 0);
 	}
 
 	draw(universe, world, display, entity)
 	{
-		var drawableLoc = entity.locatable.loc;
+		var drawableLoc = entity.locatable().loc;
 		var drawPos = this._drawPos.overwriteWith
 		(
 			drawableLoc.pos
@@ -37,4 +47,23 @@ class VisualArc
 			this.colorFill, this.colorBorder
 		);
 	};
+
+	// Clonable.
+
+	clone()
+	{
+		return this; // todo
+	}
+
+	overwriteWith(other)
+	{
+		return this; // todo
+	}
+
+	// Transformable.
+
+	transform(transformToApply)
+	{
+		return this; // todo
+	}
 }

@@ -1,6 +1,16 @@
 
 class Camera
 {
+	viewSize;
+	focalLength;
+	loc;
+
+	viewSizeHalf;
+	viewCollider;
+	entitiesInView;
+
+	_clipPlanes;
+
 	constructor(viewSize, focalLength, loc)
 	{
 		this.viewSize = viewSize;
@@ -174,8 +184,8 @@ class Camera
 		(
 			(a, b) =>
 			{
-				var aPos = a.locatable.loc.pos;
-				var bPos = b.locatable.loc.pos;
+				var aPos = a.locatable().loc.pos;
+				var bPos = b.locatable().loc.pos;
 				var returnValue;
 				if (aPos.z != bPos.z)
 				{
@@ -189,9 +199,14 @@ class Camera
 				return returnValue;
 			}
 		);
-		this.entitiesInView.forEach(entity =>
-			entity.drawable.visual.drawImmediate(universe, world, display, entity)
-		);
+
+		for (var i = 0; i < this.entitiesInView.length; i++)
+		{
+			var entity = this.entitiesInView[i];
+			var visual = entity.drawable().visual;
+			visual.drawImmediate(universe, world, display, entity)
+		}
+
 		this.entitiesInView.length = 0;
 	};
 

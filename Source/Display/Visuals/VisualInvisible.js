@@ -1,6 +1,8 @@
 
 class VisualInvisible
 {
+	 child;
+
 	constructor(child)
 	{
 		this.child = child;
@@ -15,7 +17,9 @@ class VisualInvisible
 
 	overwriteWith(other)
 	{
-		this.child.overwriteWith(other.child);
+		var otherAsVisualInvisible = other ;
+		this.child.overwriteWith(otherAsVisualInvisible.child);
+		return this;
 	};
 
 	// Transformable.

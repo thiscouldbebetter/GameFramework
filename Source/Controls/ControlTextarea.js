@@ -1,6 +1,25 @@
 
 class ControlTextarea
 {
+	name;
+	pos;
+	size;
+	text;
+	fontHeightInPixels
+	_isEnabled;
+
+	isHighlighted;
+	lineSpacing;
+	parent;
+	scrollbar;
+	styleName;
+
+	_drawPos;
+	_drawLoc;
+	_indexOfLineSelected;
+	_mouseClickPos;
+	_textAsLines;
+
 	constructor(name, pos, size, text, fontHeightInPixels, isEnabled)
 	{
 		this.name = name;
@@ -17,44 +36,60 @@ class ControlTextarea
 		var scrollbarWidth = this.lineSpacing;
 		this.scrollbar = new ControlScrollbar
 		(
-			new Coords(this.size.x - scrollbarWidth, 0), // pos
-			new Coords(scrollbarWidth, this.size.y), // size
+			new Coords(this.size.x - scrollbarWidth, 0, 0), // pos
+			new Coords(scrollbarWidth, this.size.y, 0), // size
 			this.fontHeightInPixels,
 			this.lineSpacing, // itemHeight
-			new DataBinding(this, (c) => c.textAsLines()),
+			new DataBinding(this, (c) => c.textAsLines(), null),
 			0 // sliderPosInItems
 		);
 
 		// Helper variables.
-		this._drawPos = new Coords();
-		this._drawLoc = new Location(this._drawPos);
-		this._mouseClickPos = new Coords();
+		this._drawPos = new Coords(0, 0, 0);
+		this._drawLoc = new Disposition(this._drawPos, null, null);
+		this._mouseClickPos = new Coords(0, 0, 0);
 	}
 
-	actionHandle(actionNameToHandle)
+	actionHandle(actionNameToHandle, universe)
 	{
 		var wasActionHandled = false;
 		var controlActionNames = ControlActionNames.Instances();
 		if (actionNameToHandle == controlActionNames.ControlIncrement)
 		{
-			this.itemSelectedNextInDirection(1);
+			// todo
+			// this.itemSelectedNextInDirection(1);
 			wasActionHandled = true;
 		}
 		else if (actionNameToHandle == controlActionNames.ControlDecrement)
 		{
-			this.itemSelectedNextInDirection(-1);
+			// todo
+			// this.itemSelectedNextInDirection(-1);
 			wasActionHandled = true;
 		}
 		else if (actionNameToHandle == controlActionNames.ControlConfirm)
 		{
+			// todo
+			/*
 			if (this.confirm != null)
 			{
 				this.confirm();
 				wasActionHandled = true;
 			}
+			*/
+			wasActionHandled = true;
 		}
 		return wasActionHandled;
 	};
+
+	actionToInputsMappings()
+	{
+		return null; // todo
+	}
+
+	childWithFocus()
+	{
+		return null;
+	}
 
 	focusGain()
 	{
@@ -79,14 +114,13 @@ class ControlTextarea
 	indexOfLineSelected(valueToSet)
 	{
 		var returnValue = valueToSet;
-		var lines = this.textAsLines();
 		if (valueToSet == null)
 		{
-			returnValue = _indexOfLineSelected;
+			returnValue = this._indexOfLineSelected;
 		}
 		else
 		{
-			_indexOfLineSelected = valueToSet;
+			this._indexOfLineSelected = valueToSet;
 		}
 		return returnValue;
 	};
@@ -96,7 +130,7 @@ class ControlTextarea
 		return (this._isEnabled.get());
 	};
 
-	textAsLines(display)
+	textAsLines()
 	{
 		if (this._textAsLines == null)
 		{
@@ -134,15 +168,17 @@ class ControlTextarea
 			}
 			else
 			{
+				// todo
+
+				/*
 				var clickPosRelativeToSlideInPixels = clickPos.subtract
 				(
 					this.scrollbar.pos
 				).subtract
 				(
-					new Coords(0, this.scrollbar.handleSize.y)
+					new Coords(0, this.scrollbar.handleSize.y, 0)
 				);
-
-				// todo
+				*/
 			}
 		}
 		else
@@ -150,11 +186,11 @@ class ControlTextarea
 			var offsetOfLineClicked = clickPos.y - this.pos.y;
 			var indexOfLineClicked =
 				this.indexOfFirstLineVisible()
-				+ Math.floor
-				(
-					offsetOfLineClicked
-					/ this.lineSpacing
-				);
+					+ Math.floor
+					(
+						offsetOfLineClicked
+						/ this.lineSpacing
+					);
 
 			var lines = this.textAsLines();
 			if (indexOfLineClicked < lines.length)
@@ -165,6 +201,10 @@ class ControlTextarea
 
 		return true; // wasActionHandled
 	};
+
+	mouseEnter() {}
+
+	mouseExit() {}
 
 	mouseMove(movePos)
 	{
@@ -182,7 +222,7 @@ class ControlTextarea
 
 	style(universe)
 	{
-		return universe.controlBuilder.styles[this.styleName == null ? "Default" : this.styleName];
+		return universe.controlBuilder.stylesByName.get(this.styleName == null ? "Default" : this.styleName);
 	};
 
 	// drawable
@@ -224,7 +264,7 @@ class ControlTextarea
 			indexEnd = lines.length - 1;
 		}
 
-		var drawPos2 = new Coords(drawPos.x + textMarginLeft, itemPosY);
+		var drawPos2 = new Coords(drawPos.x + textMarginLeft, itemPosY, 0);
 
 		for (var i = indexStart; i <= indexEnd; i++)
 		{

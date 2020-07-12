@@ -1,6 +1,10 @@
 
 class Font
 {
+	name;
+	sourcePath;
+	isLoaded;
+
 	constructor(name, sourcePath)
 	{
 		this.name = name;

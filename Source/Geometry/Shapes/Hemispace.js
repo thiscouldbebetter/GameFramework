@@ -1,11 +1,15 @@
 
 class Hemispace
 {
+	plane;
+
+	_displacement;
+
 	constructor(plane)
 	{
 		this.plane = plane;
 
-		this._displacement = new Coords();
+		this._displacement = new Coords(0, 0, 0);
 	}
 
 	containsPoint(pointToCheck)

@@ -1,6 +1,9 @@
 
 class ProfileHelper
 {
+	storageHelper;
+	propertyName;
+
 	constructor(storageHelper)
 	{
 		this.storageHelper = storageHelper;
@@ -23,14 +26,14 @@ class ProfileHelper
 	{
 		var profiles = this.profiles();
 
-		var profileExisting = this.profiles.filter
+		var profileExisting = profiles.filter
 		(
 			x => x.name == profileToDelete.name
 		)[0];
 
 		if (profileExisting != null)
 		{
-			profiles.remove(profileExisting);
+			ArrayHelper.remove(profiles, profileExisting);
 		}
 
 		this.storageHelper.save(this.propertyName, profiles);
@@ -50,14 +53,13 @@ class ProfileHelper
 
 			if (profileExisting != null)
 			{
-				profiles.remove(profileExisting);
+				ArrayHelper.remove(profiles, profileExisting);
 			}
 			profiles.push(profileToSave);
 
 			this.storageHelper.save
 			(
-				this.propertyName,
-				profiles
+				this.propertyName, profiles
 			);
 			wasSaveSuccessful = true;
 		}
@@ -70,20 +72,27 @@ class ProfileHelper
 		return wasSaveSuccessful;
 	};
 
-	profiles()
+	profiles() 
 	{
-		var profiles = this.storageHelper.load
-		(
-			this.propertyName
-		);
+		var profiles= null;
+		try
+		{
+			profiles = this.storageHelper.load
+			(
+				this.propertyName
+			);
+		}
+		catch (ex)
+		{
+			console.log("Deserialization of previously saved profiles failed, so they will be abandoned.");
+		}
 
 		if (profiles == null)
 		{
 			profiles = [];
 			this.storageHelper.save
 			(
-				this.propertyName,
-				profiles
+				this.propertyName, profiles
 			);
 		}
 

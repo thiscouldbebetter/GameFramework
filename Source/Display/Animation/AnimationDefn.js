@@ -1,6 +1,10 @@
 
 class AnimationDefn
 {
+	name;
+	keyframes;
+	numberOfFramesTotal;
+
 	constructor(name, keyframes)
 	{
 		this.name = name;
@@ -15,7 +19,8 @@ class AnimationDefn
 
 	propagateTransformsToAllKeyframes()
 	{
-		var propertyNamesAll = [];
+		var propertyNamesAll = new Array();
+		var propertyNameLookup = new Map();
 
 		for (var f = 0; f < this.keyframes.length; f++)
 		{
@@ -26,15 +31,15 @@ class AnimationDefn
 			{
 				var transform = transforms[t];
 				var propertyName = transform.propertyName;
-				if (propertyNamesAll[propertyName] == null)
+				if (propertyNameLookup.get(propertyName) == null)
 				{
-					propertyNamesAll[propertyName] = propertyName;
+					propertyNameLookup.set(propertyName, propertyName);
 					propertyNamesAll.push(propertyName);
 				}
 			}
 		}
 
-		var keyframe = null;
+		keyframe = null;
 		var keyframePrev = null;
 
 		for (var f = 0; f < this.keyframes.length; f++)
@@ -42,19 +47,19 @@ class AnimationDefn
 			keyframePrev = keyframe;
 			keyframe = this.keyframes[f];
 
-			var transforms = keyframe.transforms;
+			var transformsByPropertyName = keyframe.transformsByPropertyName;
 
 			for (var p = 0; p < propertyNamesAll.length; p++)
 			{
 				var propertyName = propertyNamesAll[p];
-				if (transforms[propertyName] == null)
+				if (transformsByPropertyName.get(propertyName) == null)
 				{
 					var keyframeNext = null;
 
 					for (var g = f + 1; g < this.keyframes.length; g++)
 					{
 						var keyframeFuture = this.keyframes[g];
-						var transformFuture = keyframeFuture.transforms[propertyName];
+						var transformFuture = keyframeFuture.transformsByPropertyName.get(propertyName);
 						if (transformFuture != null)
 						{
 							keyframeNext = keyframeFuture;
@@ -64,8 +69,8 @@ class AnimationDefn
 
 					if (keyframePrev != null && keyframeNext != null)
 					{
-						var transformPrev = keyframePrev.transforms[propertyName];
-						var transformNext = keyframeNext.transforms[propertyName];
+						var transformPrev = keyframePrev.transformsByPropertyName.get(propertyName);
+						var transformNext = keyframeNext.transformsByPropertyName.get(propertyName);
 
 						var numberOfFramesFromPrevToNext =
 							keyframeNext.frameIndex
@@ -84,8 +89,8 @@ class AnimationDefn
 							transformNext,
 							fractionOfProgressFromPrevToNext
 						);
-						transforms[propertyName] = transformNew;
-						transforms.push(transformNew);
+						transformsByPropertyName.set(propertyName, transformNew);
+						keyframe.transforms.push(transformNew);
 					}
 				}
 			}

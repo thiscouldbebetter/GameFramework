@@ -1,27 +1,29 @@
 
-function BoneInfluence
-(
-	boneName,
-	vertexIndicesControlled
-)
+class BoneInfluence
 {
-	this.boneName = boneName;
-	this.vertexIndicesControlled = vertexIndicesControlled;
-}
+	boneName;
+	vertexIndicesControlled;
 
-{
+	constructor(boneName, vertexIndicesControlled)
+	{
+		this.boneName = boneName;
+		this.vertexIndicesControlled = vertexIndicesControlled;
+	}
+
 	// static methods
 
-	BoneInfluence.buildManyForBonesAndVertexGroups = function(bones, vertexGroups)
+	static buildManyForBonesAndVertexGroups(bones, vertexGroups)
 	{
 		var boneInfluences = [];
+
+		var bonesByName = ArrayHelper.addLookupsByName(bones);
 
 		for (var i = 0; i < vertexGroups.length; i++)
 		{
 			var vertexGroup = vertexGroups[i];
 			var boneName = vertexGroup.name;
 
-			var bone = bones[boneName];
+			var bone = bonesByName.get(boneName);
 
 			if (bone != null)
 			{

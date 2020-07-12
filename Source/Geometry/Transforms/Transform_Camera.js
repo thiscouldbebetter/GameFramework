@@ -1,6 +1,13 @@
 
 class Transform_Camera
 {
+	camera;
+
+	transformTranslateInvert;
+	transformOrientForCamera;
+	transformPerspective;
+	transformViewCenter;
+
 	constructor(camera)
 	{
 		this.camera = camera;
@@ -21,6 +28,16 @@ class Transform_Camera
 		(
 			this.camera.viewSizeHalf
 		);
+	}
+
+	overwriteWith(other)
+	{
+		return this; // todo
+	}
+
+	transform(transformable)
+	{
+		return transformable; // todo
 	}
 
 	transformCoords(coordsToTransform)

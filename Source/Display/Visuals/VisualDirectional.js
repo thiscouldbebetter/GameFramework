@@ -1,16 +1,22 @@
 
 class VisualDirectional
 {
+	visualForNoDirection;
+	visualsForDirections;
+
+	numberOfDirections;
+
 	constructor(visualForNoDirection, visualsForDirections)
 	{
 		this.visualForNoDirection = visualForNoDirection;
 		this.visualsForDirections = visualsForDirections;
+
 		this.numberOfDirections = this.visualsForDirections.length;
 	}
 
 	draw(universe, world, display, entity)
 	{
-		var loc = entity.locatable.loc;
+		var loc = entity.locatable().loc;
 		var headingInTurns = loc.orientation.headingInTurns();
 		var visualForHeading;
 
@@ -20,14 +26,36 @@ class VisualDirectional
 		}
 		else
 		{
-			var direction =
+			var direction = NumberHelper.wrapToRangeMinMax
+			(
 				Math.round
 				(
 					headingInTurns * this.numberOfDirections
-				).wrapToRangeMinMax(0, this.numberOfDirections);
+				),
+				0, this.numberOfDirections
+			);
 			visualForHeading = this.visualsForDirections[direction];
 		}
 
 		visualForHeading.draw(universe, world, display, entity);
 	};
+
+	// Clonable.
+
+	clone()
+	{
+		return this; // todo
+	}
+
+	overwriteWith(other)
+	{
+		return this; // todo
+	}
+
+	// Transformable.
+
+	transform(transformToApply)
+	{
+		return this; // todo
+	}
 }

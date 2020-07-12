@@ -1,6 +1,23 @@
 
 class ControlSelect
 {
+	name;
+	pos;
+	size;
+	_valueSelected;
+	_options;
+	bindingForOptionValues;
+	bindingForOptionText;
+	fontHeightInPixels;
+
+	indexOfOptionSelected;
+	isHighlighted;
+	parent;
+	styleName;
+
+	_drawPos;
+	_sizeHalf;
+
 	constructor
 	(
 		name,
@@ -43,11 +60,11 @@ class ControlSelect
 		this.isHighlighted = false;
 
 		// Helper variables.
-		this._drawPos = new Coords();
-		this._sizeHalf = new Coords();
+		this._drawPos = new Coords(0, 0, 0);
+		this._sizeHalf = new Coords(0, 0, 0);
 	}
 
-	actionHandle(actionNameToHandle)
+	actionHandle(actionNameToHandle, universe)
 	{
 		var controlActionNames = ControlActionNames.Instances();
 		if (actionNameToHandle == controlActionNames.ControlDecrement)
@@ -62,7 +79,18 @@ class ControlSelect
 		{
 			this.optionSelectedNextInDirection(1);
 		}
+		return true; // wasActionHandled
 	};
+
+	actionToInputsMappings() 
+	{
+		return null;
+	}
+
+	childWithFocus()
+	{
+		return null;
+	}
 
 	focusGain()
 	{
@@ -80,6 +108,18 @@ class ControlSelect
 		return true;
 	};
 
+	mouseClick(clickPos)
+	{
+		this.optionSelectedNextInDirection(1);
+		return true; // wasClickHandled
+	};
+
+	mouseEnter() {}
+
+	mouseExit() {}
+
+	mouseMove(pos) {}
+
 	optionSelected()
 	{
 		var optionSelected =
@@ -95,12 +135,9 @@ class ControlSelect
 	{
 		var options = this.options();
 
-		this.indexOfOptionSelected =
+		this.indexOfOptionSelected = NumberHelper.wrapToRangeMinMax
 		(
-			this.indexOfOptionSelected + direction
-		).wrapToRangeMinMax
-		(
-			0, options.length
+			this.indexOfOptionSelected + direction, 0, options.length
 		);
 
 		var optionSelected = this.optionSelected();
@@ -126,15 +163,16 @@ class ControlSelect
 		return (this._options.get == null ? this._options : this._options.get() );
 	};
 
-	mouseClick(clickPos)
+	scalePosAndSize(scaleFactor)
 	{
-		this.optionSelectedNextInDirection(1);
-		return true; // wasClickHandled
+		this.pos.multiply(scaleFactor);
+		this.size.multiply(scaleFactor);
+		this.fontHeightInPixels *= scaleFactor.y;
 	};
 
 	style(universe)
 	{
-		return universe.controlBuilder.styles[this.styleName == null ? "Default" : this.styleName];
+		return universe.controlBuilder.stylesByName.get(this.styleName == null ? "Default" : this.styleName);
 	};
 
 	valueSelected()

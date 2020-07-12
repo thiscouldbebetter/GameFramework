@@ -1,6 +1,9 @@
 
 class EquipmentSocket
 {
+	defnName;
+	itemEntityEquipped;
+
 	constructor(defnName, itemEntityEquipped)
 	{
 		this.defnName = defnName;
@@ -9,7 +12,7 @@ class EquipmentSocket
 
 	defn(defnGroup)
 	{
-		return defnGroup.socketDefns[this.defnName];
+		return defnGroup.socketDefnsByName.get(this.defnName);
 	};
 
 	toString(world)
@@ -18,7 +21,7 @@ class EquipmentSocket
 		(
 			this.itemEntityEquipped == null
 			? " [empty] "
-			: this.itemEntityEquipped.item.toString(world)
+			: this.itemEntityEquipped.item().toString(world)
 		);
 		var returnValue = this.defnName + ": " + itemEntityEquippedAsString;
 		return returnValue;

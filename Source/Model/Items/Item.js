@@ -1,6 +1,9 @@
 
 class Item
 {
+	defnName;
+	quantity;
+
 	constructor(defnName, quantity)
 	{
 		this.defnName = defnName;
@@ -9,7 +12,7 @@ class Item
 
 	defn(world)
 	{
-		return world.defns.itemDefns[this.defnName];
+		return world.defns.defnsByNameByTypeName.get(ItemDefn.name).get(this.defnName);
 	};
 
 	isUsable(world)

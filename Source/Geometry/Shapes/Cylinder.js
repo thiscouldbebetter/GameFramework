@@ -1,6 +1,12 @@
 
 class Cylinder
 {
+	center;
+	radius;
+	length;
+
+	lengthHalf;
+
 	constructor(center, radius, length)
 	{
 		this.center = center;

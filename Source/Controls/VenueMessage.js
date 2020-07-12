@@ -1,13 +1,30 @@
 
 class VenueMessage
 {
-	constructor(messageToShow, acknowledge, venuePrev, sizeInPixels, showMessageOnly)
+	messageToShow;
+	acknowledge;
+	venuePrev;
+	_sizeInPixels;
+	showMessageOnly;
+
+	_venueInner;
+
+	constructor
+	(
+		messageToShow, acknowledge, venuePrev,
+		sizeInPixels, showMessageOnly
+	)
 	{
 		this.messageToShow = messageToShow;
 		this.acknowledge = acknowledge;
 		this.venuePrev = venuePrev;
 		this._sizeInPixels = sizeInPixels;
 		this.showMessageOnly = showMessageOnly || false;
+	}
+
+	static fromText(message)
+	{
+		return new VenueMessage(new DataBinding(message, null, null), null, null, null, null);
 	}
 
 	// instance methods
@@ -17,14 +34,18 @@ class VenueMessage
 		this.venueInner(universe).draw(universe);
 	};
 
-	sizeInPixels(universe)
-	{
-		return (this._sizeInPixels == null ? universe.display.sizeInPixels : this._sizeInPixels);
-	};
+	finalize(universe) {}
+
+	initialize(universe) {}
 
 	updateForTimerTick(universe)
 	{
 		this.venueInner(universe).updateForTimerTick(universe);
+	};
+
+	sizeInPixels(universe)
+	{
+		return (this._sizeInPixels == null ? universe.display.sizeInPixels : this._sizeInPixels);
 	};
 
 	venueInner(universe)
@@ -51,7 +72,7 @@ class VenueMessage
 
 			venuesToLayer.push(new VenueControls(controlMessage));
 
-			this._venueInner = new VenueLayered(venuesToLayer);
+			this._venueInner = new VenueLayered(venuesToLayer, null);
 		}
 
 		return this._venueInner;

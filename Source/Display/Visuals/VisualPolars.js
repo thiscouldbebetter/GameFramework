@@ -1,6 +1,14 @@
 
 class VisualPolars
 {
+	polars;
+	color;
+	lineThickness;
+
+	_polar;
+	_fromPos;
+	_toPos;
+
 	constructor(polars, color, lineThickness)
 	{
 		this.polars = polars;
@@ -9,14 +17,14 @@ class VisualPolars
 
 		// temps
 
-		this._polar = new Polar();
-		this._fromPos = new Coords();
-		this._toPos = new Coords();
+		this._polar = new Polar(0, 0, 0);
+		this._fromPos = new Coords(0, 0, 0);
+		this._toPos = new Coords(0, 0, 0);
 	}
 
 	draw(universe, world, display, entity)
 	{
-		var drawableLoc = entity.locatable.loc;
+		var drawableLoc = entity.locatable().loc;
 		var drawablePos = drawableLoc.pos;
 		var drawableHeadingInTurns = drawableLoc.orientation.headingInTurns();
 
@@ -28,7 +36,7 @@ class VisualPolars
 		{
 			polar.overwriteWith(this.polars[i]);
 			polar.azimuthInTurns =
-				(polar.azimuthInTurns +  drawableHeadingInTurns).wrapToRangeZeroOne();
+				NumberHelper.wrapToRangeZeroOne(polar.azimuthInTurns +  drawableHeadingInTurns);
 			polar.toCoords(toPos).add(fromPos);
 
 			display.drawLine
@@ -39,4 +47,23 @@ class VisualPolars
 			fromPos.overwriteWith(toPos);
 		}
 	};
+
+	// Clonable.
+
+	clone()
+	{
+		return this; // todo
+	}
+
+	overwriteWith(other)
+	{
+		return this; // todo
+	}
+
+	// Transformable.
+
+	transform(transformToApply)
+	{
+		return this; // todo
+	}
 }

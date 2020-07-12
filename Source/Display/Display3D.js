@@ -1,13 +1,46 @@
 
 class Display3D
 {
+	sizeInPixels;
+	sizesAvailable;
+	fontName;
+	fontHeightInPixels;
+	colorFore;
+	colorBack;
+
+	canvas;
+	lighting;
+	matrixCamera;
+	matrixEntity;
+	matrixOrient;
+	matrixPerspective;
+	matrixTranslate;
+	sizeInPixelsHalf;
+	tempCoords;
+	tempMatrix0;
+	tempMatrix1;
+	texturesRegisteredByName;
+	webGLContext;
+
+	_sizeDefault;
+	_scaleFactor;
+	_display2DOverlay;
+
 	constructor(sizeInPixels, fontName, fontHeightInPixels, colorFore, colorBack)
 	{
 		this.sizeInPixels = sizeInPixels;
+		this.sizesAvailable = [ this.sizeInPixels ];
+		this.fontName = fontName;
+		this.fontHeightInPixels = fontHeightInPixels;
+		this.colorFore = colorFore;
+		this.colorBack = colorBack;
 
 		this._sizeDefault = sizeInPixels;
 		this._scaleFactor = new Coords(1, 1, 1);
-		this._display2DOverlay = new Display([sizeInPixels], fontName, fontHeightInPixels, colorFore, colorBack);
+		this._display2DOverlay = new Display2D
+		(
+			this.sizesAvailable, fontName, fontHeightInPixels, colorFore, colorBack, null
+		);
 	}
 
 	// constants
@@ -53,11 +86,36 @@ class Display3D
 	{
 		var webGLContext = this.webGLContext;
 		var gl = webGLContext.gl;
-		var shaderProgram = webGLContext.shaderProgram;
+		// var shaderProgram = webGLContext.shaderProgram;
 
-		gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+		var viewportDimensionsAsIntegers = gl.getParameter(gl.VIEWPORT);
+		gl.viewport(0, 0, viewportDimensionsAsIntegers[2], viewportDimensionsAsIntegers[3]);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+		this._display2DOverlay.clear();
 	};
+
+	displayToUse()
+	{
+		return this;
+	};
+
+	drawCrosshairs(center, radius, color)
+	{
+		this._display2DOverlay.drawCrosshairs(center, radius, color);
+	}
+
+	drawEllipse
+	(
+		center, semimajorAxis, semiminorAxis,
+		rotationInTurns, colorFill, colorBorder
+	)
+	{
+		this._display2DOverlay.drawEllipse
+		(
+			center, semimajorAxis, semiminorAxis, rotationInTurns, colorFill, colorBorder
+		);
+	}
 
 	drawMesh(mesh)
 	{
@@ -66,22 +124,22 @@ class Display3D
 
 		var shaderProgram = webGLContext.shaderProgram;
 
-		var vertexPositionsAsFloatArray = [];
-		var vertexColorsAsFloatArray = [];
-		var vertexNormalsAsFloatArray = [];
-		var vertexTextureUVsAsFloatArray = [];
+		var vertexPositionsAsFloatArray= [];
+		var vertexColorsAsFloatArray= [];
+		var vertexNormalsAsFloatArray= [];
+		var vertexTextureUVsAsFloatArray= [];
 
 		var numberOfTrianglesSoFar = 0;
 		var materials = mesh.materials;
 		var faces = mesh.faces();
 		var faceTextures = mesh.faceTextures;
-		var faceIndicesByMaterial = mesh.faceIndicesByMaterial();
+		var faceIndicesByMaterialName = mesh.faceIndicesByMaterialName();
 
 		for (var m = 0; m < materials.length; m++)
 		{
 			var material = materials[m];
 			var materialName = material.name;
-			var faceIndices = faceIndicesByMaterial[materialName];
+			var faceIndices = faceIndicesByMaterialName.get(materialName);
 
 			for (var fi = 0; fi < faceIndices.length; fi++)
 			{
@@ -90,9 +148,11 @@ class Display3D
 				var faceMaterial = face.material;
 				var faceGeometry = face.geometry;
 				var faceNormal = faceGeometry.plane().normal;
-				var vertexNormalsForFaceVertices = mesh.vertexNormalsForFaceVertices;
 
-				var vertexIndicesForTriangles =
+				// todo
+				// var vertexNormalsForFaceVertices = mesh.vertexNormalsForFaceVertices;
+
+				var vertexIndicesForTriangles=
 				[
 					[0, 1, 2]
 				];
@@ -126,12 +186,15 @@ class Display3D
 							vertexColor.componentsRGBA
 						);
 
-						var vertexNormal =
+						var vertexNormal = faceNormal;
+						/*
+						// todo
 						(
 							vertexNormalsForFaceVertices == null
 							? faceNormal
 							: vertexNormalsForFaceVertices[f][vertexIndex]
 						);
+						*/
 
 						vertexNormalsAsFloatArray = vertexNormalsAsFloatArray.concat
 						(
@@ -141,9 +204,9 @@ class Display3D
 						var vertexTextureUV =
 						(
 							faceTextures == null
-							? new Coords(-1, -1)
+							? new Coords(-1, -1, 0)
 							: faceTextures[f] == null
-							? new Coords(-1, -1)
+							? new Coords(-1, -1, 0)
 							: faceTextures[f].textureUVs[vertexIndex]
 						);
 
@@ -219,11 +282,11 @@ class Display3D
 			{
 				var textureName = texture.name;
 
-				var textureRegistered = this.texturesRegistered[textureName];
+				var textureRegistered = this.texturesRegisteredByName.get(textureName);
 				if (textureRegistered == null)
 				{
 					texture.initializeForWebGLContext(this.webGLContext);
-					this.texturesRegistered[textureName] = texture;
+					this.texturesRegisteredByName.set(textureName, texture);
 				}
 
 				gl.activeTexture(gl.TEXTURE0);
@@ -295,9 +358,14 @@ class Display3D
 		this.drawMesh(mesh);
 	};
 
-	initialize()
+	drawPixel(pos, color)
 	{
-		this._display2DOverlay.initialize();
+		this._display2DOverlay.drawPixel(pos, color);
+	}
+
+	initialize(universe)
+	{
+		this._display2DOverlay.initialize(universe);
 
 		this.canvas = document.createElement("canvas");
 		this.canvas.style.position = "absolute";
@@ -306,7 +374,7 @@ class Display3D
 
 		this.webGLContext = new WebGLContext(this.canvas);
 
-		this.texturesRegistered = [];
+		this.texturesRegisteredByName = new Map();
 
 		// hack
 
@@ -358,14 +426,11 @@ class Display3D
 
 	// Display2D overlay.
 
-	clear()
-	{
-		this._display2DOverlay.clear();
-	};
-
 	drawArc
 	(
-		center, radiusInner, radiusOuter, angleStartInTurns, angleStopInTurns, colorFill, colorBorder
+		center, radiusInner, radiusOuter,
+		angleStartInTurns, angleStopInTurns, colorFill,
+		colorBorder
 	)
 	{
 		this._display2DOverlay.drawArc(center, radiusInner, radiusOuter, angleStartInTurns, angleStopInTurns, colorFill, colorBorder);
@@ -406,9 +471,9 @@ class Display3D
 		this._display2DOverlay.drawLine(fromPos, toPos, color, lineThickness);
 	};
 
-	drawPath(vertices, color, lineThickness)
+	drawPath(vertices, color, lineThickness, isClosed)
 	{
-		this._display2DOverlay.drawPath(vertices, color, lineThickness);
+		this._display2DOverlay.drawPath(vertices, color, lineThickness, isClosed);
 	};
 
 	drawPolygon(vertices, colorFill, colorBorder)
@@ -419,7 +484,7 @@ class Display3D
 	drawRectangle
 	(
 		pos,
-		size,
+		size ,
 		colorFill,
 		colorBorder,
 		areColorsReversed
@@ -430,6 +495,14 @@ class Display3D
 			pos, size, colorFill, colorBorder, areColorsReversed
 		);
 	};
+
+	drawRectangleCentered
+	(
+		pos, size, colorFill, colorBorder
+	)
+	{
+		this._display2DOverlay.drawRectangleCentered(pos, size, colorFill, colorBorder);
+	}
 
 	drawText
 	(
@@ -456,25 +529,61 @@ class Display3D
 		);
 	};
 
+	drawWedge
+	(
+		center, radius, angleStartInTurns,
+		angleStopInTurns, colorFill, colorBorder
+	)
+	{
+		this._display2DOverlay.drawWedge
+		(
+			center, radius, angleStartInTurns, angleStopInTurns, colorFill, colorBorder
+		);
+	}
+
 	fontSet(fontName, fontHeightInPixels)
 	{
 		this._display2DOverlay.fontSet(fontName, fontHeightInPixels);
 	};
+
+	hide() {}
+
+	rotateTurnsAroundCenter(turnsToRotate, centerOfRotation)
+	{
+		this._display2DOverlay.rotateTurnsAroundCenter(turnsToRotate, centerOfRotation);
+	}
 
 	scaleFactor()
 	{
 		return this._scaleFactor;
 	};
 
+	show()
+
 	sizeDefault()
 	{
 		return this._sizeDefault;
 	};
 
+	stateRestore()
+	{
+		this._display2DOverlay.stateRestore();
+	}
+
+	stateSave()
+	{
+		this._display2DOverlay.stateSave();
+	}
+
 	textWidthForFontHeight(textToMeasure, fontHeightInPixels)
 	{
 		return this._display2DOverlay.textWidthForFontHeight(textToMeasure, fontHeightInPixels);
 	};
+
+	toImage()
+	{
+		return null;
+	}
 
 	// platformable
 

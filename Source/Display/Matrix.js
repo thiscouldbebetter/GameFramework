@@ -1,6 +1,10 @@
 
 class Matrix
 {
+	// A 4x4 matrix for interacting with WebGL.
+
+	values;
+
 	constructor(values)
 	{
 		this.values = values;
@@ -242,8 +246,8 @@ class Matrix
 			}
 		}
 
-		var returnValues = new Float32Array(returnValues);
+		var returnValuesAsFloat32Array = new Float32Array(returnValues);
 
-		return returnValues;
+		return returnValuesAsFloat32Array;
 	};
 }

@@ -1,6 +1,8 @@
 
 class Transform_Scale
 {
+	scaleFactors;
+
 	constructor(scaleFactors)
 	{
 		this.scaleFactors = scaleFactors;
@@ -10,6 +12,16 @@ class Transform_Scale
 	{
 		return new Transform_Scale(new Coords(1, 1, 1).multiplyScalar(scalar));
 	};
+
+	overwriteWith(other)
+	{
+		return this; // todo
+	}
+
+	transform(transformable)
+	{
+		return transformable; // todo
+	}
 
 	transformCoords(coordsToTransform)
 	{

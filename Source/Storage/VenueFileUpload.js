@@ -1,28 +1,43 @@
 
 class VenueFileUpload
 {
+	venueNextIfFileSpecified;
+	venueNextIfCancelled;
+	actionToInputsMappings;
+	actionToInputsMappingsByInputName;
+
+	domElement;
+
 	constructor(venueNextIfFileSpecified, venueNextIfCancelled)
 	{
 		this.venueNextIfFileSpecified = venueNextIfFileSpecified;
 		this.venueNextIfCancelled = venueNextIfCancelled;
 
 		var inputNames = Input.Names();
+		var controlActionNames = ControlActionNames.Instances();
+
 		this.actionToInputsMappings =
 		[
-			new ActionToInputsMapping(ControlActionNames.ControlCancel, [ inputNames.Escape, inputNames.GamepadButton0 + "0"], true),
+			new ActionToInputsMapping(controlActionNames.ControlCancel, [ inputNames.Escape, inputNames.GamepadButton0 + "0"], true),
 		];
 
-		this.actionToInputsMappings.addLookupsMultiple(x => x.inputNames);
+		this.actionToInputsMappingsByInputName = ArrayHelper.addLookupsMultiple
+		(
+			this.actionToInputsMappings,
+			(x) => x.inputNames
+		);
 	}
 
 	// venue
+
+	draw(universe) {}
 
 	finalize(universe)
 	{
 		var platformHelper = universe.platformHelper;
 		platformHelper.platformableRemove(this);
 		var display = universe.display;
-		display.drawBackground("Black");
+		display.drawBackground("Black", null);
 		platformHelper.platformableShow(display);
 	};
 
@@ -33,9 +48,13 @@ class VenueFileUpload
 		universe.platformHelper.platformableHide(display);
 
 		var divFileUpload = document.createElement("div");
+
+		/*
+		// todo - Style is read-only?
 		divFileUpload.style =
 			"border:1px solid;width:" + display.sizeInPixels.x
 			+ ";height:" + display.sizeInPixels.y;
+		*/
 
 		var labelInstructions = document.createElement("label");
 		labelInstructions.innerHTML =
@@ -79,7 +98,8 @@ class VenueFileUpload
 			var inputPressed = inputsPressed[i];
 			if (inputPressed.isActive == true)
 			{
-				var actionToInputsMapping = this.actionToInputsMappings[inputPressed.name];
+				var actionToInputsMapping =
+					this.actionToInputsMappingsByInputName.get(inputPressed.name);
 				if (actionToInputsMapping != null)
 				{
 					inputPressed.isActive = false;

@@ -1,6 +1,10 @@
 
 class Coords
 {
+	x;
+	y;
+	z;
+
 	constructor(x, y, z)
 	{
 		this.x = x;
@@ -19,13 +23,14 @@ class Coords
 
 	// instances
 
+	static _instances;
 	static Instances()
 	{
-		if (Coords._Instances == null)
+		if (Coords._instances == null)
 		{
-			Coords._Instances = new Coords_Instances();
+			Coords._instances = new Coords_Instances();
 		}
-		return Coords._Instances;
+		return Coords._instances;
 	};
 
 	// methods
@@ -348,9 +353,9 @@ class Coords
 
 	subtractWrappedToRangeMax(other, max)
 	{
-		this.x = this.x.subtractWrappedToRangeMax(other.x, max);
-		this.y = this.y.subtractWrappedToRangeMax(other.y, max);
-		this.z = this.z.subtractWrappedToRangeMax(other.z, max);
+		this.x = NumberHelper.subtractWrappedToRangeMax(this.x, other.x, max.x);
+		this.y = NumberHelper.subtractWrappedToRangeMax(this.y, other.y, max.y);
+		this.z = NumberHelper.subtractWrappedToRangeMax(this.z, other.z, max.z);
 		return this;
 	};
 
@@ -501,6 +506,18 @@ class Coords
 
 class Coords_Instances
 {
+	HalfHalfZero;
+	Halves;
+	MinusOneZeroZero;
+	Ones;
+	OneOneZero;
+	OneZeroZero;
+	TwoTwoZero;
+	ZeroZeroOne;
+	ZeroMinusOneZero;
+	ZeroOneZero;
+	Zeroes;
+
 	constructor()
 	{
 		this.HalfHalfZero = new Coords(.5, .5, 0);

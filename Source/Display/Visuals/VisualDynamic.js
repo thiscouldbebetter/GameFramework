@@ -1,6 +1,8 @@
 
 class VisualDynamic
 {
+	methodForVisual;
+
 	constructor(methodForVisual)
 	{
 		this.methodForVisual = methodForVisual;
@@ -11,4 +13,23 @@ class VisualDynamic
 		var visual = this.methodForVisual.call(this, universe, world, display, entity);
 		visual.draw(universe, world, display, entity);
 	};
+
+	// Clonable.
+
+	clone()
+	{
+		return this; // todo
+	}
+
+	overwriteWith(other)
+	{
+		return this; // todo
+	}
+
+	// Transformable.
+
+	transform(transformToApply)
+	{
+		return this; // todo
+	}
 }

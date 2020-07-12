@@ -1,6 +1,8 @@
 
 class VisualGroup
 {
+	children;
+
 	constructor(children)
 	{
 		this.children = children;
@@ -14,4 +16,23 @@ class VisualGroup
 			child.draw(universe, world, display, entity);
 		}
 	};
+
+	// Clonable.
+
+	clone()
+	{
+		return this; // todo
+	}
+
+	overwriteWith(other)
+	{
+		return this; // todo
+	}
+
+	// Transformable.
+
+	transform(transformToApply)
+	{
+		return this; // todo
+	}
 }

@@ -1,6 +1,14 @@
 
 class VisualPath
 {
+	verticesAsPath;
+	color;
+	lineThickness;
+	isClosed;
+
+	verticesAsPathTransformed;
+	transformTranslate;
+
 	constructor(verticesAsPath, color, lineThickness, isClosed)
 	{
 		this.verticesAsPath = verticesAsPath;
@@ -9,12 +17,12 @@ class VisualPath
 		this.isClosed = isClosed;
 
 		this.verticesAsPathTransformed = this.verticesAsPath.clone();
-		this.transformTranslate = new Transform_Translate(new Coords());
+		this.transformTranslate = new Transform_Translate(new Coords(0, 0, 0));
 	}
 
 	draw(universe, world, display, entity)
 	{
-		var drawablePos = entity.locatable.loc.pos;
+		var drawablePos = entity.locatable().loc.pos;
 		this.transformTranslate.displacement.overwriteWith(drawablePos);
 
 		this.verticesAsPathTransformed.overwriteWith
@@ -22,7 +30,7 @@ class VisualPath
 			this.verticesAsPath
 		);
 
-		Transform.applyTransformToCoordsMany
+		Transforms.applyTransformToCoordsMany
 		(
 			this.transformTranslate,
 			this.verticesAsPathTransformed.points
@@ -36,4 +44,23 @@ class VisualPath
 			this.isClosed
 		);
 	};
+
+	// Clonable.
+
+	clone()
+	{
+		return this; // todo
+	}
+
+	overwriteWith(other)
+	{
+		return this; // todo
+	}
+
+	// Transformable.
+
+	transform(transformToApply)
+	{
+		return this; // todo
+	}
 }

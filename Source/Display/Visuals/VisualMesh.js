@@ -1,5 +1,8 @@
+
 class VisualMesh
 {
+	 mesh;
+
 	constructor(mesh)
 	{
 		this.mesh = mesh;
@@ -14,7 +17,9 @@ class VisualMesh
 
 	overwriteWith(other)
 	{
-		this.mesh.overwriteWith(other.mesh);
+		var otherAsVisualMesh = other ;
+		this.mesh.overwriteWith(otherAsVisualMesh.mesh);
+		return this;
 	};
 
 	// Transformable.
@@ -22,12 +27,13 @@ class VisualMesh
 	transform(transformToApply)
 	{
 		transformToApply.transform(this.mesh);
+		return this;
 	};
 
 	// Visual.
 
 	draw(universe, world, display, entity)
 	{
-		display.drawMeshWithOrientation(this.mesh, entity.locatable.loc.orientation);
+		display.drawMeshWithOrientation(this.mesh, entity.locatable().loc.orientation);
 	};
 }

@@ -1,6 +1,13 @@
 
 class VenueFader
 {
+	venuesToFadeFromAndTo;
+	backgroundColor;
+	millisecondsPerFade;
+
+	timeFadeStarted;
+	venueIndexCurrent;
+
 	constructor(venueToFadeTo, venueToFadeFrom, backgroundColor, millisecondsPerFade)
 	{
 		this.venuesToFadeFromAndTo =
@@ -24,13 +31,12 @@ class VenueFader
 			(backgroundColor == null ? Color.Instances().Black : backgroundColor);
 	}
 
+	finalize(universe) {}
+
 	initialize(universe)
 	{
 		var venueToFadeTo = this.venueToFadeTo();
-		if (venueToFadeTo.initialize != null)
-		{
-			venueToFadeTo.initialize(universe);
-		}
+		venueToFadeTo.initialize(universe);
 	};
 
 	updateForTimerTick(universe)
@@ -44,7 +50,8 @@ class VenueFader
 			this.timeFadeStarted = now;
 		}
 
-		var millisecondsSinceFadeStarted = now - this.timeFadeStarted;
+		var millisecondsSinceFadeStarted =
+			now.getTime() - this.timeFadeStarted.getTime();
 
 		var fractionOfFadeCompleted =
 			millisecondsSinceFadeStarted
@@ -86,9 +93,10 @@ class VenueFader
 		var display = universe.display;
 		display.drawRectangle
 		(
-			new Coords(0, 0),
+			new Coords(0, 0, 0),
 			display.sizeDefault(), // Scaled automatically.
-			fadeColor.systemColor()
+			fadeColor.systemColor(),
+			null, null
 		);
 	};
 

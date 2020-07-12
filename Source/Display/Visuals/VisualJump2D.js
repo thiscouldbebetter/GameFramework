@@ -1,29 +1,19 @@
 
 class VisualJump2D
 {
+	visualJumper;
+	visualShadow;
+	cameraFactory;
+
+	_posSaved;
+
 	constructor(visualJumper, visualShadow, cameraFactory)
 	{
 		this.visualJumper = visualJumper;
 		this.visualShadow = visualShadow;
 
-		this._posSaved = new Coords();
+		this._posSaved = new Coords(0, 0, 0);
 	}
-
-	// Cloneable.
-
-	clone()
-	{
-		return new VisualJump2D
-		(
-			this.visualJumper.clone(), this.visualShadow.clone()
-		);
-	};
-
-	overwriteWith(other)
-	{
-		this.visualJumper.overwriteWith(other.visualJumper);
-		this.visualShadow.overwriteWith(other.visualShadow);
-	};
 
 	// Transformable.
 
@@ -38,7 +28,7 @@ class VisualJump2D
 
 	draw(universe, world, display, entity)
 	{
-		var entityPos = entity.locatable.loc.pos;
+		var entityPos = entity.locatable().loc.pos;
 		var entityPosZ = entityPos.z;
 		var camera = world.placeCurrent.camera(); // hack
 		entityPosZ -= camera.focalLength;
@@ -55,5 +45,22 @@ class VisualJump2D
 			this.visualJumper.draw(universe, world, display, entity);
 			entityPos.overwriteWith(this._posSaved);
 		}
+	};
+
+	// Cloneable.
+
+	clone()
+	{
+		return new VisualJump2D
+		(
+			this.visualJumper.clone(), this.visualShadow.clone(), this.cameraFactory
+		);
+	};
+
+	overwriteWith(other)
+	{
+		this.visualJumper.overwriteWith(other.visualJumper);
+		this.visualShadow.overwriteWith(other.visualShadow);
+		return this;
 	};
 }

@@ -1,6 +1,11 @@
 
 class Material
 {
+	name;
+	colorStroke;
+	colorFill;
+	texture;
+
 	constructor(name, colorStroke, colorFill, texture)
 	{
 		this.name = name;
@@ -9,21 +14,31 @@ class Material
 		this.texture = texture;
 	}
 
+	static _instances;
 	static Instances()
 	{
-		if (Material._Instances == null)
+		if (Material._instances == null)
 		{
-			Material._Instances = this;
-
-			this.Default = new Material
-			(
-				"Default",
-				Color.Instances().Blue, // colorStroke
-				Color.Instances().Yellow, // colorFill
-				null // texture
-			);
+			Material._instances = new Material_Instances();
 		}
 
-		return Material._Instances;
+		return Material._instances;
 	};
 }
+
+class Material_Instances
+{
+	Default;
+
+	constructor()
+	{
+		this.Default = new Material
+		(
+			"Default",
+			Color.Instances().Blue, // colorStroke
+			Color.Instances().Yellow, // colorFill
+			null // texture
+		);
+	}
+}
+

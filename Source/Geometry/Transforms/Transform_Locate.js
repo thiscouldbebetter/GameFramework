@@ -1,12 +1,27 @@
 
 class Transform_Locate
 {
+	loc;
+
+	transformOrient;
+	transformTranslate;
+
 	constructor(loc)
 	{
 		this.loc = loc;
 
-		this.transformOrient = new Transform_Orient();
-		this.transformTranslate = new Transform_Translate();
+		this.transformOrient = new Transform_Orient(null);
+		this.transformTranslate = new Transform_Translate(null);
+	}
+
+	overwriteWith(other)
+	{
+		return this; // todo
+	}
+
+	transform(transformable)
+	{
+		return transformable; // todo
 	}
 
 	transformCoords(coordsToTransform)

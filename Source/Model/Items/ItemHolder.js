@@ -1,6 +1,11 @@
 
 class ItemHolder
 {
+	itemEntities;
+
+	itemEntitySelected;
+	statusMessage;
+
 	constructor(itemEntities)
 	{
 		this.itemEntities = [];
@@ -11,6 +16,7 @@ class ItemHolder
 			var itemEntity = itemEntities[i];
 			this.itemEntityAdd(itemEntity);
 		}
+
 	}
 
 	// Static methods.
@@ -37,16 +43,16 @@ class ItemHolder
 
 	itemEntitiesWithDefnNameJoin(defnName)
 	{
-		var itemEntitiesMatching = this.itemEntities.filter(x => x.item.defnName == defnName);
+		var itemEntitiesMatching = this.itemEntities.filter(x => x.item().defnName == defnName);
 		var itemEntityJoined = itemEntitiesMatching[0];
 		if (itemEntityJoined != null)
 		{
-			var itemJoined = itemEntityJoined.item;
+			var itemJoined = itemEntityJoined.item();
 			for (var i = 1; i < itemEntitiesMatching.length; i++)
 			{
 				var itemEntityToJoin = itemEntitiesMatching[i];
-				itemJoined.quantity += itemEntityToJoin.item.quantity;
-				this.itemEntities.remove(itemEntityToJoin);
+				itemJoined.quantity += itemEntityToJoin.item().quantity;
+				ArrayHelper.remove(this.itemEntities, itemEntityToJoin);
 			}
 		}
 		return itemEntityJoined;
@@ -54,7 +60,7 @@ class ItemHolder
 
 	itemEntityAdd(itemEntityToAdd)
 	{
-		var itemToAdd = itemEntityToAdd.item;
+		var itemToAdd = itemEntityToAdd.item();
 		var itemDefnName = itemToAdd.defnName;
 		var itemEntityExisting = this.itemEntitiesByDefnName(itemDefnName)[0];
 		if (itemEntityExisting == null)
@@ -63,16 +69,16 @@ class ItemHolder
 		}
 		else
 		{
-			itemEntityExisting.item.quantity += itemToAdd.quantity;
+			itemEntityExisting.item().quantity += itemToAdd.quantity;
 		}
 	};
 
 	itemEntityRemove(itemEntityToRemove)
 	{
-		var doesExist = this.itemEntities.contains(itemEntityToRemove);
+		var doesExist = this.itemEntities.indexOf(itemEntityToRemove) >= 0;
 		if (doesExist)
 		{
-			this.itemEntities.remove(itemEntityToRemove);
+			ArrayHelper.remove(this.itemEntities, itemEntityToRemove);
 		}
 	};
 
@@ -91,7 +97,7 @@ class ItemHolder
 			if (itemExisting.quantity <= 0)
 			{
 				var itemEntityExisting = this.itemEntitiesByDefnName(itemDefnName)[0];
-				this.itemEntities.remove(itemEntityExisting);
+				ArrayHelper.remove(this.itemEntities, itemEntityExisting);
 			}
 		}
 	};
@@ -114,7 +120,7 @@ class ItemHolder
 	{
 		var itemEntitySplitted = null;
 
-		var itemToSplit = itemEntityToSplit.item;
+		var itemToSplit = itemEntityToSplit.item();
 		if (itemToSplit.quantity <= 1)
 		{
 			itemEntitySplitted = itemEntityToSplit;
@@ -122,7 +128,7 @@ class ItemHolder
 		else
 		{
 			quantityToSplit = quantityToSplit || Math.floor(itemToSplit.quantity / 2);
-			if (quantityToSplit >= itemEntityToSplit.quantity)
+			if (quantityToSplit >= itemToSplit.quantity)
 			{
 				itemEntitySplitted = itemEntityToSplit;
 			}
@@ -131,9 +137,12 @@ class ItemHolder
 				itemToSplit.quantity -= quantityToSplit;
 
 				itemEntitySplitted = itemEntityToSplit.clone();
-				itemEntitySplitted.item.quantity = quantityToSplit;
+				itemEntitySplitted.item().quantity = quantityToSplit;
 				// Add with no join.
-				this.itemEntities.insertElementAfterOther(itemEntitySplitted, itemEntityToSplit);
+				ArrayHelper.insertElementAfterOther
+				(
+					this.itemEntities, itemEntitySplitted, itemEntityToSplit
+				);
 			}
 		}
 
@@ -143,7 +152,7 @@ class ItemHolder
 	itemEntityTransferTo(itemEntity, other)
 	{
 		other.itemEntityAdd(itemEntity);
-		this.itemEntities.remove(itemEntity);
+		ArrayHelper.remove(this.itemEntities, itemEntity);
 	};
 
 	itemEntityTransferSingleTo(itemEntity, other)
@@ -170,7 +179,7 @@ class ItemHolder
 	{
 		return this.itemEntities.filter
 		(
-			x => x.item.defnName == defnName
+			x => x.item().defnName == defnName
 		);
 	};
 
@@ -187,16 +196,14 @@ class ItemHolder
 
 	itemsByDefnName(defnName)
 	{
-		return this.itemEntitiesByDefnName(defnName).map(x => x.item);
+		return this.itemEntitiesByDefnName(defnName).map(x => x.item());
 	};
 
 	tradeValueOfAllItems(world)
 	{
-		var items = this.itemEntities.map(x => x.item);
-
-		var tradeValueTotal = items.reduce
+		var tradeValueTotal = this.itemEntities.reduce
 		(
-			(sumSoFar, item) => sumSoFar + item.tradeValue(world),
+			(sumSoFar, itemEntity) => sumSoFar + itemEntity.item().tradeValue(world),
 			0 // sumSoFar
 		);
 
@@ -223,12 +230,11 @@ class ItemHolder
 
 		var itemHolder = this;
 		var world = universe.world;
-		var place = world.placeCurrent;
 
 		var back = function()
 		{
 			var venueNext = venuePrev;
-			venueNext = new VenueFader(venueNext, universe.venueCurrent);
+			venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null) ;
 			universe.venueNext = venueNext;
 		};
 
@@ -240,15 +246,15 @@ class ItemHolder
 				var world = universe.world;
 				var place = world.placeCurrent;
 				var itemEntityToDrop = itemEntityToKeep.clone();
-				var itemToDrop = itemEntityToDrop.item;
+				var itemToDrop = itemEntityToDrop.item();
 				itemToDrop.quantity = 1;
-				var posToDropAt = itemEntityToDrop.locatable.loc.pos;
-				var holderPos = entityItemHolder.locatable.loc.pos;
+				var posToDropAt = itemEntityToDrop.locatable().loc.pos;
+				var holderPos = entityItemHolder.locatable().loc.pos;
 				posToDropAt.overwriteWith(holderPos);
-				itemEntityToDrop.collidable.ticksUntilCanCollide = 50;
+				itemEntityToDrop.collidable().ticksUntilCanCollide = 50;
 				place.entitySpawn(universe, world, itemEntityToDrop);
 				itemHolder.itemSubtract(itemToDrop);
-				if (itemEntityToKeep.item.quantity == 0)
+				if (itemEntityToKeep.item().quantity == 0)
 				{
 					itemHolder.itemEntitySelected = null;
 				}
@@ -260,7 +266,7 @@ class ItemHolder
 		var use = function()
 		{
 			var itemEntityToUse = itemHolder.itemEntitySelected;
-			var itemToUse = itemEntityToUse.item;
+			var itemToUse = itemEntityToUse.item();
 			if (itemToUse.use != null)
 			{
 				var world = universe.world;
@@ -282,8 +288,8 @@ class ItemHolder
 			var index = itemEntitiesAll.indexOf(itemEntityToMove);
 			if (index > 0)
 			{
-				itemEntitiesAll.removeAt(index);
-				itemEntitiesAll.insertElementAt(itemEntityToMove, index - 1);
+				itemEntitiesAll.splice(index, 1);
+				itemEntitiesAll.splice(index - 1, 0, itemEntityToMove);
 			}
 		};
 
@@ -294,20 +300,20 @@ class ItemHolder
 			var index = itemEntitiesAll.indexOf(itemEntityToMove);
 			if (index < itemEntitiesAll.length - 1)
 			{
-				itemEntitiesAll.removeAt(index);
-				itemEntitiesAll.insertElementAt(itemEntityToMove, index + 1);
+				itemEntitiesAll.splice(index, 1);
+				itemEntitiesAll.splice(index + 1, 0, itemEntityToMove);
 			}
 		};
 
 		var split = function(universe)
 		{
-			itemHolder.itemEntitySplit(itemHolder.itemEntitySelected);
+			itemHolder.itemEntitySplit(itemHolder.itemEntitySelected, null);
 		};
 
 		var join = function()
 		{
 			var itemEntityToJoin = itemHolder.itemEntitySelected;
-			var itemToJoin = itemEntityToJoin.item;
+			var itemToJoin = itemEntityToJoin.item();
 			var itemEntityJoined =
 				itemHolder.itemEntitiesWithDefnNameJoin(itemToJoin.defnName);
 			itemHolder.itemEntitySelected = itemEntityJoined;
@@ -317,21 +323,18 @@ class ItemHolder
 		{
 			itemHolder.itemEntities.sort
 			(
-				(x, y) => (x.item.defnName > y.item.defnName ? 1 : -1)
-			).addLookups
-			(
-				y => y.item.defnName
+				(x, y) => (x.item().defnName > y.item().defnName ? 1 : -1)
 			);
 		};
 
-		var equipItemInNumberedSlot = function(slotNumber)
+		var equipItemInNumberedSlot = (slotNumber) =>
 		{
 			var entityItemToEquip = itemHolder.itemEntitySelected;
 			if (entityItemToEquip != null)
 			{
 				var world = universe.world;
 				var place = world.placeCurrent;
-				var equipmentUser = entityItemHolder.equipmentUser;
+				var equipmentUser = entityItemHolder.equipmentUser();
 				var socketName = "Item" + slotNumber;
 				var includeSocketNameInMessage = true;
 				var message = equipmentUser.equipItemEntityInSocketWithName
@@ -343,15 +346,15 @@ class ItemHolder
 			}
 		};
 
-		var buttonSize = new Coords(20, 10);
+		var buttonSize = new Coords(20, 10, 0);
 
 		var childControls =
 		[
 			new ControlLabel
 			(
-				"labelEquippable",
-				new Coords(10, 20), // pos
-				new Coords(70, 25), // size
+				"labelItemsHeld",
+				new Coords(10, 20, 0), // pos
+				new Coords(70, 25, 0), // size
 				false, // isTextCentered
 				"Items Held:",
 				fontHeightSmall
@@ -360,34 +363,36 @@ class ItemHolder
 			new ControlList
 			(
 				"listItems",
-				new Coords(10, 30), // pos
-				new Coords(70, 110), // size
-				new DataBinding(this.itemEntities), // items
+				new Coords(10, 30, 0), // pos
+				new Coords(70, 110, 0), // size
+				new DataBinding(this.itemEntities, null, null), // items
 				new DataBinding
 				(
 					null,
-					function get(c) { return c.item.toString(world); }
+					(c) => c.item().toString(world),
+					null
 				), // bindingForItemText
 				fontHeightSmall,
 				new DataBinding
 				(
 					this,
-					function get(c) { return c.itemEntitySelected; },
-					function set(c, v) { c.itemEntitySelected = v; }
+					(c) => c.itemEntitySelected,
+					(c, v) => { c.itemEntitySelected = v; }
 				), // bindingForItemSelected
-				new DataBinding(null, function(c) { return c; } ), // bindingForItemValue
-				true, // isEnabled
-				function confirm(context, universe)
+				new DataBinding(null, (c) => c, null ), // bindingForItemValue
+				new DataBinding(true, null, null), // isEnabled
+				(universe) => // confirm
 				{
 					use();
-				}
+				},
+				null
 			),
 
 			new ControlLabel
 			(
 				"labelItemSelected",
-				new Coords(150, 25), // pos
-				new Coords(100, 15), // size
+				new Coords(150, 25, 0), // pos
+				new Coords(100, 15, 0), // size
 				true, // isTextCentered
 				"Item Selected:",
 				fontHeightSmall
@@ -396,17 +401,18 @@ class ItemHolder
 			new ControlLabel
 			(
 				"infoItemSelected",
-				new Coords(150, 35), // pos
-				new Coords(200, 15), // size
+				new Coords(150, 35, 0), // pos
+				new Coords(200, 15, 0), // size
 				true, // isTextCentered
 				new DataBinding
 				(
 					this,
-					function get(c)
+					(c) =>
 					{
 						var i = c.itemEntitySelected;
-						return (i == null ? "-" : i.item.toString(world));
-					}
+						return (i == null ? "-" : i.item().toString(world));
+					},
+					null
 				), // text
 				fontHeightSmall
 			),
@@ -414,16 +420,17 @@ class ItemHolder
 			new ControlLabel
 			(
 				"infoStatus",
-				new Coords(150, 110), // pos
-				new Coords(200, 15), // size
+				new Coords(150, 110, 0), // pos
+				new Coords(200, 15, 0), // size
 				true, // isTextCentered
 				new DataBinding
 				(
 					this,
-					function get(c)
+					(c) =>
 					{
 						return c.statusMessage;
-					}
+					},
+					null
 				), // text
 				fontHeightSmall
 			),
@@ -431,15 +438,15 @@ class ItemHolder
 			new ControlButton
 			(
 				"buttonUp",
-				new Coords(85, 30), // pos
-				new Coords(15, 10), // size
+				new Coords(85, 30, 0), // pos
+				new Coords(15, 10, 0), // size
 				"Up",
 				fontHeightSmall,
 				true, // hasBorder
 				new DataBinding
 				(
 					this,
-					function get(c)
+					(c) =>
 					{
 						var returnValue =
 						(
@@ -447,23 +454,25 @@ class ItemHolder
 							&& c.itemEntities.indexOf(c.itemEntitySelected) > 0
 						);
 						return returnValue;
-					}
+					},
+					null
 				), // isEnabled
-				up // click
+				up, // click
+				null, null
 			),
 
 			new ControlButton
 			(
 				"buttonDown",
-				new Coords(85, 45), // pos
-				new Coords(15, 10), // size
+				new Coords(85, 45, 0), // pos
+				new Coords(15, 10, 0), // size
 				"Down",
 				fontHeightSmall,
 				true, // hasBorder
 				new DataBinding
 				(
 					this,
-					function get(c)
+					(c) =>
 					{
 						var returnValue =
 						(
@@ -471,48 +480,52 @@ class ItemHolder
 							&& c.itemEntities.indexOf(c.itemEntitySelected) < c.itemEntities.length - 1
 						);
 						return returnValue;
-					}
+					},
+					null
 				), // isEnabled
-				down
+				down,
+				null, null
 			),
 
 			new ControlButton
 			(
 				"buttonSplit",
-				new Coords(85, 60), // pos
-				new Coords(15, 10), // size
+				new Coords(85, 60, 0), // pos
+				new Coords(15, 10, 0), // size
 				"Split",
 				fontHeightSmall,
 				true, // hasBorder
 				new DataBinding
 				(
 					this,
-					function get(c)
+					(c) =>
 					{
 						var itemEntity = c.itemEntitySelected;
 						var returnValue =
 						(
 							itemEntity != null
-							&& (itemEntity.item.quantity > 1)
+							&& (itemEntity.item().quantity > 1)
 						);
 						return returnValue;
-					}
+					},
+					null
 				), // isEnabled
-				split
+				split,
+				null, null
 			),
 
 			new ControlButton
 			(
 				"buttonJoin",
-				new Coords(85, 75), // pos
-				new Coords(15, 10), // size
+				new Coords(85, 75, 0), // pos
+				new Coords(15, 10, 0), // size
 				"Join",
 				fontHeightSmall,
 				true, // hasBorder
 				new DataBinding
 				(
 					this,
-					function get(c)
+					(c) => 
 					{
 						var returnValue =
 						(
@@ -521,83 +534,87 @@ class ItemHolder
 							(
 								c.itemEntities.filter
 								(
-									x => x.item.defnName == c.itemEntitySelected.item.defnName
+									(x) => x.item().defnName == c.itemEntitySelected.item().defnName
 								).length > 1
 							)
 						);
 						return returnValue;
-					}
+					},
+					null
 				), // isEnabled
-				join
+				join,
+				null, null
 			),
 
 			new ControlButton
 			(
 				"buttonSort",
-				new Coords(85, 90), // pos
-				new Coords(15, 10), // size
+				new Coords(85, 90, 0), // pos
+				new Coords(15, 10, 0), // size
 				"Sort",
 				fontHeightSmall,
 				true, // hasBorder
 				new DataBinding
 				(
 					this,
-					function get(c)
-					{
-						return c.itemEntities.length > 1;
-					}
+					(c) => (c.itemEntities.length > 1),
+					null
 				), // isEnabled
-				sort
+				sort,
+				null, null
 			),
 
 			new ControlButton
 			(
 				"buttonUse",
-				new Coords(130, 90), // pos
-				new Coords(15, 10), // size
+				new Coords(130, 90, 0), // pos
+				new Coords(15, 10, 0), // size
 				"Use",
 				fontHeightSmall,
 				true, // hasBorder
 				new DataBinding
 				(
 					this,
-					function get(c)
+					(c) =>
 					{
 						var itemEntity = c.itemEntitySelected;
-						return (itemEntity != null && itemEntity.item.isUsable(world));
-					}
+						return (itemEntity != null && itemEntity.item().isUsable(world));
+					},
+					null
 				), // isEnabled
-				function click(universe)
+				(universe) => 
 				{
 					use();
 				},
-				universe // context
+				null, null
 			),
 
 			new ControlButton
 			(
 				"buttonDrop",
-				new Coords(150, 90), // pos
-				new Coords(15, 10), // size
+				new Coords(150, 90, 0), // pos
+				new Coords(15, 10, 0), // size
 				"Drop",
 				fontHeightSmall,
 				true, // hasBorder
 				new DataBinding
 				(
 					this,
-					function get(c) { return c.itemEntitySelected != null}
+					(c) => (c.itemEntitySelected != null),
+					null
 				), // isEnabled
-				function click(universe)
+				(universe) => // click
 				{
 					drop();
-				}
+				},
+				null, null
 			)
 		];
 
 		var returnValue = new ControlContainer
 		(
 			"Items",
-			new Coords(0, 0), // pos
+			new Coords(0, 0, 0), // pos
 			sizeBase.clone(), // size
 			childControls,
 			[
@@ -624,7 +641,7 @@ class ItemHolder
 			],
 
 			[
-				new ActionToInputsMapping( "Back", [ universe.inputHelper.inputNames.Escape ], true ),
+				new ActionToInputsMapping( "Back", [ Input.Names().Escape ], true ),
 
 				new ActionToInputsMapping( "Up", [ "[" ], true ),
 				new ActionToInputsMapping( "Down", [ "]" ], true ),
@@ -650,37 +667,39 @@ class ItemHolder
 
 		if (includeTitleAndDoneButton)
 		{
-			childControls.insertElementAt
+			childControls.splice
 			(
+				0, // indexToInsertAt
+				0,
 				new ControlLabel
 				(
 					"labelItems",
-					new Coords(100, 10), // pos
-					new Coords(100, 25), // size
+					new Coords(100, 10, 0), // pos
+					new Coords(100, 25, 0), // size
 					true, // isTextCentered
 					"Items",
 					fontHeightLarge
-				),
-				0 // indexToInsertAt
+				)
 			);
 			childControls.push
 			(
 				new ControlButton
 				(
 					"buttonDone",
-					new Coords(170, 130), // pos
+					new Coords(170, 130, 0), // pos
 					buttonSize.clone(),
 					"Done",
 					fontHeightSmall,
 					true, // hasBorder
 					true, // isEnabled
-					back
+					back, // click
+					null, null
 				)
 			);
 		}
 		else
 		{
-			var titleHeightInverted = new Coords(0, -15);
+			var titleHeightInverted = new Coords(0, -15, 0);
 			returnValue.size.add(titleHeightInverted);
 			returnValue.shiftChildPositions(titleHeightInverted);
 		}
@@ -694,6 +713,6 @@ class ItemHolder
 
 	clone()
 	{
-		return new ItemHolder(this.itemEntities.clone());
+		return new ItemHolder(ArrayHelper.clone(this.itemEntities) );
 	};
 }

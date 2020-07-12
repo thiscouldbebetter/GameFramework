@@ -1,6 +1,11 @@
 
 class Texture
 {
+	name;
+	image;
+
+	systemTexture;
+
 	constructor(name, image)
 	{
 		this.name = name;

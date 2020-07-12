@@ -1,9 +1,16 @@
 
 class Transform_Orient
 {
+	orientation;
+
 	constructor(orientation)
 	{
 		this.orientation = orientation;
+	}
+
+	overwriteWith(other)
+	{
+		return this; // todo
 	}
 
 	transform(transformable)

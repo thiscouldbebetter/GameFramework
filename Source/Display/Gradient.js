@@ -1,6 +1,8 @@
 
 class Gradient
 {
+	stops;
+
 	constructor(stops)
 	{
 		this.stops = stops;
@@ -9,6 +11,9 @@ class Gradient
 
 class GradientStop
 {
+	position;
+	color;
+
 	constructor(position, color)
 	{
 		this.position = position;

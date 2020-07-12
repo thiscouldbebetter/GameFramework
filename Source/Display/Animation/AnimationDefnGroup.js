@@ -1,10 +1,14 @@
 
 class AnimationDefnGroup
 {
+	name;
+	animationDefns;
+	animationDefnsByName;
+
 	constructor(name, animationDefns)
 	{
 		this.name = name;
 		this.animationDefns = animationDefns;
-		this.animationDefns.addLookupsByName();
+		this.animationDefnsByName = ArrayHelper.addLookupsByName(this.animationDefns);
 	}
 }

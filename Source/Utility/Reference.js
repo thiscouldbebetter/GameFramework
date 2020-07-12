@@ -1,6 +1,8 @@
 
 class Reference
 {
+	value;
+
 	constructor(value)
 	{
 		this.value = value;

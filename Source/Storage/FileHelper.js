@@ -4,31 +4,28 @@ class FileHelper
 	loadFileAsBinaryString(systemFileToLoad, callback, contextForCallback)
 	{
 		var fileReader = new FileReader();
-		fileReader.systemFile = systemFileToLoad;
-		fileReader.callback = callback;
-		fileReader.contextForCallback = contextForCallback;
-		fileReader.onload = this.loadFile_FileLoaded.bind(this);
+		fileReader.onload = (event) =>
+		{
+			this.loadFile_FileLoaded(event, callback, contextForCallback, systemFileToLoad.name);
+		}
 		fileReader.readAsBinaryString(systemFileToLoad);
 	};
 
 	loadFileAsText(systemFileToLoad, callback, contextForCallback)
 	{
 		var fileReader = new FileReader();
-		fileReader.systemFile = systemFileToLoad;
-		fileReader.callback = callback;
-		fileReader.contextForCallback = contextForCallback;
-		fileReader.onload = this.loadFile_FileLoaded.bind(this);
+		fileReader.onload = (event) =>
+		{
+			this.loadFile_FileLoaded(event, callback, contextForCallback, systemFileToLoad.name);
+		}
 		fileReader.readAsText(systemFileToLoad);
 	};
 
-	loadFile_FileLoaded(fileLoadedEvent)
+	loadFile_FileLoaded(fileLoadedEvent, callback, contextForCallback, fileName)
 	{
 		var fileReader = fileLoadedEvent.target;
 		var contentsOfFileLoaded = fileReader.result;
-		var fileName = fileReader.systemFile.name;
 
-		var callback = fileReader.callback;
-		var contextForCallback = fileReader.contextForCallback;
 		callback.call(contextForCallback, contentsOfFileLoaded);
 	};
 
@@ -41,7 +38,9 @@ class FileHelper
 			fileAsArrayUnsigned[i] = fileAsBinaryString.charCodeAt(i);
 		}
 
-		var fileAsBlob = new Blob([fileAsArrayBuffer], {type:'unknown/unknown'});
+		var blobTypeAsLookup= {};
+		blobTypeAsLookup["type"] = "unknown/unknown";
+		var fileAsBlob = new Blob([fileAsArrayBuffer], blobTypeAsLookup);
 
 		var link = document.createElement("a");
 		link.href = window.URL.createObjectURL(fileAsBlob);
@@ -51,7 +50,9 @@ class FileHelper
 
 	saveTextStringToFileWithName(textToSave, fileNameToSaveAs)
 	{
-		var textToSaveAsBlob = new Blob([textToSave], {type:"text/plain"});
+		var blobTypeAsLookup= {};
+		blobTypeAsLookup["type"] = "text/plain";
+		var textToSaveAsBlob = new Blob([textToSave], blobTypeAsLookup);
 		var link = document.createElement("a");
 		link.href = window.URL.createObjectURL(textToSaveAsBlob);
 		link.download = fileNameToSaveAs;

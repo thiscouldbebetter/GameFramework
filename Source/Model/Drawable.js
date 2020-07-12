@@ -1,6 +1,11 @@
 
 class Drawable
 {
+	visual;
+	isVisible;
+
+	ticksSinceStarted; // hack
+
 	constructor(visual, isVisible)
 	{
 		this.visual = visual;

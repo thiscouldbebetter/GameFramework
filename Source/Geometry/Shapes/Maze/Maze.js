@@ -1,6 +1,14 @@
 
 class Maze
 {
+	cellSizeInPixels;
+	sizeInCells;
+	neighborOffsets;
+
+	sizeInCellsMinusOnes;
+	sizeInPixels;
+	cells;
+
 	constructor(cellSizeInPixels, sizeInCells, neighborOffsets)
 	{
 		this.cellSizeInPixels = cellSizeInPixels;
@@ -29,14 +37,11 @@ class Maze
 
 	// static methods
 
-	static generateRandom(randomizer)
+	generateRandom(randomizer)
 	{
-		var cells = this.cells;
 		var sizeInCells = this.sizeInCells;
-		var neighborOffsets = this.neighborOffsets;
 
 		var numberOfCellsInMaze = this.sizeInCells.productOfDimensions();
-		var numberOfNeighbors = neighborOffsets.length;
 
 		var cellPos = new Coords(0, 0, 0);
 		var cellPosNeighbor = new Coords(0, 0, 0);
@@ -55,9 +60,7 @@ class Maze
 
 					var numberOfCellsInNetworkMerged = this.generateRandom_ConnectCellToRandomNeighbor
 					(
-						randomizer,
-						cellPos,
-						cellPosNeighbor
+						randomizer, cellPos, cellPosNeighbor
 					);
 
 					if (numberOfCellsInNetworkMerged > numberOfCellsInLargestNetworkSoFar)
@@ -78,8 +81,6 @@ class Maze
 		cellPosNeighbor
 	)
 	{
-		var cells = this.cells;
-		var sizeInCells = this.sizeInCells;
 		var sizeInCellsMinusOnes = this.sizeInCellsMinusOnes;
 		var neighborOffsets = this.neighborOffsets;
 		var numberOfNeighbors = neighborOffsets.length;

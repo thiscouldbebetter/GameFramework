@@ -1,6 +1,21 @@
 
-class Map
+class MapOfCells
 {
+	name;
+	sizeInCells;
+	cellSize;
+	cellPrototype;
+	_cellAtPosInCells;
+	cellSource;
+
+	cellSizeHalf;
+	size;
+	sizeHalf;
+	sizeInCellsMinusOnes;
+
+	_cell;
+	_posInCells;
+
 	constructor(name, sizeInCells, cellSize, cellPrototype, cellAtPosInCells, cellSource)
 	{
 		this.name = name;
@@ -20,7 +35,7 @@ class Map
 
 		// Helper variables.
 		this._cell = this.cellPrototype.clone();
-		this._posInCells = new Coords();
+		this._posInCells = new Coords(0, 0, 0);
 	}
 
 	cellAtPos(pos)
@@ -43,13 +58,13 @@ class Map
 	{
 		var returnValues = [];
 
-		var cellPosInCells = new Coords();
-		var cellPosStart = new Coords(0, 0);
+		var cellPosInCells = new Coords(0, 0, 0);
+		var cellPosStart = new Coords(0, 0, 0);
 		var cellPosEnd = this.sizeInCells;
 
 		// todo
-		var cellSizeInPixels = this.cellSize;
-		var cellVisual = new VisualRectangle(cellSizeInPixels, "Blue", null, false); // isCentered
+		// var cellSizeInPixels = this.cellSize;
+		// var cellVisual = new VisualRectangle(cellSizeInPixels, "Blue", null, false); // isCentered
 
 		for (var y = cellPosStart.y; y < cellPosEnd.y; y++)
 		{
@@ -72,7 +87,11 @@ class Map
 
 	clone()
 	{
-		return new Map(this.sizeInCells, this.cellSize, this.cellPrototype, this.cellAtPosInCells, this.cellSource);
+		return new MapOfCells
+		(
+			this.name, this.sizeInCells, this.cellSize,
+			this.cellPrototype, this.cellAtPosInCells, this.cellSource
+		);
 	};
 
 	overwriteWith(other)

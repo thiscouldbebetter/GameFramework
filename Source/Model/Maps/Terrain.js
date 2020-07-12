@@ -1,6 +1,12 @@
 
 class Terrain
 {
+	name;
+	codeChar;
+	level;
+	isBlocking;
+	visuals;
+
 	constructor(name, codeChar, level, isBlocking, visuals)
 	{
 		this.name = name;

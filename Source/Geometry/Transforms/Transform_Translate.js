@@ -1,6 +1,8 @@
 
 class Transform_Translate
 {
+	displacement;
+
 	constructor(displacement)
 	{
 		this.displacement = displacement;
@@ -13,6 +15,11 @@ class Transform_Translate
 	};
 
 	// transform
+
+	overwriteWith(other)
+	{
+		return this; // todo
+	}
 
 	transform(transformable)
 	{

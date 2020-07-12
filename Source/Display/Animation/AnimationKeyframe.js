@@ -1,11 +1,15 @@
 
 class AnimationKeyframe
 {
+	frameIndex;
+	transforms;
+	transformsByPropertyName;
+
 	constructor(frameIndex, transforms)
 	{
 		this.frameIndex = frameIndex;
 		this.transforms = transforms;
-		this.transforms.addLookups( x => x.propertyName );
+		this.transformsByPropertyName = ArrayHelper.addLookups(this.transforms, (x) => x.propertyName );
 	}
 
 	interpolateWith(other, fractionOfProgressTowardOther)
@@ -15,7 +19,10 @@ class AnimationKeyframe
 		for (var i = 0; i < this.transforms.length; i++)
 		{
 			var transformThis = this.transforms[i];
-			var transformOther = other.transforms[transformThis.propertyName];
+			var transformOther = other.transformsByPropertyName.get
+			(
+				transformThis.propertyName
+			);
 
 			var transformInterpolated = transformThis.interpolateWith
 			(

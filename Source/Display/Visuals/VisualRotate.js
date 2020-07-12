@@ -1,6 +1,9 @@
 
 class VisualRotate
 {
+	rotationInTurns;
+	child;
+
 	constructor(rotationInTurns, child)
 	{
 		this.rotationInTurns = rotationInTurns;
@@ -9,19 +12,31 @@ class VisualRotate
 
 	draw(universe, world, display, entity)
 	{
-		var graphics = display.graphics;
-		graphics.save();
+		display.stateSave();
 
-		var centerOfRotation = entity.locatable.loc.pos;
-		graphics.translate(centerOfRotation.x, centerOfRotation.y);
-
-		var rotationInRadians = this.rotationInTurns * Polar.RadiansPerTurn;
-		graphics.rotate(rotationInRadians);
-
-		graphics.translate(0 - centerOfRotation.x, 0 - centerOfRotation.y);
+		display.rotateTurnsAroundCenter(this.rotationInTurns, entity.locatable().loc.pos);
 
 		this.child.draw(universe, world, display, entity);
 
-		graphics.restore();
+		display.stateRestore();
 	};
+
+	// Clonable.
+
+	clone()
+	{
+		return this; // todo
+	}
+
+	overwriteWith(other)
+	{
+		return this; // todo
+	}
+
+	// Transformable.
+
+	transform(transformToApply)
+	{
+		return this; // todo
+	}
 }

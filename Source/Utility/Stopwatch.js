@@ -1,6 +1,13 @@
 
 class Stopwatch
 {
+	name;
+
+	timeElapsedLastRun;
+	timeElapsedTotal;
+	timeStarted;
+	timeStopped;
+
 	constructor(name)
 	{
 		this.name = name;
@@ -22,7 +29,8 @@ class Stopwatch
 	stop()
 	{
 		this.timeStopped = new Date();
-		this.timeElapsedLastRun = this.timeStopped - this.timeStarted;
+		this.timeElapsedLastRun =
+			this.timeStopped.getTime() - this.timeStarted.getTime();
 		this.timeElapsedTotal += this.timeElapsedLastRun;
 		return this;
 	};

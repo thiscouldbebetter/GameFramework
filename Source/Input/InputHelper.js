@@ -1,25 +1,42 @@
 
 class InputHelper
 {
+	mouseClickPos;
+	mouseMovePos;
+	mouseClickPosPrev;
+	mouseMovePosNext;
+	mouseMovePosPrev;
+
+	gamepadsConnected;
+	inputNamesLookup;
+	inputsPressed;
+	inputsPressedByName;
+	keysToPreventDefaultsFor;
+
+	isMouseMovementTracked;
+
 	constructor()
 	{
 		// Helper variables.
 
-		this.mouseClickPos = new Coords();
-		this.mouseMovePos = new Coords(0, 0);
-		this.mouseMovePosPrev = new Coords(0, 0);
-		this.mouseMovePosNext = new Coords(0, 0);
+		this.mouseClickPos = new Coords(0, 0, 0);
+		this.mouseMovePos = new Coords(0, 0, 0);
+		this.mouseMovePosPrev = new Coords(0, 0, 0);
+		this.mouseMovePosNext = new Coords(0, 0, 0);
 
 		var inputNames = Input.Names();
-		this.inputNames = inputNames;
+		this.inputNamesLookup = inputNames._AllByName;
 		this.keysToPreventDefaultsFor =
 		[
 			inputNames.ArrowDown, inputNames.ArrowLeft, inputNames.ArrowRight,
 			inputNames.ArrowUp, inputNames.Tab
 		];
+
+		this.inputsPressed = [];
+		this.inputsPressedByName = new Map();
 	}
 
-	actionsFromInput(actions, actionToInputsMappings)
+	actionsFromInput(actionsByName, actionToInputsMappingsByInputName)
 	{
 		var returnValues = [];
 
@@ -29,11 +46,11 @@ class InputHelper
 			var inputPressed = inputsPressed[i];
 			if (inputPressed.isActive)
 			{
-				var mapping = actionToInputsMappings[inputPressed.name];
+				var mapping = actionToInputsMappingsByInputName[inputPressed.name];
 				if (mapping != null)
 				{
 					var actionName = mapping.actionName;
-					var action = actions[actionName];
+					var action = actionsByName.get(actionName);
 					returnValues.push(action);
 					if (mapping.inactivateInputWhenActionPerformed)
 					{
@@ -57,7 +74,7 @@ class InputHelper
 		{
 			// hack - Allows use of this class
 			// without including PlatformHelper or Universe.
-			this.toDomElement();
+			this.toDomElement(null);
 		}
 		else
 		{
@@ -69,21 +86,21 @@ class InputHelper
 
 	inputAdd(inputPressedName)
 	{
-		if (this.inputsPressed[inputPressedName] == null)
+		if (this.inputsPressedByName.get(inputPressedName) == null)
 		{
 			var inputPressed = new Input(inputPressedName);
-			this.inputsPressed[inputPressedName] = inputPressed;
+			this.inputsPressedByName.set(inputPressedName, inputPressed);
 			this.inputsPressed.push(inputPressed);
 		}
 	};
 
 	inputRemove(inputReleasedName)
 	{
-		if (this.inputsPressed[inputReleasedName] != null)
+		if (this.inputsPressedByName.has(inputReleasedName))
 		{
-			var inputReleased = this.inputsPressed[inputReleasedName];
-			delete this.inputsPressed[inputReleasedName];
-			this.inputsPressed.remove(inputReleased);
+			var inputReleased = this.inputsPressedByName.get(inputReleasedName);
+			this.inputsPressedByName.delete(inputReleasedName);
+			ArrayHelper.remove(this.inputsPressed, inputReleased);
 		}
 	};
 
@@ -97,18 +114,20 @@ class InputHelper
 		for (var i = 0; i < this.inputsPressed.length; i++)
 		{
 			var input = this.inputsPressed[i];
-			this.inputRemove(input);
+			this.inputRemove(input.name);
 		}
 	};
 
 	isMouseClicked(value)
 	{
-		var inputNameMouseClick = this.inputNames.MouseClick;
+		var returnValue = false;
+
+		var inputNameMouseClick = Input.Names().MouseClick;
+
 		if (value == null)
 		{
-			var inputPressed = this.inputsPressed[inputNameMouseClick];
-			var returnValue = (inputPressed != null && inputPressed.isActive);
-			return returnValue;
+			var inputPressed = this.inputsPressedByName.get(inputNameMouseClick);
+			returnValue = (inputPressed != null && inputPressed.isActive);
 		}
 		else
 		{
@@ -121,6 +140,8 @@ class InputHelper
 				this.inputRemove(inputNameMouseClick);
 			}
 		}
+
+		return returnValue;
 	};
 
 	updateForTimerTick(universe)
@@ -131,13 +152,14 @@ class InputHelper
 	updateForTimerTick_Gamepads(universe)
 	{
 		var systemGamepads = this.systemGamepads();
-		var inputNames = this.inputNames;
+		var inputNames = Input.Names();
 
 		for (var i = 0; i < this.gamepadsConnected.length; i++)
 		{
 			var gamepad = this.gamepadsConnected[i];
 			var systemGamepad = systemGamepads[gamepad.index];
 			gamepad.updateFromSystemGamepad(systemGamepad);
+			var gamepadID = "Gamepad" + i;
 
 			var axisDisplacements = gamepad.axisDisplacements;
 			for (var a = 0; a < axisDisplacements.length; a++)
@@ -147,17 +169,18 @@ class InputHelper
 				{
 					if (a == 0)
 					{
-						this.inputRemove(inputNames.gamepadMoveLeft + i);
-						this.inputRemove(inputNames.gamepadMoveRight + i);
+						this.inputRemove(inputNames.GamepadMoveLeft + i);
+						this.inputRemove(inputNames.GamepadMoveRight + i);
 					}
 					else
 					{
-						this.inputRemove(inputNames.gamepadMoveUp + i);
-						this.inputRemove(inputNames.gamepadMoveDown + i);
+						this.inputRemove(inputNames.GamepadMoveUp + i);
+						this.inputRemove(inputNames.GamepadMoveDown + i);
 					}
 				}
 				else
 				{
+					var gamepadIDMove = gamepadID + "Move"; // todo
 					var directionName;
 					if (a == 0)
 					{
@@ -198,7 +221,7 @@ class InputHelper
 	{
 		var inputPressed = event.key;
 
-		if (this.keysToPreventDefaultsFor.contains(inputPressed))
+		if (this.keysToPreventDefaultsFor.indexOf(inputPressed) >= 0)
 		{
 			event.preventDefault();
 		}
@@ -250,7 +273,7 @@ class InputHelper
 			event.clientY - canvasBox.top,
 			0
 		);
-		this.inputAdd(this.inputNames.MouseClick);
+		this.inputAdd(Input.Names().MouseClick);
 	};
 
 	handleEventMouseMove(event)
@@ -268,13 +291,13 @@ class InputHelper
 		{
 			this.mouseMovePosPrev.overwriteWith(this.mouseMovePos);
 			this.mouseMovePos.overwriteWith(this.mouseMovePosNext);
-			this.inputAdd(this.inputNames.MouseMove);
+			this.inputAdd(Input.Names().MouseMove);
 		}
 	};
 
 	handleEventMouseUp(event)
 	{
-		this.inputRemove(this.inputNames.MouseClick);
+		this.inputRemove(Input.Names().MouseClick);
 	};
 
 	// gamepads
@@ -287,7 +310,7 @@ class InputHelper
 			var systemGamepad = systemGamepads[i];
 			if (systemGamepad != null)
 			{
-				var gamepad = new Gamepad(i);
+				var gamepad = new Gamepad(); // todo
 				this.gamepadsConnected.push(gamepad);
 			}
 		}
@@ -308,6 +331,7 @@ class InputHelper
 		divMain.onmousedown = this.handleEventMouseDown.bind(this);
 		divMain.onmouseup = this.handleEventMouseUp.bind(this);
 		divMain.onmousemove = (this.isMouseMovementTracked ? this.handleEventMouseMove.bind(this) : null);
+		return null;
 	};
 
 }

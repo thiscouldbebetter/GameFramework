@@ -1,9 +1,21 @@
 
 class Transform_OrientForCamera
 {
+	orientation;
+
 	constructor(orientation)
 	{
 		this.orientation = orientation;
+	}
+
+	overwriteWith(other)
+	{
+		return this; // todo
+	}
+
+	transform(transformable)
+	{
+		return transformable; // todo
 	}
 
 	transformCoords(coordsToTransform)

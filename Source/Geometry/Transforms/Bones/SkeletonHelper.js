@@ -1,17 +1,18 @@
 
-clas SkeletonHelper()
+class SkeletonHelper
 {
 	static biped(heightInPixels)
 	{
 		var heightOver2 = heightInPixels / 2;
 		var heightOfSpine = heightInPixels / 2.4;
-		var heightOver3 = heightInPixels / 3;
 		var heightOver4 = heightInPixels / 4;
 		var heightOver6 = heightInPixels / 6;
 		var heightOver8 = heightInPixels / 8;
 		var heightOver9 = heightInPixels / 9;
 		var heightOver12 = heightInPixels / 12;
 		var heightOver18 = heightInPixels / 18;
+
+		var isVisibleTrue = true;
 
 		var legRight = new Bone
 		(
@@ -31,12 +32,15 @@ clas SkeletonHelper()
 							heightOver4,
 							new Orientation(new Coords(0, 0, 1), new Coords(1, 0, 0)),
 							[
-								new Bone("Foot.R", heightOver8, new Orientation(new Coords(0, 1, 0), new Coords(1, 0, 0)), [])
-							]
+								new Bone("Foot.R", heightOver8, new Orientation(new Coords(0, 1, 0), new Coords(1, 0, 0)), [], isVisibleTrue)
+							],
+							isVisibleTrue
 						),
-					]
+					],
+					isVisibleTrue
 				)
-			]
+			],
+			isVisibleTrue
 		);
 
 		var legLeft = new Bone
@@ -57,12 +61,15 @@ clas SkeletonHelper()
 							heightOver4,
 							new Orientation(new Coords(0, 0, 1), new Coords(1, 0, 0)),
 							[
-								new Bone("Foot.L", heightOver8, new Orientation(new Coords(0, 1, 0), new Coords(1, 0, 0)), [])
-							]
+								new Bone("Foot.L", heightOver8, new Orientation(new Coords(0, 1, 0), new Coords(1, 0, 0)), [], isVisibleTrue)
+							],
+							isVisibleTrue
 						),
-					]
+					],
+					isVisibleTrue
 				)
-			]
+			],
+			isVisibleTrue
 		);
 
 		var upperEntity = new Bone
@@ -88,11 +95,14 @@ clas SkeletonHelper()
 									"Head.Front",
 									heightOver9,
 									new Orientation(new Coords(0, 1, 0), new Coords(0, 0, 1)),
-									[]
+									[],
+									isVisibleTrue
 								),
-							]
+							],
+							isVisibleTrue
 						)
-					]
+					],
+					isVisibleTrue
 				),
 				new Bone
 				(
@@ -106,10 +116,12 @@ clas SkeletonHelper()
 							heightOver6,
 							new Orientation(new Coords(0, -.1, 1), new Coords(-1, 0, 0)),
 							[
-								new Bone("Forearm.L", heightOver6, new Orientation(new Coords(0, .1, 1), new Coords(-1, 0, 0)), [])
-							]
+								new Bone("Forearm.L", heightOver6, new Orientation(new Coords(0, .1, 1), new Coords(-1, 0, 0)), [], isVisibleTrue)
+							],
+							isVisibleTrue
 						)
-					]
+					],
+					isVisibleTrue
 				),
 				new Bone
 				(
@@ -123,12 +135,15 @@ clas SkeletonHelper()
 							heightOver6,
 							new Orientation(new Coords(0, -.1, 1), new Coords(-1, 0, 0)),
 							[
-								new Bone("Forearm.R", heightOver6, new Orientation(new Coords(0, .1, 1), new Coords(-1, 0, 0)), [])
-							]
+								new Bone("Forearm.R", heightOver6, new Orientation(new Coords(0, .1, 1), new Coords(-1, 0, 0)), [], isVisibleTrue)
+							],
+							isVisibleTrue
 						)
-					]
+					],
+					isVisibleTrue
 				)
-			]
+			],
+			isVisibleTrue
 		); // end spine
 
 		var skeletonBiped = new Skeleton
@@ -144,7 +159,6 @@ clas SkeletonHelper()
 					legLeft,
 					upperEntity,
 				],
-
 				false // isVisible - hide the root bone
 			)
 		);
@@ -192,26 +206,26 @@ clas SkeletonHelper()
 				new AnimationKeyframe
 				(
 					0,
-					[
+					new Array
+					(
 						new Transform_BonePose("Forearm.L", 	[ .25 ]),
 						new Transform_BonePose("Bicep.L", 	[ .25, 0, -.25 ]),
 
 						new Transform_BonePose("Forearm.R", 	[ .25 ]),
 						new Transform_BonePose("Bicep.R", 	[ .25, 0, .25 ]),
-
-					]
+					)
 				),
 				new AnimationKeyframe
 				(
 					1,
-					[
+					new Array
+					(
 						new Transform_BonePose("Forearm.L", 	[ .25 ]),
 						new Transform_BonePose("Bicep.L", 	[ .25, 0, .25 ]),
 
 						new Transform_BonePose("Forearm.R", 	[ .25 ]),
 						new Transform_BonePose("Bicep.R", 	[ .25, 0, -.25 ]),
-
-					]
+					)
 				),
 			]
 		);
@@ -228,24 +242,26 @@ clas SkeletonHelper()
 				new AnimationKeyframe
 				(
 					0,
-					[
+					new Array
+					(
 						new Transform_BonePose("Thigh.L", 	[ .25 ]),
 						new Transform_BonePose("Shin.L", 	[ .25 ]),
 
 						new Transform_BonePose("Thigh.R", 	[ .25 ]),
 						new Transform_BonePose("Shin.R", 	[ .25 ]),
-					]
+					)
 				),
 				new AnimationKeyframe
 				(
 					1,
-					[
+					new Array
+					(
 						new Transform_BonePose("Thigh.L", 	[ .25 ]),
 						new Transform_BonePose("Shin.L", 	[ .25 ]),
 
 						new Transform_BonePose("Thigh.R", 	[ .25 ]),
 						new Transform_BonePose("Shin.R", 	[ .25 ]),
-					]
+					)
 				),
 
 			]
@@ -263,7 +279,8 @@ clas SkeletonHelper()
 				new AnimationKeyframe
 				(
 					0,
-					[
+					new Array
+					(
 						new Transform_BonePose("Bicep.L", 	[ -.1 ]),
 						new Transform_BonePose("Forearm.L", 	[ 0 ]),
 						new Transform_BonePose("Thigh.L", 	[ .1 ]),
@@ -273,37 +290,40 @@ clas SkeletonHelper()
 						new Transform_BonePose("Forearm.R", 	[ .1 ]),
 						new Transform_BonePose("Thigh.R", 	[ -.05 ]),
 						new Transform_BonePose("Shin.R", 	[ 0 ]),
-					]
+					)
 				),
 
 				new AnimationKeyframe
 				(
 					5,
-					[
+					new Array
+					(
 						new Transform_BonePose("Thigh.L", 	[ .1 ]),
 						new Transform_BonePose("Shin.L", 	[ .1 ]),
 
 						new Transform_BonePose("Thigh.R", 	[ -.1 ]),
 						new Transform_BonePose("Shin.R", 	[ 0 ]),
-					]
+					)
 				),
 
 				new AnimationKeyframe
 				(
 					10,
-					[
+					new Array
+					(
 						new Transform_BonePose("Thigh.L", 	[ 0 ]),
 						new Transform_BonePose("Shin.L", 	[ 0 ]),
 
 						new Transform_BonePose("Thigh.R", 	[ 0 ]),
 						new Transform_BonePose("Shin.R", 	[ .1 ]),
-					]
+					)
 				),
 
 				new AnimationKeyframe
 				(
 					15,
-					[
+					new Array
+					(
 						new Transform_BonePose("Bicep.L", 	[ .1 ]),
 						new Transform_BonePose("Forearm.L", 	[ .1 ]),
 						new Transform_BonePose("Thigh.L", 	[ -.05 ]),
@@ -312,37 +332,40 @@ clas SkeletonHelper()
 						new Transform_BonePose("Forearm.R", 	[ 0 ]),
 						new Transform_BonePose("Thigh.R", 	[ .1 ]),
 						new Transform_BonePose("Shin.R", 	[ 0 ]),
-					]
+					)
 				),
 
 				new AnimationKeyframe
 				(
 					20,
-					[
+					new Array
+					(
 						new Transform_BonePose("Thigh.L", 	[ -.1 ]),
 						new Transform_BonePose("Shin.L", 	[ 0 ]),
 
 						new Transform_BonePose("Thigh.R", 	[ .1 ]),
 						new Transform_BonePose("Shin.R", 	[ .1 ]),
-					]
+					)
 				),
 
 				new AnimationKeyframe
 				(
 					25,
-					[
+					new Array
+					(
 						new Transform_BonePose("Thigh.L", 	[ 0 ]),
 						new Transform_BonePose("Shin.L", 	[ .1 ]),
 
 						new Transform_BonePose("Thigh.R", 	[ 0 ]),
 						new Transform_BonePose("Shin.R", 	[ 0 ]),
-					]
+					)
 				),
 
 				new AnimationKeyframe
 				(
 					30,
-					[
+					new Array
+					(
 						new Transform_BonePose("Bicep.L", 	[ -.1 ]),
 						new Transform_BonePose("Forearm.L", 	[ 0 ]),
 						new Transform_BonePose("Thigh.L", 	[ .1 ]),
@@ -352,7 +375,7 @@ clas SkeletonHelper()
 						new Transform_BonePose("Forearm.R", 	[ .1 ]),
 						new Transform_BonePose("Thigh.R", 	[ -.05 ]),
 						new Transform_BonePose("Shin.R", 	[ 0 ]),
-					]
+					)
 				),
 			]
 		);
@@ -367,10 +390,11 @@ clas SkeletonHelper()
 		skeletonPosed
 	)
 	{
-		var vertices = meshAtRest.vertices;
+		var vertices = meshAtRest.geometry.vertices();
 		var bones = skeletonAtRest.bonesAll;
 
-		var boneNameToInfluenceLookup = [];
+		var boneInfluences = new Array();
+		var boneNameToInfluenceLookup= {};
 
 		for (var v = 0; v < vertices.length; v++)
 		{
@@ -409,20 +433,20 @@ clas SkeletonHelper()
 			var boneInfluence = boneNameToInfluenceLookup[boneClosestName];
 			if (boneInfluence == null)
 			{
-				boneInfluence = new BoneInfluence(boneClosestName, []);
+				boneInfluence = new BoneInfluence(boneClosestName, new Array());
 				boneNameToInfluenceLookup[boneClosestName] = boneInfluence;
-				boneNameToInfluenceLookup.push(boneInfluence);
+				boneInfluences.push(boneInfluence);
 			}
 
 			boneInfluence.vertexIndicesControlled.push(v);
 		}
 
-		var returnValue = new TransformMeshPoseWithSkeleton
+		var returnValue = new Transform_MeshPoseWithSkeleton
 		(
 			meshAtRest,
 			skeletonAtRest,
+			boneInfluences,
 			skeletonPosed,
-			boneNameToInfluenceLookup
 		);
 
 		return returnValue;

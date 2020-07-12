@@ -1,6 +1,13 @@
 
 class VisualAnimation
 {
+	name;
+	ticksToHoldFrames;
+	frames;
+	isRepeating;
+
+	ticksToComplete;
+
 	constructor(name, ticksToHoldFrames, frames, isRepeating)
 	{
 		this.name = name;
@@ -14,15 +21,6 @@ class VisualAnimation
 			for (var f = 0; f < this.frames.length; f++)
 			{
 				this.ticksToHoldFrames.push(1);
-			}
-		}
-		else if (isNaN(this.ticksToHoldFrames) == false)
-		{
-			var ticksToHoldEachFrame = this.ticksToHoldFrames;
-			this.ticksToHoldFrames = [];
-			for (var f = 0; f < this.frames.length; f++)
-			{
-				this.ticksToHoldFrames.push(ticksToHoldEachFrame);
 			}
 		}
 
@@ -72,7 +70,7 @@ class VisualAnimation
 
 	update(universe, world, display, entity)
 	{
-		var drawable = entity.drawable;
+		var drawable = entity.drawable();
 		if (drawable.ticksSinceStarted == null)
 		{
 			drawable.ticksSinceStarted = Math.floor(Math.random() * this.ticksToComplete);
@@ -87,16 +85,36 @@ class VisualAnimation
 			if (this.isRepeating)
 			{
 				drawable.ticksSinceStarted =
-					drawable.ticksSinceStarted.wrapToRangeMinMax(0, this.ticksToComplete);
+					NumberHelper.wrapToRangeMinMax(drawable.ticksSinceStarted, 0, this.ticksToComplete);
 			}
 			else
 			{
 				drawable.ticksSinceStarted =
-					drawable.ticksSinceStarted.trimToRangeMax(this.ticksToComplete - 1);
+					NumberHelper.trimToRangeMax(drawable.ticksSinceStarted, this.ticksToComplete - 1);
 			}
 		}
 
 		var frameCurrent = this.frameCurrent(drawable);
 		frameCurrent.draw(universe, world, display, entity);
 	};
+
+	// Clonable.
+
+	clone()
+	{
+		return this; // todo
+	}
+
+	overwriteWith(other)
+	{
+		return this; // todo
+	}
+
+	// Transformable.
+
+	transform(transformToApply)
+	{
+		return this; // todo
+	}
+
 }

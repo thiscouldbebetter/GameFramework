@@ -2,6 +2,8 @@ class PlatformHelper
 {
 	// This class is meant to encapsulate interactions with the DOM ("Domain Object Model").
 
+	divMain;
+
 	platformableAdd(platformable)
 	{
 		var platformableAsDomElement = platformable.toDomElement(this);
@@ -31,7 +33,7 @@ class PlatformHelper
 		var divMain = this.divMain;
 		if (divMain == null)
 		{
-			var divMain = document.createElement("div");
+			divMain = document.createElement("div");
 			divMain.id = "divMain";
 			divMain.style.position = "absolute";
 			divMain.style.left = "50%";
@@ -44,3 +46,4 @@ class PlatformHelper
 		divMain.style.marginTop = 0 - display.sizeInPixels.y / 2;
 	};
 }
+

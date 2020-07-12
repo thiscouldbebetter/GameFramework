@@ -1,6 +1,9 @@
 
 class Transform_Animate
 {
+	animationDefnGroup;
+	animatable;
+
 	constructor(animationDefnGroup)
 	{
 		this.animationDefnGroup = animationDefnGroup;
@@ -13,14 +16,14 @@ class Transform_Animate
 
 		if (this.animatable.animationDefnNameCurrent != null)
 		{
-			var animationDefns = this.animationDefnGroup.animationDefns;
-			returnValue = animationDefns[this.animatable.animationDefnNameCurrent];
+			var animationDefns = this.animationDefnGroup.animationDefnsByName;
+			returnValue = animationDefns.get(this.animatable.animationDefnNameCurrent);
 		}
 
 		return returnValue;
 	};
 
-	frameCurrent(animatable)//world)
+	frameCurrent()
 	{
 		var returnValue = null;
 
@@ -59,6 +62,11 @@ class Transform_Animate
 		return returnValue;
 	};
 
+	overwriteWith(other)
+	{
+		return this; // todo
+	}
+
 	transform(transformable)
 	{
 		if (this.animatable.animationDefnNameCurrent != null)
@@ -73,5 +81,12 @@ class Transform_Animate
 				transformToApply.transform(transformable);
 			}
 		}
+
+		return transformable;
 	};
+
+	transformCoords(coordsToTransform)
+	{
+		return coordsToTransform;
+	}
 }

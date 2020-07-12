@@ -2,7 +2,7 @@ function main()
 {
 	// It may be necessary to clear local storage to prevent errors on
 	// deserialization of existing saved items after the schema changes.
-	// localStorage.clear();
+	localStorage.clear();
 
 	var mediaLibrary = MediaLibrary.fromFileNames
 	(
@@ -26,7 +26,7 @@ function main()
 	];
 
 
-	var display = new Display
+	var display = new Display2D
 	(
 		displaySizesAvailable,
 		"Font", // fontName

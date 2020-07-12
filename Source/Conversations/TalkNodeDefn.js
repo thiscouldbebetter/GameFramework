@@ -1,78 +1,111 @@
 
 class TalkNodeDefn
 {
-	constructor(name, execute, activate)
+	name;
+	execute;
+	activate;
+
+	constructor
+	(
+		name,
+		execute,
+		activate
+	)
 	{
 		this.name = name;
 		this.execute = execute;
 		this.activate = activate;
 	}
-}
-{
+
 	// instances
 
-	TalkNodeDefn.Instances = function()
+	static _instances;
+	static Instances()
 	{
-		if (this._instances == null)
+		if (TalkNodeDefn._instances == null)
 		{
-			this._instances = new TalkNodeDefn_Instances();
+			TalkNodeDefn._instances = new TalkNodeDefn_Instances();
 		}
-		return this._instances;
+		return TalkNodeDefn._instances;
 	};
+}
 
-	function TalkNodeDefn_Instances()
+class TalkNodeDefn_Instances
+{
+	Activate;
+	Display;
+	Goto;
+	JumpIfFalse;
+	JumpIfTrue;
+	Option;
+	Pop;
+	Prompt;
+	Push;
+	Quit;
+	Script;
+	VariableLoad;
+	VariableSet;
+	VariableStore;
+
+	_All;
+	_AllByName;
+
+	constructor()
 	{
 		this.Activate = new TalkNodeDefn
 		(
 			"Activate",
-			function execute(universe, conversationRun, scope, talkNode)
+			(universe, conversationRun, scope, talkNode) => // execute
 			{
 				var talkNodeToActivateName = talkNode.next;
-				var isActiveValueToSet = talkNode.text;
+				var isActiveValueToSet = (talkNode.text == "true");
 
 				var conversationDefn = conversationRun.defn;
 				var talkNodeToActivate
-					= conversationDefn.talkNodes[talkNodeToActivateName];
+					= conversationDefn.talkNodesByName.get(talkNodeToActivateName);
 				talkNodeToActivate.isActive = isActiveValueToSet;
 				scope.talkNodeAdvance(conversationRun);
-				conversationRun.update();
-			}
+				conversationRun.update(universe);
+			},
+			null // activate
 		);
 
 		this.Display = new TalkNodeDefn
 		(
 			"Display",
-			function execute(universe, conversationRun, scope, talkNode)
+			(universe, conversationRun, scope, talkNode) => // execute
 			{
 				scope.displayTextCurrent = talkNode.text;
 				scope.talkNodeAdvance(conversationRun);
 
 				conversationRun.talkNodesForTranscript.push(talkNode);
-			}
+			},
+			null // activate
 		);
 
 		this.Goto = new TalkNodeDefn
 		(
 			"Goto",
-			function execute(universe, conversationRun, scope, talkNode)
+			(universe, conversationRun, scope, talkNode) => // execute
 			{
 				var talkNodeNameNext = talkNode.next;
 				scope.talkNodeCurrent = conversationRun.defn.talkNodeByName
 				(
 					talkNodeNameNext
 				);
-				conversationRun.update();
-			}
+				conversationRun.update(universe);
+			},
+			null // activate
 		);
 
 		this.JumpIfFalse = new TalkNodeDefn
 		(
 			"JumpIfFalse",
-			function execute(universe, conversationRun, scope, talkNode)
+			(universe, conversationRun, scope, talkNode) => // execute
 			{
 				var variableName = talkNode.text;
 				var talkNodeNameToJumpTo = talkNode.next;
-				var variableValue = conversationRun.variableLookup[variableName];
+				var variableValue = conversationRun.variableLookup.get(variableName);
 				if (variableValue == true)
 				{
 					scope.talkNodeAdvance(conversationRun);
@@ -85,18 +118,19 @@ class TalkNodeDefn
 					);
 				}
 
-				conversationRun.update();
-			}
+				conversationRun.update(universe);
+			},
+			null // activate
 		);
 
 		this.JumpIfTrue = new TalkNodeDefn
 		(
 			"JumpIfTrue",
-			function execute(universe, conversationRun, scope, talkNode)
+			(universe, conversationRun, scope, talkNode) => // execute
 			{
 				var variableName = talkNode.text;
 				var talkNodeNameToJumpTo = talkNode.next;
-				var variableValue = conversationRun.variableLookup[variableName];
+				var variableValue = conversationRun.variableLookup.get(variableName);
 				if (variableValue == true)
 				{
 					scope.talkNodeCurrent = conversationRun.defn.talkNodeByName
@@ -109,25 +143,26 @@ class TalkNodeDefn
 					scope.talkNodeAdvance(conversationRun);
 				}
 
-				conversationRun.update();
-			}
+				conversationRun.update(universe);
+			},
+			null // activate
 		);
 
 		this.Option = new TalkNodeDefn
 		(
 			"Option",
-			function execute(universe, conversationRun, scope, talkNode)
+			(universe, conversationRun, scope, talkNode) => // execute
 			{
 				var talkNodesForOptions = scope.talkNodesForOptions;
-				if (talkNodesForOptions.contains(talkNode) == false)
+				if (talkNodesForOptions.indexOf(talkNode) == -1)
 				{
 					talkNodesForOptions.push(talkNode);
-					talkNodesForOptions[talkNode.name] = talkNode;
+					scope.talkNodesForOptionsByName.set(talkNode.name, talkNode);
 				}
 				scope.talkNodeAdvance(conversationRun);
-				conversationRun.update();
+				conversationRun.update(universe);
 			},
-			function activate(conversationRun, scope, talkNode)
+			(conversationRun, scope, talkNode) => // activate
 			{
 				scope.isPromptingForResponse = false;
 				//scope.talkNodesForOptions.length = 0;
@@ -143,7 +178,7 @@ class TalkNodeDefn
 		this.Pop = new TalkNodeDefn
 		(
 			"Pop",
-			function execute(universe, conversationRun, scope, talkNode)
+			(universe, conversationRun, scope, talkNode) => // execute
 			{
 				var scope = scope.parent;
 				conversationRun.scopeCurrent = scope;
@@ -151,21 +186,22 @@ class TalkNodeDefn
 				(
 					talkNode.next
 				);
-				conversationRun.update();
-			}
+				conversationRun.update(universe);
+			},
+			null // activate
 		);
 
 		this.Prompt = new TalkNodeDefn
 		(
 			"Prompt",
-			function execute(universe, conversationRun, scope, talkNode)
+			(universe, conversationRun, scope, talkNode) => // execute
 			{
 				scope.isPromptingForResponse = true;
 			},
-			function activate(conversationRun, scope, talkNode)
+			(conversationRun, scope, talkNode) => // activate
 			{
 				var shouldClearOptions = talkNode.text;
-				if (shouldClearOptions == true)
+				if (shouldClearOptions == "true")
 				{
 					scope.talkNodesForOptions.length = 0;
 				}
@@ -175,7 +211,7 @@ class TalkNodeDefn
 		this.Push = new TalkNodeDefn
 		(
 			"Push",
-			function execute(universe, conversationRun, scope, talkNode)
+			(universe, conversationRun, scope, talkNode) => // execute
 			{
 				var runDefn = conversationRun.defn;
 				var talkNodeIndex = runDefn.talkNodes.indexOf(talkNode);
@@ -187,74 +223,80 @@ class TalkNodeDefn
 					[] // options
 				);
 				conversationRun.update(universe);
-			}
+			},
+			null // activate
 		);
 
 		this.Quit = new TalkNodeDefn
 		(
 			"Quit",
-			function execute(universe, conversationRun, scope, talkNode)
+			(universe, conversationRun, scope, talkNode) => // execute
 			{
 				conversationRun.quit();
-			}
+			},
+			null // activate
 		);
 
 		this.Script = new TalkNodeDefn
 		(
 			"Script",
-			function execute(universe, conversationRun, scope, talkNode)
+			(universe, conversationRun, scope, talkNode) => // execute
 			{
 				var scriptToRunAsString = "(" + talkNode.text + ")";
 				var scriptToRun = eval(scriptToRunAsString);
 				scriptToRun(universe, conversationRun);
 				scope.talkNodeAdvance(conversationRun);
-				conversationRun.update(); // hack
-			}
+				conversationRun.update(universe); // hack
+			},
+			null // activate
 		);
 
 		this.VariableLoad = new TalkNodeDefn
 		(
 			"VariableLoad",
-			function execute(universe, conversationRun, scope, talkNode)
+			(universe, conversationRun, scope, talkNode) => // execute
 			{
 				var variableName = talkNode.text;
 				var scriptExpression = talkNode.next;
 				var scriptToRunAsString = "( function(u, cr) { return " + scriptExpression + "; } )";
 				var scriptToRun = eval(scriptToRunAsString);
 				var scriptResult = scriptToRun(conversationRun);
-				conversationRun.variableLookup[variableName] = scriptResult;
+				conversationRun.variableLookup.set(variableName, scriptResult);
 				scope.talkNodeAdvance(conversationRun);
 				conversationRun.update(universe); // hack
-			}
+			},
+			null // activate
 		);
 
 		this.VariableSet = new TalkNodeDefn
 		(
 			"VariableSet",
-			function execute(universe, conversationRun, scope, talkNode)
+			(universe, conversationRun, scope, talkNode) => // execute
 			{
 				var variableName = talkNode.text;
 				var variableValue = talkNode.next;
-				conversationRun.variableLookup[variableName] = variableValue;
+				conversationRun.variableLookup.set(variableName, variableValue);
 				scope.talkNodeAdvance(conversationRun);
 				conversationRun.update(universe); // hack
-			}
+			},
+			null // activate
 		);
 
 		this.VariableStore = new TalkNodeDefn
 		(
 			"VariableStore",
-			function execute(universe, conversationRun, scope, talkNode)
+			(universe, conversationRun, scope, talkNode) => // execute
 			{
 				var variableName = talkNode.text;
-				var variableValue = conversationRun.variableLookup[variableName];
+				var variableValue = conversationRun.variableLookup.get(variableName);
 				var scriptExpression = talkNode.next;
 				var scriptToRunAsString = "( function(u, cr) { " + scriptExpression + " = " + variableValue + "; } )";
 				var scriptToRun = eval(scriptToRunAsString);
 				scriptToRun(conversationRun);
 				scope.talkNodeAdvance(conversationRun);
 				conversationRun.update(universe); // hack
-			}
+			},
+			null // activate
 		);
 
 		this._All =
@@ -273,6 +315,9 @@ class TalkNodeDefn
 			this.VariableLoad,
 			this.VariableSet,
 			this.VariableStore,
-		].addLookupsByName();
+		];
+
+		this._AllByName = ArrayHelper.addLookupsByName(this._All);
 	}
 }
+

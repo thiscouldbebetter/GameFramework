@@ -1,12 +1,21 @@
 
 class Transform_OrientRDF
 {
+	orientation;
+
+	_components;
+
 	constructor(orientation)
 	{
 		this.orientation = orientation;
 
 		// Helper variables.
-		this._components = [ new Coords(), new Coords(), new Coords() ];
+		this._components = [ new Coords(0, 0, 0), new Coords(0, 0, 0), new Coords(0, 0, 0) ];
+	}
+
+	overwriteWith(other)
+	{
+		return this; // todo
 	}
 
 	transform(transformable)

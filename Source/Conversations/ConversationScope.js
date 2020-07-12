@@ -1,12 +1,26 @@
 
 class ConversationScope
 {
+	parent;
+	talkNodeCurrent;
+	talkNodesForOptions;
+	talkNodesForOptionsByName;
+
+	displayTextCurrent;
+	haveOptionsBeenUpdated;
+	isPromptingForResponse;
+	talkNodeForOptionSelected;
+
+	_talkNodesForOptionsActive;
+	_emptyArray;
+
 	constructor(parent, talkNodeCurrent, talkNodesForOptions)
 	{
 		this.parent = parent;
 		this.talkNodeCurrent = talkNodeCurrent;
 		this.isPromptingForResponse = false;
 		this.talkNodesForOptions = talkNodesForOptions;
+		this.talkNodesForOptionsByName = ArrayHelper.addLookupsByName(this.talkNodesForOptions);
 
 		this.displayTextCurrent = "[conversation begins]";
 		this.talkNodeForOptionSelected = null;

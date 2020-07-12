@@ -1,13 +1,35 @@
 
 class MediaLibrary
 {
+	images;
+	sounds;
+	videos;
+	fonts;
+	textStrings;
+
+	imagesByName;
+	soundsByName;
+	videosByName;
+	fontsByName;
+	textStringsByName;
+
+	collectionsAll;
+	collectionsByName;
+
+	timer;
+
 	constructor(images, sounds, videos, fonts, textStrings)
 	{
-		this.images = images.addLookupsByName();
-		this.sounds = sounds.addLookupsByName();
-		this.videos = videos.addLookupsByName();
-		this.fonts = fonts.addLookupsByName();
-		this.textStrings = textStrings.addLookupsByName();
+		this.images = images;
+		this.imagesByName = ArrayHelper.addLookupsByName(this.images);
+		this.sounds = sounds;
+		this.soundsByName = ArrayHelper.addLookupsByName(this.sounds);
+		this.videos = videos;
+		this.videosByName = ArrayHelper.addLookupsByName(this.videos);
+		this.fonts = fonts;
+		this.fontsByName = ArrayHelper.addLookupsByName(this.fonts);
+		this.textStrings = textStrings;
+		this.textStringsByName = ArrayHelper.addLookupsByName(this.textStrings);
 
 		this.collectionsAll =
 		[
@@ -18,20 +40,24 @@ class MediaLibrary
 			this.textStrings
 		];
 
-		this.collectionsAll["Images"] = this.images;
-		this.collectionsAll["Sounds"] = this.sounds;
-		this.collectionsAll["Videos"] = this.videos;
-		this.collectionsAll["Fonts"] = this.fonts;
-		this.collectionsAll["TextStrings"] = this.textStrings;
+		this.collectionsByName = new Map();
+		this.collectionsByName.set("Images", this.imagesByName);
+		this.collectionsByName.set("Sounds", this.soundsByName);
+		this.collectionsByName.set("Videos", this.videosByName);
+		this.collectionsByName.set("Fonts", this.fontsByName);
+		this.collectionsByName.set("TextStrings", this.textStringsByName);
 	}
 
-	static fromFileNames(
-		contentPath, imageFileNames, effectFileNames, musicFileNames, videoFileNames, fontFileNames, textStringFileNames
+	static fromFileNames
+	(
+		contentPath, imageFileNames, effectFileNames,
+		musicFileNames, videoFileNames, fontFileNames,
+		textStringFileNames
 	)
 	{
 		var mediaTypesPathsAndFileNames =
 		[
-			[ Image, "Images", imageFileNames ],
+			[ Image2, "Images", imageFileNames ],
 			[ Sound, "Audio/Effects", effectFileNames ],
 			[ Sound, "Audio/Music", musicFileNames ],
 			[ Video, "Video", videoFileNames ],
@@ -39,35 +65,35 @@ class MediaLibrary
 			[ TextString, "Text", textStringFileNames ],
 		];
 
-		var mediaCollections = {};
+		var mediaCollectionsByPath = new Map();
 
 		for (var t = 0; t < mediaTypesPathsAndFileNames.length; t++)
 		{
-			var mediaTypePathAndFileNames = mediaTypesPathsAndFileNames[t];
-			var mediaType = mediaTypePathAndFileNames[0];
-			var mediaPath = mediaTypePathAndFileNames[1];
-			var mediaFileNames = mediaTypePathAndFileNames[2];
-			var mediaCollection = [];
+			var mediaTypePathAndFileNames= mediaTypesPathsAndFileNames[t];
+			var mediaType= mediaTypePathAndFileNames[0];
+			var mediaPath= mediaTypePathAndFileNames[1];
+			var mediaFileNames= mediaTypePathAndFileNames[2];
+			var mediaCollection= [];
 
 			var filePathRoot = contentPath + mediaPath + "/";
 			for (var i = 0; i < mediaFileNames.length; i++)
 			{
-				var fileName = mediaFileNames[i];
+				var fileName= mediaFileNames[i];
 				var id = fileName.substr(0, fileName.indexOf("."));
 				var filePath = filePathRoot + fileName;
 				var mediaObject = new mediaType(id, filePath);
 				mediaCollection.push(mediaObject);
 			}
 
-			mediaCollections[mediaPath] = mediaCollection;
+			mediaCollectionsByPath.set(mediaPath, mediaCollection);
 		}
 
-		var images = mediaCollections["Images"];
-		var soundEffects = mediaCollections["Audio/Effects"];
-		var soundMusics = mediaCollections["Audio/Music"];
-		var videos = mediaCollections["Video"];
-		var fonts = mediaCollections["Fonts"];
-		var textStrings = mediaCollections["Text"];
+		var images= mediaCollectionsByPath.get("Images");
+		var soundEffects= mediaCollectionsByPath.get("Audio/Effects");
+		var soundMusics= mediaCollectionsByPath.get("Audio/Music");
+		var videos= mediaCollectionsByPath.get("Video");
+		var fonts= mediaCollectionsByPath.get("Fonts");
+		var textStrings= mediaCollectionsByPath.get("Text");
 
 		var sounds = soundEffects.concat(soundMusics);
 
@@ -109,7 +135,7 @@ class MediaLibrary
 
 	waitForItemToLoad(collectionName, itemName, callback)
 	{
-		var itemToLoad = this.collections[collectionName][itemName];
+		var itemToLoad = this.collectionsByName.get(collectionName).get(itemName);
 		this.timer = setInterval
 		(
 			this.waitForItemToLoad_TimerTick.bind(this, itemToLoad, callback),
@@ -151,36 +177,36 @@ class MediaLibrary
 		for (var i = 0; i < images.length; i++)
 		{
 			var image = images[i];
-			if (this.images[image.name] == null)
+			if (this.imagesByName.get(image.name) == null)
 			{
 				this.images.push(image);
-				this.images[image.name] = image;
+				this.imagesByName.set(image.name, image);
 			}
 		}
 	};
 
 	fontGetByName(name)
 	{
-		return this.fonts[name];
+		return this.fontsByName.get(name);
 	};
 
 	imageGetByName(name)
 	{
-		return this.images[name];
+		return this.imagesByName.get(name);
 	};
 
 	soundGetByName(name)
 	{
-		return this.sounds[name];
+		return this.soundsByName.get(name);
 	};
 
 	textStringGetByName(name)
 	{
-		return this.textStrings[name];
+		return this.textStringsByName.get(name);
 	};
 
 	videoGetByName(name)
 	{
-		return this.videos[name];
+		return this.videosByName.get(name);
 	};
 }

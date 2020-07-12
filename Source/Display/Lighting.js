@@ -1,6 +1,10 @@
 
 class Lighting
 {
+	ambientIntensity;
+	direction;
+	directionalIntensity;
+
 	constructor(ambientIntensity, direction, directionalIntensity)
 	{
 		this.ambientIntensity = ambientIntensity;

@@ -1,9 +1,21 @@
 
 class Transform_DimensionsSwap
 {
+	dimensionIndices;
+
 	constructor(dimensionIndices)
 	{
 		this.dimensionIndices = dimensionIndices;
+	}
+
+	overwriteWith(other)
+	{
+		return this; // todo
+	}
+
+	transform(transformable)
+	{
+		return transformable; // todo
 	}
 
 	transformCoords(coordsToTransform)

@@ -1,6 +1,11 @@
 
 class Quaternion
 {
+	w;
+	x;
+	y;
+	z;
+
 	constructor(w, x, y, z)
 	{
 		this.w = w;
@@ -39,15 +44,16 @@ class Quaternion
 			coordsToRotate.z
 		);
 
-		var result = this.clone().multiply
+		this.clone().multiply
 		(
 			coordsToRotateAsQuaternion
 		).multiply
 		(
 			this.clone().invert()
+		).toCoords
+		(
+			coordsToRotate
 		);
-
-		coordsToRotate.overwriteWith(result);
 
 		return coordsToRotate;
 	};
@@ -123,4 +129,12 @@ class Quaternion
 
 		return this;
 	};
+
+	toCoords(coordsToOverwrite)
+	{
+		coordsToOverwrite.x = this.x;
+		coordsToOverwrite.y = this.y;
+		coordsToOverwrite.z = this.z;
+		return coordsToOverwrite;
+	}
 }

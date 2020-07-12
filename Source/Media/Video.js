@@ -1,6 +1,14 @@
 
 class Video
 {
+	name;
+	sourcePath;
+
+	domElement;
+	isFinished;
+
+	_size;
+
 	constructor(name, sourcePath)
 	{
 		this.name = name;

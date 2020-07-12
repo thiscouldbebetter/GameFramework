@@ -1,6 +1,9 @@
 
 class VisualTransform
 {
+	transformToApply;
+	child;
+
 	constructor(transformToApply, child)
 	{
 		this.transformToApply = transformToApply;
@@ -16,7 +19,8 @@ class VisualTransform
 
 	overwriteWith(other)
 	{
-		this.child.overwriteWith(other.child);
+		var otherAsVisualTransform = other ;
+		this.child.overwriteWith(otherAsVisualTransform.child);
 		return this;
 	};
 

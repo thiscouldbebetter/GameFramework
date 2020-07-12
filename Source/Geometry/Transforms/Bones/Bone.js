@@ -1,6 +1,14 @@
 
 class Bone
 {
+	name;
+	length;
+	orientation;
+	children;
+	isVisible;
+
+	parentName;
+
 	constructor(name, length, orientation, children, isVisible)
 	{
 		this.name = name;
@@ -18,11 +26,11 @@ class Bone
 
 	// instance methods
 
-	pos(bonesAll)
+	pos(bonesByName)
 	{
 		var returnValue = new Coords(0, 0, 0);
 
-		var bone = bonesAll[this.parentName];
+		var bone = bonesByName.get(this.parentName);
 
 		while (bone != null)
 		{
@@ -34,7 +42,7 @@ class Bone
 				)
 			);
 
-			bone = bonesAll[bone.parentName];
+			bone = bonesByName.get(bone.parentName);
 		}
 
 		return returnValue;
@@ -52,7 +60,7 @@ class Bone
 			this.name,
 			this.length,
 			orientationCloned,
-			this.children.clone(),
+			ArrayHelper.clone(this.children),
 			this.isVisible
 		);
 
@@ -61,8 +69,8 @@ class Bone
 
 	overwriteWith(other)
 	{
-		this.orientation.overwriteWith(other.orientation);
-		this.children.overwriteWith(other.children);
+		ArrayHelper.overwriteWith(this.orientation, other.orientation);
+		ArrayHelper.overwriteWith(this.children, other.children);
 	};
 
 	// transformable

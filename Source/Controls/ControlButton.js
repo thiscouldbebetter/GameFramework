@@ -1,7 +1,29 @@
 
 class ControlButton
 {
-	constructor(name, pos, size, text, fontHeightInPixels, hasBorder, isEnabled, click, context, canBeHeldDown)
+	name;
+	pos;
+	size;
+	text;
+	fontHeightInPixels;
+	hasBorder;
+	_isEnabled;
+	click;
+	context;
+	canBeHeldDown;
+
+	isHighlighted;
+	parent;
+	styleName;
+
+	_drawLoc;
+	_sizeHalf;
+
+	constructor
+	(
+		name, pos, size, text,
+		fontHeightInPixels, hasBorder, isEnabled,
+		click, context, canBeHeldDown)
 	{
 		this.name = name;
 		this.pos = pos;
@@ -17,11 +39,11 @@ class ControlButton
 		this.isHighlighted = false;
 
 		// Helper variables.
-		this._drawLoc = new Location(new Coords());
-		this._sizeHalf = new Coords();
+		this._drawLoc = new Disposition(new Coords(0, 0, 0), Orientation.default(), null);
+		this._sizeHalf = new Coords(0, 0, 0);
 	}
 
-	actionHandle(actionNameToHandle)
+	actionHandle(actionNameToHandle, universe)
 	{
 		if (actionNameToHandle == ControlActionNames.Instances().ControlConfirm)
 		{
@@ -30,6 +52,16 @@ class ControlButton
 
 		return (this.canBeHeldDown == false); // wasActionHandled
 	};
+
+	actionToInputsMappings()
+	{
+		return null; // todo
+	}
+
+	childWithFocus()
+	{
+		return null;
+	}
 
 	isEnabled()
 	{
@@ -67,6 +99,8 @@ class ControlButton
 		this.isHighlighted = false;
 	};
 
+	mouseMove(movePos) {}
+
 	scalePosAndSize(scaleFactor)
 	{
 		this.pos.multiply(scaleFactor);
@@ -76,7 +110,7 @@ class ControlButton
 
 	style(universe)
 	{
-		return universe.controlBuilder.styles[this.styleName == null ? "Default" : this.styleName];
+		return universe.controlBuilder.stylesByName.get(this.styleName == null ? "Default" : this.styleName);
 	};
 
 	// drawable

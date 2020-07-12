@@ -3,6 +3,11 @@ class RandomizerLCG
 {
 	// "LCG" = "Linear Congruential Generator"
 
+	multiplier;
+	addend;
+	modulus;
+	currentRandom;
+
 	constructor(multiplier, addend, modulus, firstRandom)
 	{
 		this.multiplier = multiplier;

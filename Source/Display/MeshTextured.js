@@ -1,10 +1,20 @@
 
 class MeshTextured
 {
+	geometry;
+	materials;
+	materialsByName;
+	faceTextures;
+	vertexGroups;
+
+	_faceIndicesByMaterialName;
+	_faces;
+
 	constructor(geometry, materials, faceTextures, vertexGroups)
 	{
 		this.geometry = geometry;
-		this.materials = materials.addLookupsByName();
+		this.materials = materials;
+		this.materialsByName = ArrayHelper.addLookupsByName(this.materials);
 		this.faceTextures = faceTextures;
 		this.vertexGroups = vertexGroups;
 	}
@@ -20,7 +30,7 @@ class MeshTextured
 				var geometryFace = geometryFaces[i];
 				var faceTexture = this.faceTextures[i];
 				var faceMaterialName = faceTexture.materialName;
-				var faceMaterial = this.materials[faceMaterialName];
+				var faceMaterial = this.materialsByName.get(faceMaterialName);
 				var face = new FaceTextured(geometryFace, faceMaterial);
 				this._faces.push(face);
 			}
@@ -42,10 +52,10 @@ class MeshTextured
 			(
 				materialName,
 				[
-					new Coords(0, 0),
-					new Coords(1, 0),
-					new Coords(1, 1),
-					new Coords(1, 0)
+					new Coords(0, 0, 0),
+					new Coords(1, 0, 0),
+					new Coords(1, 1, 0),
+					new Coords(1, 0, 0)
 				]
 			);
 			faceTextures.push(faceTexture);
@@ -56,11 +66,11 @@ class MeshTextured
 		return this;
 	};
 
-	faceIndicesByMaterial()
+	faceIndicesByMaterialName()
 	{
-		if (this._faceIndicesByMaterial == null)
+		if (this._faceIndicesByMaterialName == null)
 		{
-			this._faceIndicesByMaterial = [];
+			this._faceIndicesByMaterialName = new Map();
 
 			for (var f = 0; f < this.faceTextures.length; f++)
 			{
@@ -68,18 +78,21 @@ class MeshTextured
 
 				var faceMaterialName = faceTexture.materialName;
 				var faceIndicesForMaterial =
-					this._faceIndicesByMaterial[faceMaterialName];
+					this._faceIndicesByMaterialName.get(faceMaterialName);
 				if (faceIndicesForMaterial == null)
 				{
 					faceIndicesForMaterial = [];
-					this._faceIndicesByMaterial[faceMaterialName] =
-						faceIndicesForMaterial;
+					this._faceIndicesByMaterialName.set
+					(
+						faceMaterialName,
+						faceIndicesForMaterial
+					);
 				}
 				faceIndicesForMaterial.push(f);
 			}
 		}
 
-		return this._faceIndicesByMaterial;
+		return this._faceIndicesByMaterialName;
 	};
 
 	transform(transformToApply)
@@ -108,8 +121,8 @@ class MeshTextured
 		(
 			this.geometry.clone(),
 			this.materials,
-			( this.faceTextures == null ? null : this.faceTextures.clone() ),
-			( this.vertexGroups == null ? null : this.vertexGroups.clone() )
+			( this.faceTextures == null ? null : ArrayHelper.clone(this.faceTextures) ),
+			( this.vertexGroups == null ? null : ArrayHelper.clone(this.vertexGroups) )
 		);
 	};
 
@@ -123,6 +136,9 @@ class MeshTextured
 
 class MeshTexturedFaceTexture
 {
+	materialName;
+	textureUVs;
+
 	constructor(materialName, textureUVs)
 	{
 		this.materialName = materialName;
@@ -133,9 +149,11 @@ class MeshTexturedFaceTexture
 	{
 		return new MeshTexturedFaceTexture
 		(
-			this.materialName, this.textureUVs.clone()
+			this.materialName, ArrayHelper.clone(this.textureUVs)
 		);
 	};
+
+	// Transformable.
 
 	transform(transformToApply)
 	{

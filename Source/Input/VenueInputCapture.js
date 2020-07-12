@@ -1,10 +1,15 @@
 
 class VenueInputCapture
 {
+	venueToReturnTo;
+	functionToPassInputCapturedTo;
+
+	isFirstTime;
+
 	constructor(venueToReturnTo, functionToPassInputCapturedTo)
 	{
 		this.venueToReturnTo = venueToReturnTo;
-		this.functionToPassInputCapturedToToPassInputCapturedTo;
+		this.functionToPassInputCapturedTo = functionToPassInputCapturedTo;
 
 		this.isFirstTime = true;
 	}
@@ -13,6 +18,10 @@ class VenueInputCapture
 	{
 		// Do nothing.
 	};
+
+	finalize(universe) {}
+
+	initialize(universe) {}
 
 	updateForTimerTick(universe)
 	{

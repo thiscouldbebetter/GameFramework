@@ -1,7 +1,29 @@
 
 class ControlScrollbar
 {
-	constructor(pos, size, fontHeightInPixels, itemHeight, items, sliderPosInItems)
+	pos;
+	size;
+	fontHeightInPixels;
+	itemHeight;
+	_items;
+	_sliderPosInItems;
+
+	name;
+	buttonScrollDown;
+	buttonScrollUp;
+	handleSize;
+	isHighlighted;
+	parent;
+	styleName;
+	windowSizeInItems;
+
+	_drawPos;
+
+	constructor
+	(
+		pos, size, fontHeightInPixels,
+		itemHeight, items, sliderPosInItems
+	)
 	{
 		this.pos = pos;
 		this.size = size;
@@ -12,50 +34,77 @@ class ControlScrollbar
 
 		this.windowSizeInItems = Math.floor(this.size.y / itemHeight);
 
-		this.handleSize = new Coords(this.size.x, this.size.x);
+		this.handleSize = new Coords(this.size.x, this.size.x, 0);
 
 		this.buttonScrollUp = new ControlButton
 		(
 			null, // name
-			new Coords(0, 0), // pos
+			new Coords(0, 0, 0), // pos
 			this.handleSize.clone(), // size
 			"-", // text
 			this.fontHeightInPixels,
 			true, // hasBorder
 			true, // isEnabled
-			this.scrollUp // click
+			this.scrollUp, // click
+			null, null
 		);
 
 		this.buttonScrollDown = new ControlButton
 		(
 			null, // name
-			new Coords(0, this.size.y - this.handleSize.y), // pos
+			new Coords(0, this.size.y - this.handleSize.y, 0), // pos
 			this.handleSize.clone(), // size
 			"+", // text
 			this.fontHeightInPixels,
 			true, // hasBorder
 			true, // isEnabled
-			this.scrollDown // click
+			this.scrollDown, // click
+			null, null
 		);
 
 		// Helper variables.
-		this._drawPos = new Coords();
+		this._drawPos = new Coords(0, 0, 0);
 	}
 
-	actionHandle(actionNameToHandle)
+	actionHandle(actionNameToHandle, universe)
 	{
 		return true;
 	};
+
+	actionToInputsMappings()
+	{
+		return null; // todo
+	}
+
+	childWithFocus()
+	{
+		return null; // todo
+	}
+
+	focusGain() {}
+
+	focusLose() {}
+
+	isEnabled()
+	{
+		return true;
+	}
 
 	items()
 	{
 		return (this._items.get == null ? this._items : this._items.get());
 	};
 
-	mouseClick(universe, clickPos)
+	mouseClick(pos)
 	{
-		// todo
-	};
+		return false;
+	}
+
+	mouseEnter() {}
+
+	mouseExit() {}
+
+	mouseMove(pos) {}
 
 	scalePosAndSize(scaleFactor)
 	{
@@ -69,12 +118,9 @@ class ControlScrollbar
 
 	scrollDown()
 	{
-		var sliderPosInItems =
+		var sliderPosInItems = NumberHelper.trimToRangeMinMax
 		(
-			this.sliderPosInItems() + 1
-		).trimToRangeMinMax
-		(
-			0, this.sliderMaxInItems()
+			this.sliderPosInItems() + 1, 0, this.sliderMaxInItems()
 		);
 
 		this._sliderPosInItems = sliderPosInItems;
@@ -82,12 +128,9 @@ class ControlScrollbar
 
 	scrollUp()
 	{
-		var sliderPosInItems =
+		var sliderPosInItems = NumberHelper.trimToRangeMinMax
 		(
-			this.sliderPosInItems() - 1
-		).trimToRangeMinMax
-		(
-			0, this.sliderMaxInItems()
+			this.sliderPosInItems() - 1, 0, this.sliderMaxInItems()
 		);
 
 		this._sliderPosInItems = sliderPosInItems;
@@ -98,7 +141,8 @@ class ControlScrollbar
 		var slideSizeInPixels = new Coords
 		(
 			this.handleSize.x,
-			this.size.y - 2 * this.handleSize.y
+			this.size.y - 2 * this.handleSize.y,
+			0
 		);
 
 		return slideSizeInPixels;
@@ -122,7 +166,8 @@ class ControlScrollbar
 			this.handleSize.y
 				+ this.sliderPosInItems()
 				* this.slideSizeInPixels().y
-				/ this.items().length
+				/ this.items().length,
+			0
 		);
 
 		return sliderPosInPixels;
@@ -132,7 +177,7 @@ class ControlScrollbar
 	{
 		var sliderSizeInPixels = this.slideSizeInPixels().multiply
 		(
-			new Coords(1, this.windowSizeInItems / this.items().length)
+			new Coords(1, this.windowSizeInItems / this.items().length, 0)
 		);
 
 		return sliderSizeInPixels;
@@ -140,7 +185,7 @@ class ControlScrollbar
 
 	style(universe)
 	{
-		return universe.controlBuilder.styles[this.styleName == null ? "Default" : this.styleName];
+		return universe.controlBuilder.stylesByName.get(this.styleName == null ? "Default" : this.styleName);
 	};
 
 	// drawable
@@ -156,7 +201,7 @@ class ControlScrollbar
 			var colorBack = (this.isHighlighted ? style.colorBorder : style.colorFill);
 
 			var drawPos = this._drawPos.overwriteWith(drawLoc.pos).add(this.pos);
-			display.drawRectangle(drawPos, this.size, colorFore, null);
+			display.drawRectangle(drawPos, this.size, colorFore, null, null);
 
 			drawLoc.pos.add(this.pos);
 			this.buttonScrollDown.draw(universe, display, drawLoc);
@@ -170,7 +215,8 @@ class ControlScrollbar
 				sliderPosInPixels,
 				sliderSizeInPixels,
 				colorBack,
-				colorFore
+				colorFore,
+				null
 			);
 		}
 	};

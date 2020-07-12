@@ -1,6 +1,9 @@
 
 class Ephemeral
 {
+	ticksToLive;
+	expire;
+
 	constructor(ticksToLive, expire)
 	{
 		this.ticksToLive = ticksToLive;

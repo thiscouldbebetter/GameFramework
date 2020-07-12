@@ -1,9 +1,16 @@
 
 class Transform_Multiple
 {
+	transforms;
+
 	constructor(transforms)
 	{
 		this.transforms = transforms;
+	}
+
+	overwriteWith(other)
+	{
+		return this; // todo
 	}
 
 	transform(transformable)

@@ -1,6 +1,15 @@
 
 class Transform_MeshPoseWithSkeleton
 {
+	meshAtRest;
+	skeletonAtRest;
+	boneInfluences;
+	boneInfluencesByName;
+	skeletonPosed;
+
+	_orientation;
+	_vertex;
+
 	constructor
 	(
 		meshAtRest,
@@ -13,25 +22,36 @@ class Transform_MeshPoseWithSkeleton
 		this.skeletonAtRest = skeletonAtRest;
 		this.skeletonPosed = skeletonPosed || this.skeletonAtRest.clone();
 		this.boneInfluences = boneInfluences;
-		this.boneInfluences.addLookups( x => x.boneName );
+		this.boneInfluencesByName = ArrayHelper.addLookups( this.boneInfluences, (x) => x.boneName );
 
 		// Helper variables.
-		this._orientation = new Orientation(new Coords(), new Coords());
-		this._vertex = new Coords();
+		this._orientation = new Orientation(new Coords(0, 0, 0), new Coords(0, 0, 0));
+		this._vertex = new Coords(0, 0, 0);
+	}
+
+	overwriteWith(other)
+	{
+		return this; // todo
 	}
 
 	transform(transformable)
 	{
-		return this.transformMesh(transformable);
+		this.transformMesh(transformable );
+		return transformable;
 	};
+
+	transformCoords(coordsToTransform)
+	{
+		return coordsToTransform;
+	}
 
 	transformMesh(meshToPose)
 	{
 		var meshAtRestVertices = this.meshAtRest.geometry.vertexOffsets;
 		var meshToPoseVertices = meshToPose.geometry.vertexOffsets;
 
-		var bonesAtRest = this.skeletonAtRest.bonesAll;
-		var bonesPosed = this.skeletonPosed.bonesAll;
+		var bonesAtRest = this.skeletonAtRest.bonesAllByName;
+		var bonesPosed = this.skeletonPosed.bonesAllByName;
 
 		for (var i = 0; i < this.boneInfluences.length; i++)
 		{
@@ -102,4 +122,5 @@ class Transform_MeshPoseWithSkeleton
 
 		} // end for each boneInfluence
 	};
+
 }

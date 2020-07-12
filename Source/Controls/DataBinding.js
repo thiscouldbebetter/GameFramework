@@ -1,6 +1,10 @@
 
 class DataBinding
 {
+	context;
+	_get;
+	_set;
+
 	constructor(context, get, set)
 	{
 		this.context = context;
@@ -23,7 +27,7 @@ class DataBinding
 	{
 		if (this._set == null)
 		{
-			this.context = value;
+			this.context = (value ) ;
 		}
 		else
 		{

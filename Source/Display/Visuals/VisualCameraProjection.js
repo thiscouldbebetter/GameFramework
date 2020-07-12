@@ -1,33 +1,40 @@
 
 class VisualCameraProjection
 {
+	child;
+	cameraFactory;
+
+	_posSaved;
+
 	constructor(child, cameraFactory)
 	{
 		this.child = child;
 		this.cameraFactory = cameraFactory;
 
 		// Helper variables.
-		this._posSaved = new Coords();
+		this._posSaved = new Coords(0, 0, 0);
 	}
 
 	draw(universe, world, display, entity)
 	{
-		var drawablePos = entity.locatable.loc.pos;
+		var drawablePos = entity.locatable().loc.pos;
 		this._posSaved.overwriteWith(drawablePos);
 
 		var camera = this.cameraFactory(universe, world);
 		camera.coordsTransformWorldToView(drawablePos);
 
 		var isEntityInView = false;
-		if (entity.Boundable == null) // todo
+		var boundable = entity.boundable();
+		if (boundable == null) // todo
 		{
 			isEntityInView = true;
 		}
 		else
 		{
-			var drawableCollider = entity.Boundable.bounds;
+			var drawableCollider = boundable.bounds;
 			var cameraViewCollider = camera.viewCollider;
-			isEntityInView = universe.collisionHelper.doCollidersCollide
+			var collisionHelper = universe.collisionHelper;
+			isEntityInView = collisionHelper.doCollidersCollide
 			(
 				drawableCollider, cameraViewCollider
 			);
@@ -43,7 +50,7 @@ class VisualCameraProjection
 
 	drawImmediate(universe, world, display, entity)
 	{
-		var drawablePos = entity.locatable.loc.pos;
+		var drawablePos = entity.locatable().loc.pos;
 		this._posSaved.overwriteWith(drawablePos);
 
 		var camera = this.cameraFactory(universe, world);
@@ -53,4 +60,23 @@ class VisualCameraProjection
 
 		drawablePos.overwriteWith(this._posSaved);
 	};
+
+	// Clonable.
+
+	clone()
+	{
+		return this; // todo
+	}
+
+	overwriteWith(other)
+	{
+		return this; // todo
+	}
+
+	// Transformable.
+
+	transform(transformToApply)
+	{
+		return this; // todo
+	}
 }

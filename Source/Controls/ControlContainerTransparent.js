@@ -1,8 +1,17 @@
 
 class ControlContainerTransparent
 {
+	name;
+	containerInner;
+
+	fontHeightInPixels;
+	parent;
+	pos;
+	size;
+
 	constructor(containerInner)
 	{
+		this.name = containerInner.name;
 		this.containerInner = containerInner;
 	}
 
@@ -39,12 +48,21 @@ class ControlContainerTransparent
 		return this.containerInner.actionHandle(actionNameToHandle, universe);
 	};
 
+	focusGain() {}
+
+	focusLose() {}
+
+	isEnabled()
+	{
+		return true; // todo
+	}
+
 	mouseClick(mouseClickPos)
 	{
 		var childrenContainingPos = this.containerInner.childrenAtPosAddToList
 		(
 			mouseClickPos,
-			this.containerInner.childrenContainingPos.clear(),
+			ArrayHelper.clear(this.containerInner.childrenContainingPos),
 			true // addFirstChildOnly
 		);
 
@@ -64,6 +82,10 @@ class ControlContainerTransparent
 
 		return wasClickHandled;
 	};
+
+	mouseEnter() {}
+
+	mouseExit() {}
 
 	mouseMove(mouseMovePos)
 	{
@@ -89,7 +111,7 @@ class ControlContainerTransparent
 		(
 			drawPos, this.containerInner.size,
 			null, // display.colorBack,
-			display.colorFore
+			display.colorFore, null
 		);
 
 		var children = this.containerInner.children;

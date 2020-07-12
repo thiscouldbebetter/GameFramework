@@ -1,13 +1,39 @@
 
 class ControlContainer
 {
+	name;
+	pos;
+	size;
+	children;
+	childrenByName;
+	actions;
+	actionsByName;
+	_actionToInputsMappings;
+
+	childrenContainingPos;
+	childrenContainingPosPrev;
+	indexOfChildWithFocus;
+	styleName;
+
+	fontHeightInPixels;
+	parent;
+
+	_childMax;
+	_drawPos;
+	_drawLoc;
+	_mouseClickPos;
+	_mouseMovePos;
+	_posToCheck;
+
 	constructor(name, pos, size, children, actions, actionToInputsMappings)
 	{
 		this.name = name;
 		this.pos = pos;
 		this.size = size;
-		this.children = children.addLookupsByName();
-		this.actions = (actions || []).addLookupsByName();
+		this.children = children;
+		this.childrenByName = ArrayHelper.addLookupsByName(this.children);
+		this.actions = (actions || []);
+		this.actionsByName = ArrayHelper.addLookupsByName(this.actions);
 		this._actionToInputsMappings = actionToInputsMappings || [];
 
 		for (var i = 0; i < this.children.length; i++)
@@ -21,12 +47,12 @@ class ControlContainer
 		this.childrenContainingPosPrev = [];
 
 		// Helper variables.
-		this._childMax = new Coords();
-		this._drawPos = new Coords();
-		this._drawLoc = new Location(this._drawPos);
-		this._mouseClickPos = new Coords();
-		this._mouseMovePos = new Coords();
-		this._posToCheck = new Coords();
+		this._childMax = new Coords(0, 0, 0);
+		this._drawPos = new Coords(0, 0, 0);
+		this._drawLoc = new Disposition(this._drawPos, null, null);
+		this._mouseClickPos = new Coords(0, 0, 0);
+		this._mouseMovePos = new Coords(0, 0, 0);
+		this._posToCheck = new Coords(0, 0, 0);
 	}
 
 	// instance methods
@@ -38,7 +64,7 @@ class ControlContainer
 
 	style(universe)
 	{
-		return universe.controlBuilder.styles[this.styleName == null ? "Default" : this.styleName];
+		return universe.controlBuilder.stylesByName.get(this.styleName == null ? "Default" : this.styleName);
 	};
 
 	// actions
@@ -68,7 +94,7 @@ class ControlContainer
 					childWithFocus.focusGain();
 				}
 			}
-			else if (childWithFocus.childWithFocus != null)
+			else if (childWithFocus.childWithFocus() != null)
 			{
 				childWithFocus.actionHandle(actionNameToHandle, universe);
 				if (childWithFocus.childWithFocus() == null)
@@ -90,10 +116,10 @@ class ControlContainer
 				}
 			}
 		}
-		else if (this.actions[actionNameToHandle] != null)
+		else if (this.actionsByName.get(actionNameToHandle) != null)
 		{
-			var action = this.actions[actionNameToHandle];
-			action.perform(universe); // todo
+			var action = this.actionsByName.get(actionNameToHandle);
+			action.perform(universe, null, null, null);
 			wasActionHandled = true;
 		}
 		else if (childWithFocus != null)
@@ -130,7 +156,7 @@ class ControlContainer
 				if
 				(
 					child.focusGain != null
-					&& ( child.isEnabled == null || child.isEnabled() )
+					&& ( child.isEnabled() )
 				)
 				{
 					this.indexOfChildWithFocus = i;
@@ -140,15 +166,13 @@ class ControlContainer
 		}
 		else
 		{
-			var childIndexOriginal = this.indexOfChildWithFocus;
-
 			while (true)
 			{
 				this.indexOfChildWithFocus += direction;
 
-				var isChildNextInRange = this.indexOfChildWithFocus.isInRangeMinMax
+				var isChildNextInRange = NumberHelper.isInRangeMinMax
 				(
-					0, this.children.length - 1
+					this.indexOfChildWithFocus, 0, this.children.length - 1
 				);
 
 				if (isChildNextInRange == false)
@@ -180,9 +204,7 @@ class ControlContainer
 
 	childrenAtPosAddToList
 	(
-		posToCheck,
-		listToAddTo,
-		addFirstChildOnly
+		posToCheck, listToAddTo, addFirstChildOnly
 	)
 	{
 		posToCheck = this._posToCheck.overwriteWith(posToCheck).clearZ();
@@ -243,7 +265,7 @@ class ControlContainer
 		var childrenContainingPos = this.childrenAtPosAddToList
 		(
 			mouseClickPos,
-			this.childrenContainingPos.clear(),
+			ArrayHelper.clear(this.childrenContainingPos),
 			true // addFirstChildOnly
 		);
 
@@ -264,6 +286,16 @@ class ControlContainer
 		return wasClickHandled;
 	};
 
+	mouseEnter()
+	{
+		// Do nothing.
+	};
+
+	mouseExit()
+	{
+		// Do nothing.
+	};
+
 	mouseMove(mouseMovePos)
 	{
 		var temp = this.childrenContainingPosPrev;
@@ -275,7 +307,7 @@ class ControlContainer
 		var childrenContainingPos = this.childrenAtPosAddToList
 		(
 			mouseMovePos,
-			this.childrenContainingPos.clear(),
+			ArrayHelper.clear(this.childrenContainingPos),
 			true // addFirstChildOnly
 		);
 
@@ -346,7 +378,7 @@ class ControlContainer
 
 	toVenue()
 	{
-		return new VenueFader(new VenueControls(this));
+		return new VenueFader(new VenueControls(this), null, null, null);
 	};
 
 	// drawable
@@ -360,7 +392,7 @@ class ControlContainer
 		display.drawRectangle
 		(
 			drawPos, this.size,
-			style.colorBackground, style.colorBorder
+			style.colorBackground, style.colorBorder, null
 		);
 
 		var children = this.children;

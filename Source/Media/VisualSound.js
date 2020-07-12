@@ -1,6 +1,8 @@
 
 class VisualSound
 {
+	soundNameToPlay;
+
 	constructor(soundNameToPlay)
 	{
 		this.soundNameToPlay = soundNameToPlay;
@@ -10,4 +12,22 @@ class VisualSound
 	{
 		universe.soundHelper.soundWithNamePlayAsEffect(universe, this.soundNameToPlay);
 	};
+
+	// Clonable.
+
+	clone()
+	{
+		return this; // todo
+	}
+
+	overwriteWith(other)
+	{
+		return this; // todo
+	}
+	// Transformable.
+
+	transform(transformToApply)
+	{
+		return this; // todo
+	}
 }

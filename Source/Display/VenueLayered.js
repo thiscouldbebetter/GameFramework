@@ -1,11 +1,16 @@
 
 class VenueLayered
 {
+	children;
+	colorToOverlayBetweenChildren;
+
 	constructor(children, colorToOverlayBetweenChildren)
 	{
 		this.children = children;
 		this.colorToOverlayBetweenChildren = colorToOverlayBetweenChildren;
 	}
+
+	finalize(universe) {}
 
 	initialize(universe)
 	{
@@ -35,8 +40,8 @@ class VenueLayered
 				var display = universe.display;
 				display.drawRectangle
 				(
-					Coords.Instances().Zeroes, display.size,
-					this.colorToOverlayBetweenChildren
+					Coords.Instances().Zeroes, display.sizeInPixels,
+					this.colorToOverlayBetweenChildren.systemColor(), null, null
 				);
 			}
 		}

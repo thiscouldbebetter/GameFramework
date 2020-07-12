@@ -1,31 +1,39 @@
 
 class Action
 {
+	name;
+	perform;
+
 	constructor(name, perform)
 	{
 		this.name = name;
 		this.perform = perform;
 	}
 
+	static _instances;
 	static Instances()
 	{
-		if (Action._Instances == null)
+		if (Action._instances == null)
 		{
-			Action._Instances = new Action_Instances();
+			Action._instances = new Action_Instances();
 		}
-		return Action._Instances;
+		return Action._instances;
 	};
 
 }
 
 class Action_Instances
 {
+	DoNothing;
+	ShowItems;
+	ShowMenu;
+
 	constructor()
 	{
 		this.DoNothing = new Action
 		(
 			"DoNothing",
-			function(actor)
+			(u, w, p, e) => 
 			{
 				// Do nothing.
 			}
@@ -34,14 +42,14 @@ class Action_Instances
 		this.ShowItems = new Action
 		(
 			"ShowItems",
-			function perform(universe, world, place, actor)
+			(universe, world, place, actor) => // perform
 			{
-				var control = actor.controllable.toControl
+				var control = actor.controllable().toControl
 				(
 					universe, universe.display.sizeInPixels, actor, universe.venueCurrent
 				);
-				var venueNext = new VenueControls(control);
-				venueNext = new VenueFader(venueNext, universe.venueCurrent);
+				var venueNext= new VenueControls(control);
+				venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
 				universe.venueNext = venueNext;
 			}
 		);
@@ -49,13 +57,13 @@ class Action_Instances
 		this.ShowMenu = new Action
 		(
 			"ShowMenu",
-			function perform(universe, world, place, actor)
+			(universe, world, place, actor) => // perform
 			{
-				var venueNext = new VenueControls
+				var venueNext= new VenueControls
 				(
-					universe.controlBuilder.gameAndSettings(universe)
+					universe.controlBuilder.gameAndSettings(universe, null)
 				);
-				venueNext = new VenueFader(venueNext, universe.venueCurrent);
+				venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
 				universe.venueNext = venueNext;
 			}
 		);

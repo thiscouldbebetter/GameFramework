@@ -3,18 +3,28 @@
 
 class ConversationDefn
 {
+	name;
+	visualPortrait;
+	contentTextStringName;
+	talkNodeDefns;
+	talkNodeDefnsByName;
+	talkNodes;
+	talkNodesByName;
+
 	constructor(name, visualPortrait, contentTextStringName, talkNodeDefns, talkNodes)
 	{
 		this.name = name;
 		this.visualPortrait = visualPortrait;
 		this.contentTextStringName = contentTextStringName;
-		this.talkNodeDefns = talkNodeDefns.addLookupsByName();
-		this.talkNodes = talkNodes.addLookupsByName();
+		this.talkNodeDefns = talkNodeDefns;
+		this.talkNodeDefnsByName = ArrayHelper.addLookupsByName(this.talkNodeDefns);
+		this.talkNodes = talkNodes;
+		this.talkNodesByName = ArrayHelper.addLookupsByName(this.talkNodes);
 	}
 
 	talkNodeByName(nameOfTalkNodeToGet)
 	{
-		return this.talkNodes[nameOfTalkNodeToGet];
+		return this.talkNodesByName.get(nameOfTalkNodeToGet);
 	};
 
 	talkNodesByNames(namesOfTalkNodesToGet)
@@ -35,8 +45,8 @@ class ConversationDefn
 	{
 		var contentText = contentTextString.value;
 		var contentTextAsLines = contentText.split("\n");
-		var tagToTextLinesLookup = {};
-		var tagCurrent = null;
+		var tagToTextLinesLookup = new Map([]);
+		var tagCurrent= null;
 		var linesForTagCurrent;
 		for (var i = 0; i < contentTextAsLines.length; i++)
 		{
@@ -45,7 +55,7 @@ class ConversationDefn
 			{
 				if (tagCurrent != null)
 				{
-					tagToTextLinesLookup[tagCurrent] = linesForTagCurrent;
+					tagToTextLinesLookup.set(tagCurrent, linesForTagCurrent);
 				}
 				tagCurrent = contentLine.split("\t")[0];
 				linesForTagCurrent = [];
@@ -58,13 +68,13 @@ class ConversationDefn
 				}
 			}
 		}
-		tagToTextLinesLookup[tagCurrent] = linesForTagCurrent;
+		tagToTextLinesLookup.set(tagCurrent, linesForTagCurrent);
 
-		var talkNodeDefns = TalkNodeDefn.Instances();
+		var talkNodeDefns = TalkNodeDefn.Instances()._AllByName;
 		var talkNodeDefnNamesToExpand =
 		[
-			talkNodeDefns["Display"].name,
-			talkNodeDefns["Option"].name,
+			talkNodeDefns.get("Display").name,
+			talkNodeDefns.get("Option").name,
 		];
 
 		var talkNodesExpanded = [];
@@ -74,7 +84,7 @@ class ConversationDefn
 
 			var talkNodeToExpandDefnName = talkNodeToExpand.defnName;
 			var shouldTalkNodeBeExpanded =
-				talkNodeDefnNamesToExpand.contains(talkNodeToExpandDefnName);
+				talkNodeDefnNamesToExpand.some(x => x == talkNodeToExpandDefnName);
 			if (shouldTalkNodeBeExpanded == false)
 			{
 				talkNodesExpanded.push(talkNodeToExpand);
@@ -82,7 +92,7 @@ class ConversationDefn
 			else
 			{
 				var tag = talkNodeToExpand.text;
-				var textLinesForTag = tagToTextLinesLookup[tag];
+				var textLinesForTag = tagToTextLinesLookup.get(tag);
 				for (var j = 0; j < textLinesForTag.length; j++)
 				{
 					var textLine = textLinesForTag[j];
@@ -99,7 +109,8 @@ class ConversationDefn
 			}
 		}
 
-		this.talkNodes = talkNodesExpanded.addLookupsByName();
+		this.talkNodes = talkNodesExpanded;
+		this.talkNodesByName = ArrayHelper.addLookupsByName(this.talkNodes);
 	};
 
 	// serialization
@@ -142,9 +153,12 @@ class ConversationDefn
 				talkNode.isActive = true;
 			}
 		}
-		talkNodes.addLookupsByName();
+		conversationDefn.talkNodes = talkNodes;
+		conversationDefn.talkNodesByName = ArrayHelper.addLookupsByName(talkNodes);
 
 		conversationDefn.talkNodeDefns = TalkNodeDefn.Instances()._All;
+		conversationDefn.talkNodeDefnsByName =
+			ArrayHelper.addLookupsByName(conversationDefn.talkNodeDefns);
 
 		return conversationDefn;
 	};

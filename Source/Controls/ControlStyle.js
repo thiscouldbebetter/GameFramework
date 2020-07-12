@@ -1,6 +1,12 @@
 
 class ControlStyle
 {
+	name;
+	colorBackground;
+	colorFill;
+	colorBorder;
+	colorDisabled;
+
 	constructor(name, colorBackground, colorFill, colorBorder, colorDisabled)
 	{
 		this.name = name;
@@ -9,18 +15,23 @@ class ControlStyle
 		this.colorBorder = colorBorder;
 		this.colorDisabled = colorDisabled;
 	}
-}
-{
-	ControlStyle.Instances = function()
-	{
-		if (ControlStyle._Instances == null)
-		{
-			ControlStyle._Instances = new ControlStyle_Instances();
-		}
-		return ControlStyle._Instances;
-	};
 
-	function ControlStyle_Instances()
+	static _instances;
+	static Instances()
+	{
+		if (ControlStyle._instances == null)
+		{
+			ControlStyle._instances = new ControlStyle_Instances();
+		}
+		return ControlStyle._instances;
+	};
+}
+
+class ControlStyle_Instances
+{
+	Default;
+
+	constructor()
 	{
 		this.Default = new ControlStyle
 		(

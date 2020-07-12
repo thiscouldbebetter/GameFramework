@@ -1,7 +1,23 @@
 
 class ControlLabel
 {
-	constructor(name, pos, size, isTextCentered, text, fontHeightInPixels)
+	name;
+	pos;
+	size;
+	isTextCentered;
+	_text;
+	fontHeightInPixels;
+
+	parent;
+	styleName;
+
+	_drawPos;
+
+	constructor
+	(
+		name, pos, size, isTextCentered,
+		text, fontHeightInPixels
+	)
 	{
 		this.name = name;
 		this.pos = pos;
@@ -12,7 +28,7 @@ class ControlLabel
 
 		// Helper variables.
 
-		this._drawPos = new Coords();
+		this._drawPos = new Coords(0, 0, 0);
 	}
 
 	static fromPosAndText(pos, text)
@@ -28,9 +44,51 @@ class ControlLabel
 		);
 	};
 
+	actionHandle(actionName)
+	{
+		return false; // wasActionHandled
+	}
+
+	actionToInputsMappings()
+	{
+		return null; // todo
+	}
+
+	childWithFocus()
+	{
+		return null; // todo
+	}
+
+	focusGain() {}
+
+	focusLose() {}
+
+	isEnabled()
+	{
+		return false;
+	}
+
+	mouseClick(pos)
+	{
+		return false;
+	}
+
+	mouseEnter() {}
+
+	mouseExit() {}
+
+	mouseMove(pos) {}
+
+	scalePosAndSize(scaleFactor)
+	{
+		this.pos.multiply(scaleFactor);
+		this.size.multiply(scaleFactor);
+		this.fontHeightInPixels *= scaleFactor.y;
+	};
+
 	style(universe)
 	{
-		return universe.controlBuilder.styles[this.styleName == null ? "Default" : this.styleName];
+		return universe.controlBuilder.stylesByName.get(this.styleName == null ? "Default" : this.styleName);
 	};
 
 	text()
