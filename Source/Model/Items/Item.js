@@ -12,7 +12,7 @@ class Item
 
 	defn(world)
 	{
-		return world.defns.defnsByNameByTypeName.get(ItemDefn.name).get(this.defnName);
+		return world.defn.itemDefnsByName().get(this.defnName);
 	};
 
 	isUsable(world)

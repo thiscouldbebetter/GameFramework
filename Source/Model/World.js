@@ -7,7 +7,7 @@ class World
 {
 	name;
 	dateCreated;
-	defns;
+	defn;
 	places;
 	placesByName;
 
@@ -16,14 +16,14 @@ class World
 	placeCurrent;
 	placeNext;
 
-	constructor(name, dateCreated, defns, places)
+	constructor(name, dateCreated, defn, places)
 	{
 		this.name = name;
 		this.dateCreated = dateCreated;
 
 		this.timerTicksSoFar = 0;
 
-		this.defns = defns;
+		this.defn = defn;
 
 		this.places = places;
 		this.placesByName = ArrayHelper.addLookupsByName(this.places);
@@ -62,7 +62,7 @@ class World
 
 		var skills = Skill.skillsDemo();
 
-		var defns = new Defns([entityDefns, itemDefns, placeDefns, skills]);
+		var defns = new WorldDefn([entityDefns, itemDefns, placeDefns, skills]);
 
 		var places = [];
 
