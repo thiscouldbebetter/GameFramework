@@ -199,7 +199,7 @@
 		},
 		{
 			"defnName": "Display",
-			"text": "but basically, use the arrow keys to move."
+			"text": "But basically, use the arrow keys to move."
 		},
 		{
 			"defnName": "Display",
@@ -207,7 +207,7 @@
 		},
 		{
 			"defnName": "Display",
-			"text": "...you'll go outside."
+			"text": "...and press E, you'll go outside."
 		},
 		{
 			"defnName": "Display",
@@ -280,7 +280,19 @@
 		},
 		{
 			"defnName": "Display",
-			"text": "Enter uses a weapon, if one's equipped."
+			"text": "The G key picks up any nearby items."
+		},
+		{
+			"defnName": "Display",
+			"text": "The E key interacts with things and people."
+		},
+		{
+			"defnName": "Display",
+			"text": "The F key uses a weapon, if one's equipped."
+		},
+		{
+			"defnName": "Display",
+			"text": "Tab or Escape brings up the menu."
 		},
 		{
 			"defnName": "Display",
@@ -394,7 +406,7 @@
 		},
 		{
 			"defnName": "Script",
-			"text": "(u) => { u.world.placeCurrent.player().itemHolder.itemEntityAdd( new Entity(null, [ new Item(\"Walkie-Talkie\", 1) ] ) ); }"
+			"text": "(u) => { u.world.placeCurrent.player().itemHolder().itemEntityAdd( new Entity(null, [ new Item(\"Walkie-Talkie\", 1) ] ) ); }"
 		},
 		{
 			"defnName": "Display",

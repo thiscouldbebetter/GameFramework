@@ -31,7 +31,7 @@ class VisualInvisible
 
 	// Visual.
 
-	draw(universe, world, display, entity)
+	draw(universe, world, place, entity, display)
 	{
 		// Do nothing.
 	};

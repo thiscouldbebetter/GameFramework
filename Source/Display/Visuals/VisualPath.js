@@ -20,7 +20,7 @@ class VisualPath
 		this.transformTranslate = new Transform_Translate(new Coords(0, 0, 0));
 	}
 
-	draw(universe, world, display, entity)
+	draw(universe, world, place, entity, display)
 	{
 		var drawablePos = entity.locatable().loc.pos;
 		this.transformTranslate.displacement.overwriteWith(drawablePos);
@@ -39,11 +39,11 @@ class VisualPath
 		display.drawPath
 		(
 			this.verticesAsPathTransformed.points,
-			this.color,
+			this.color.systemColor(),
 			this.lineThickness,
 			this.isClosed
 		);
-	};
+	}
 
 	// Clonable.
 

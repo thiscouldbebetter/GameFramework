@@ -6,6 +6,7 @@ class Universe
 	timerHelper;
 	display;
 	mediaLibrary;
+	controlStyle;
 	world;
 
 	collisionHelper;
@@ -14,7 +15,6 @@ class Universe
 	idHelper;
 	inputHelper;
 	platformHelper;
-	profileHelper;
 	randomizer;
 	serializer;
 	soundHelper;
@@ -26,13 +26,23 @@ class Universe
 	venueNext;
 	venueCurrent;
 
-	constructor(name, version, timerHelper, display, mediaLibrary, world)
+	constructor
+	(
+		name,
+		version,
+		timerHelper,
+		display,
+		mediaLibrary,
+		controlStyle,
+		world
+	)
 	{
 		this.name = name;
 		this.version = version;
 		this.timerHelper = timerHelper;
 		this.display = display;
 		this.mediaLibrary = mediaLibrary;
+		this.controlStyle = controlStyle;
 		this.world = world;
 
 		this.collisionHelper = new CollisionHelper();
@@ -48,7 +58,16 @@ class Universe
 
 	// static methods
 
-	static new(name, version, timerHelper, display, mediaLibrary, world)
+	static create
+	(
+		name,
+		version,
+		timerHelper,
+		display,
+		mediaLibrary,
+		controlStyle,
+		world
+	)
 	{
 		var returnValue = new Universe
 		(
@@ -57,6 +76,7 @@ class Universe
 			timerHelper,
 			display,
 			mediaLibrary,
+			controlStyle,
 			world
 		);
 
@@ -83,10 +103,9 @@ class Universe
 		this.storageHelper = new StorageHelper
 		(
 			StringHelper.replaceAll(this.name, " ", "_") + "_",
-			this.serializer
+			this.serializer,
+			new CompressorLZW()
 		);
-
-		this.profileHelper = new ProfileHelper(this.storageHelper);
 
 		this.display.initialize(this);
 		this.platformHelper.platformableAdd(this.display);
@@ -94,27 +113,24 @@ class Universe
 		this.soundHelper = new SoundHelper(this.mediaLibrary.sounds);
 		this.videoHelper = new VideoHelper(this.mediaLibrary.videos);
 
-		var venueControlsTitle= new VenueControls
+		var venueControlsOpening= new VenueControls
 		(
-			this.controlBuilder.title
-			(
-				this,
-				this.display.sizeInPixels
-			)
+			this.controlBuilder.opening(this, this.display.sizeInPixels),
+			false
 		);
 
-		venueControlsTitle = new VenueFader
+		venueControlsOpening = new VenueFader
 		(
-			venueControlsTitle, venueControlsTitle, null, null
+			venueControlsOpening, venueControlsOpening, null, null
 		);
 
-		this.venueNext = venueControlsTitle;
+		this.venueNext = venueControlsOpening;
 
 		this.inputHelper = new InputHelper();
 		this.inputHelper.initialize(this);
 
 		callback(this);
-	};
+	}
 
 	reset()
 	{

@@ -10,12 +10,13 @@ class Transform_RotateRight
 
 	overwriteWith(other)
 	{
-		return this; // todo
+		this.quarterTurnsToRotate = (other ).quarterTurnsToRotate;
+		return this;
 	}
 
 	transform(transformable)
 	{
-		return transformable; // todo
+		return transformable.transform(this);
 	}
 
 	transformCoords(coordsToTransform)
@@ -28,5 +29,5 @@ class Transform_RotateRight
 		}
 
 		return coordsToTransform;
-	};
+	}
 }

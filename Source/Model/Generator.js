@@ -1,5 +1,5 @@
 
-class Generator
+class Generator extends EntityProperty
 {
 	entityToGenerate;
 	ticksToGenerate;
@@ -10,6 +10,7 @@ class Generator
 
 	constructor(entityToGenerate, ticksToGenerate, entitiesGeneratedMax)
 	{
+		super();
 		this.entityToGenerate = entityToGenerate;
 		this.ticksToGenerate = ticksToGenerate;
 		this.entitiesGeneratedMax = entitiesGeneratedMax || 1;
@@ -18,22 +19,25 @@ class Generator
 		this.tickLastGenerated = 0 - this.ticksToGenerate;
 	}
 
-	finalize(u, w, p, e) {}
-	initialize(u, w, p, e) {}
-
-	updateForTimerTick(u, world, place, entityGenerator)
+	updateForTimerTick(universe, world, place, entityGenerator)
 	{
 		var placeEntitiesByName = place.entitiesByName;
-		var entitiesGeneratedButNoLongerExtant =
-			this.entitiesGenerated.filter(e => placeEntitiesByName.has(e.name) == false);
-		entitiesGeneratedButNoLongerExtant.forEach
+
+		var entitiesGeneratedCountBefore = this.entitiesGenerated.length;
+		this.entitiesGenerated = this.entitiesGenerated.filter
 		(
-			e => this.entitiesGenerated.splice(this.entitiesGenerated.indexOf(e), 1)
+			e => placeEntitiesByName.has(e.name)
 		);
+		var entitiesGeneratedCountAfter = this.entitiesGenerated.length;
+		if (entitiesGeneratedCountAfter < entitiesGeneratedCountBefore)
+		{
+			this.tickLastGenerated = world.timerTicksSoFar;
+		}
 
 		if (this.entitiesGenerated.length < this.entitiesGeneratedMax)
 		{
-			var ticksSinceGenerated = world.timerTicksSoFar - this.tickLastGenerated;
+			var ticksSinceGenerated =
+				world.timerTicksSoFar - this.tickLastGenerated;
 			if (ticksSinceGenerated >= this.ticksToGenerate)
 			{
 				this.tickLastGenerated = world.timerTicksSoFar;
@@ -43,7 +47,7 @@ class Generator
 					entityGenerator.locatable().loc
 				);
 				this.entitiesGenerated.push(entityGenerated);
-				place.entitiesToSpawn.push(entityGenerated);
+				place.entitySpawn(universe, world, entityGenerated);
 			}
 		}
 	}

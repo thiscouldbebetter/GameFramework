@@ -8,6 +8,7 @@ class Box
 	_min;
 	_max;
 	_range;
+	_vertices;
 
 	constructor(center, size)
 	{
@@ -19,6 +20,19 @@ class Box
 		this._max = new Coords(0, 0, 0);
 
 		this._range = new RangeExtent(0, 0);
+	}
+
+	static fromMinAndMax(min, max)
+	{
+		var center = min.clone().add(max).half();
+		var size = max.clone().subtract(min);
+		return new Box(center, size);
+	}
+
+	static fromMinAndSize(min, size)
+	{
+		var center = size.clone().half().add(min);
+		return new Box(center, size);
 	}
 
 	// Static methods.
@@ -48,32 +62,19 @@ class Box
 		}
 
 		return doAnyBoxOverlapSoFar;
-	};
+	}
 
 	// Instance methods.
 
 	containsOther(other)
 	{
 		return ( this.containsPoint(other.min()) && this.containsPoint(other.max()) );
-	};
+	}
 
 	containsPoint(pointToCheck)
 	{
 		return pointToCheck.isInRangeMinMax(this.min(), this.max());
-	};
-
-	fromMinAndMax(min, max)
-	{
-		var center = min.clone().add(max).half();
-		var size = max.clone().subtract(min);
-		return new Box(center, size);
-	};
-
-	fromMinAndSize(min, size)
-	{
-		var center = size.clone().half().add(min);
-		return new Box(center, size);
-	};
+	}
 
 	intersectWith(other)
 	{
@@ -121,17 +122,17 @@ class Box
 		}
 
 		return returnValue;
-	};
+	}
 
 	max()
 	{
 		return this._max.overwriteWith(this.center).add(this.sizeHalf);
-	};
+	}
 
 	min()
 	{
 		return this._min.overwriteWith(this.center).subtract(this.sizeHalf);
-	};
+	}
 
 	ofPoints(points)
 	{
@@ -176,7 +177,7 @@ class Box
 		this.sizeHalf.overwriteWith(this.size).half();
 
 		return this;
-	};
+	}
 
 	overlapsWith(other)
 	{
@@ -187,7 +188,7 @@ class Box
 			&& this.overlapsWithOtherInDimension(other, 2)
 		);
 		return returnValue;
-	};
+	}
 
 	overlapsWithXY(other)
 	{
@@ -197,7 +198,7 @@ class Box
 			&& this.overlapsWithOtherInDimension(other, 1)
 		);
 		return returnValue;
-	};
+	}
 
 	overlapsWithOtherInDimension(other, dimensionIndex)
 	{
@@ -205,21 +206,21 @@ class Box
 		var rangeOther = other.rangeForDimension(dimensionIndex, other._range);
 		var returnValue = rangeThis.overlapsWith(rangeOther);
 		return returnValue;
-	};
+	}
 
-	rangeForDimension(dimensionIndex, range)
+	rangeForDimension(dimensionIndex, rangeOut)
 	{
-		range.min = this.min().dimensionGet(dimensionIndex);
-		range.max = this.max().dimensionGet(dimensionIndex);
-		return range;
-	};
+		rangeOut.min = this.min().dimensionGet(dimensionIndex);
+		rangeOut.max = this.max().dimensionGet(dimensionIndex);
+		return rangeOut;
+	}
 
 	sizeOverwriteWith(sizeOther)
 	{
 		this.size.overwriteWith(sizeOther);
 		this.sizeHalf.overwriteWith(this.size).half();
 		return this;
-	};
+	}
 
 	touches(other)
 	{
@@ -230,7 +231,7 @@ class Box
 			&& this.touchesOtherInDimension(other, 2)
 		);
 		return returnValue;
-	};
+	}
 
 	touchesXY(other)
 	{
@@ -240,7 +241,7 @@ class Box
 			&& this.touchesOtherInDimension(other, 1)
 		);
 		return returnValue;
-	};
+	}
 
 	touchesOtherInDimension(other, dimensionIndex)
 	{
@@ -248,19 +249,29 @@ class Box
 		var rangeOther = other.rangeForDimension(dimensionIndex, other._range);
 		var returnValue = rangeThis.touches(rangeOther);
 		return returnValue;
-	};
+	}
 
 	trimCoords(coordsToTrim)
 	{
 		return coordsToTrim.trimToRangeMinMax(this.min(), this.max());
 	};
 
+	vertices()
+	{
+		if (this._vertices == null)
+		{
+			this._vertices = [];
+			// todo
+		}
+		return this._vertices;
+	}
+
 	// cloneable
 
 	clone()
 	{
 		return new Box(this.center.clone(), this.size.clone());
-	};
+	}
 
 	overwriteWith(other)
 	{
@@ -275,18 +286,78 @@ class Box
 	toString()
 	{
 		return this.min().toString() + ":" + this.max().toString();
-	};
+	}
 
 	// transformable
 
 	coordsGroupToTranslate()
 	{
 		return [ this.center ];
-	};
+	}
 
 	transform(transformToApply)
 	{
 		Transforms.applyTransformToCoordsMany(transformToApply, this.coordsGroupToTranslate());
 		return this;
-	};
+	}
+
+	// ShapeBase.
+
+	dimensionForSurfaceClosestToPoint(posToCheck, displacementOverSizeHalf)
+	{
+		var greatestAbsoluteDisplacementDimensionSoFar = -1;
+		var dimensionIndex = null;
+
+		for (var d = 0; d < 3; d++) // dimension
+		{
+			var displacementDimensionOverSizeHalf
+				= displacementOverSizeHalf.dimensionGet(d);
+			var displacementDimensionOverSizeHalfAbsolute
+				= Math.abs(displacementDimensionOverSizeHalf);
+
+			if
+			(
+				displacementDimensionOverSizeHalfAbsolute
+				> greatestAbsoluteDisplacementDimensionSoFar
+			)
+			{
+				greatestAbsoluteDisplacementDimensionSoFar =
+					displacementDimensionOverSizeHalfAbsolute;
+				dimensionIndex = d;
+			}
+		}
+
+		return dimensionIndex;
+	}
+
+	normalAtPos(posToCheck, normalOut)
+	{
+		var displacementOverSizeHalf = normalOut.overwriteWith
+		(
+			posToCheck
+		).subtract
+		(
+			this.center
+		).divide
+		(
+			this.sizeHalf
+		);
+
+		var dimensionIndex =
+			this.dimensionForSurfaceClosestToPoint(posToCheck, displacementOverSizeHalf);
+
+		var displacementDimensionOverSizeHalf
+			= displacementOverSizeHalf.dimensionGet(dimensionIndex);
+
+		var multiplier = (displacementDimensionOverSizeHalf > 0 ? 1 : -1);
+
+		normalOut.clear().dimensionSet(dimensionIndex, 1).multiplyScalar(multiplier);
+
+		return normalOut;
+	}
+
+	surfacePointNearPos(posToCheck, surfacePointOut)
+	{
+		return surfacePointOut.overwriteWith(posToCheck); // todo
+	}
 }

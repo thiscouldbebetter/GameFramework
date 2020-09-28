@@ -1,19 +1,23 @@
 
-class Killable
+class Killable extends EntityProperty
 {
 	integrityMax;
 	_damageApply;
-	die;
-	itemDefnCorpse;
+	_die;
 
 	integrity;
 
-	constructor(integrityMax, damageApply, die, itemDefnCorpse)
+	constructor
+	(
+		integrityMax,
+		damageApply,
+		die
+	)
 	{
+		super();
 		this.integrityMax = integrityMax;
 		this._damageApply = damageApply;
-		this.die = die;
-		this.itemDefnCorpse = itemDefnCorpse;
+		this._die = die;
 
 		this.integrity = this.integrityMax;
 	}
@@ -23,15 +27,23 @@ class Killable
 		var damageApplied;
 		if (this._damageApply == null)
 		{
-			damageApplied = (damageToApply == null ? entityDamager.damager().damagePerHit : damageToApply);
-			entityKillable.killable().integrityAdd(0 - damageApplied);
+			damageApplied = (damageToApply == null ? entityDamager.damager().damagePerHit.amount : damageToApply.amount);
+			entityKillable.killable().integritySubtract(damageApplied);
 		}
 		else
 		{
 			damageApplied = this._damageApply(universe, world, place, entityDamager, entityKillable, damageToApply);
 		}
 		return damageApplied;
-	};
+	}
+
+	die(u, w, p, e)
+	{
+		if (this._die != null)
+		{
+			this._die(u, w, p, e);
+		}
+	}
 
 	integrityAdd(amountToAdd)
 	{
@@ -41,29 +53,36 @@ class Killable
 			this.integrity,
 			this.integrityMax
 		);
-	};
+	}
+
+	integritySubtract(amountToSubtract)
+	{
+		this.integrityAdd(0 - amountToSubtract);
+	}
+
+	kill()
+	{
+		this.integrity = 0;
+	}
 
 	isAlive()
 	{
 		return (this.integrity > 0);
-	};
+	}
 
 	updateForTimerTick(universe, world, place, entityKillable)
 	{
 		if (this.isAlive() == false)
 		{
 			place.entitiesToRemove.push(entityKillable);
-			if (this.die != null)
-			{
-				this.die(universe, world, place, entityKillable);
-			}
+			this.die(universe, world, place, entityKillable);
 		}
-	};
+	}
 
 	// cloneable
 
 	clone()
 	{
-		return new Killable(this.integrityMax, this._damageApply, this.die, this.itemDefnCorpse);
-	};
+		return new Killable(this.integrityMax, this._damageApply, this._die);
+	}
 }

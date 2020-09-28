@@ -1,17 +1,11 @@
 
-class ControlTextBox
+class ControlTextBox extends ControlBase
 {
-	name;
-	pos;
-	size;
 	_text;
-	fontHeightInPixels;
 	numberOfCharsMax;
+	_isEnabled;
 
 	cursorPos;
-	isHighlighted;
-	parent;
-	styleName;
 
 	_drawPos;
 	_drawPosText;
@@ -19,17 +13,20 @@ class ControlTextBox
 	_textMargin;
 	_textSize;
 
-	constructor(name, pos, size, text, fontHeightInPixels, numberOfCharsMax)
+	constructor
+	(
+		name, pos, size, text,
+		fontHeightInPixels, numberOfCharsMax,
+		isEnabled
+	)
 	{
-		this.name = name;
-		this.pos = pos;
-		this.size = size;
+		super(name, pos, size, fontHeightInPixels);
 		this._text = text;
 		this.fontHeightInPixels = fontHeightInPixels;
 		this.numberOfCharsMax = numberOfCharsMax;
+		this._isEnabled = isEnabled;
 
-		this.isHighlighted = false;
-		this.cursorPos = this.text(null, null).length;
+		this.cursorPos = null;
 
 		// Helper variables.
 		this._drawPos = new Coords(0, 0, 0);
@@ -38,11 +35,6 @@ class ControlTextBox
 		this._textMargin = new Coords(0, 0, 0);
 		this._textSize = new Coords(0, 0, 0);
 	}
-
-	style(universe)
-	{
-		return universe.controlBuilder.stylesByName.get(this.styleName == null ? "Default" : this.styleName);
-	};
 
 	text(value, universe)
 	{
@@ -59,7 +51,7 @@ class ControlTextBox
 		}
 
 		return (this._text.get == null ? this._text : this._text.get(universe) );
-	};
+	}
 
 	// events
 
@@ -68,7 +60,11 @@ class ControlTextBox
 		var text = this.text(null, null);
 
 		var controlActionNames = ControlActionNames.Instances();
-		if (actionNameToHandle == controlActionNames.ControlCancel)
+		if
+		(
+			actionNameToHandle == controlActionNames.ControlCancel
+			|| actionNameToHandle == Input.Names().Backspace
+		)
 		{
 			this.text(text.substr(0, text.length - 1), null);
 
@@ -95,22 +91,33 @@ class ControlTextBox
 				this.cursorPos < text.length ? text.charCodeAt(this.cursorPos) : "A".charCodeAt(0) - 1
 			);
 
+			if (charCodeAtCursor == "Z".charCodeAt(0) && direction == 1)
+			{
+				charCodeAtCursor = "a".charCodeAt(0);
+			}
+			else if (charCodeAtCursor == "a".charCodeAt(0) && direction == -1)
+			{
+				charCodeAtCursor = "Z".charCodeAt(0);
+			}
+			else
+			{
+				charCodeAtCursor = charCodeAtCursor + direction;
+			}
+
 			charCodeAtCursor = NumberHelper.wrapToRangeMinMax
 			(
-				charCodeAtCursor + direction,
+				charCodeAtCursor,
 				"A".charCodeAt(0),
-				"Z".charCodeAt(0) + 1
+				"z".charCodeAt(0) + 1
 			);
 
 			var charAtCursor = String.fromCharCode(charCodeAtCursor);
 
-			this.text
-			(
-				text.substr(0, this.cursorPos)
-					+ charAtCursor
-					+ text.substr(this.cursorPos + 1),
-				null
-			);
+			var textEdited = text.substr(0, this.cursorPos)
+				+ charAtCursor
+				+ text.substr(this.cursorPos + 1);
+
+			this.text(textEdited, null);
 		}
 		else if (actionNameToHandle.length == 1 || actionNameToHandle.startsWith("_") ) // printable character
 		{
@@ -128,13 +135,12 @@ class ControlTextBox
 
 			if (this.numberOfCharsMax == null || text.length < this.numberOfCharsMax)
 			{
-				text = this.text
-				(
+				var textEdited = 
 					text.substr(0, this.cursorPos)
 						+ actionNameToHandle
-						+ text.substr(this.cursorPos),
-					null
-				);
+						+ text.substr(this.cursorPos);
+
+				text = this.text(textEdited, null);
 
 				this.cursorPos = NumberHelper.wrapToRangeMinMax
 				(
@@ -144,54 +150,42 @@ class ControlTextBox
 		}
 
 		return true; // wasActionHandled
-	};
-
-	actionToInputsMappings()
-	{
-		return null; // todo
-	}
-
-	childWithFocus()
-	{
-		return null; // todo
 	}
 
 	focusGain()
 	{
 		this.isHighlighted = true;
-	};
+		this.cursorPos = this.text(null, null).length;
+	}
 
 	focusLose()
 	{
 		this.isHighlighted = false;
-	};
+		this.cursorPos = null;
+	}
 
 	isEnabled()
 	{
-		return true; // todo
+		return (this._isEnabled.get());
 	}
 
 	mouseClick(mouseClickPos)
 	{
 		var parent = this.parent;
-		parent.indexOfChildWithFocus = parent.children.indexOf(this);
+		var parentAsContainer = parent ;
+		parentAsContainer.indexOfChildWithFocus =
+			parentAsContainer.children.indexOf(this);
 		this.isHighlighted = true;
 		return true;
-	};
-
-	mouseEnter() {}
-
-	mouseExit() {}
-
-	mouseMove(mouseMovePos) {}
+	}
 
 	scalePosAndSize(scaleFactor)
 	{
 		this.pos.multiply(scaleFactor);
 		this.size.multiply(scaleFactor);
-		// todo
+		this.fontHeightInPixels *= scaleFactor.y;
 		return this;
-	};
+	}
 
 	// drawable
 
@@ -205,7 +199,8 @@ class ControlTextBox
 		display.drawRectangle
 		(
 			drawPos, this.size,
-			style.colorFill, style.colorBorder,
+			Color.systemColorGet(style.colorFill),
+			Color.systemColorGet(style.colorBorder),
 			this.isHighlighted // areColorsReversed
 		);
 
@@ -223,8 +218,8 @@ class ControlTextBox
 			text,
 			this.fontHeightInPixels,
 			drawPosText,
-			style.colorBorder,
-			style.colorFill,
+			Color.systemColorGet(style.colorBorder),
+			Color.systemColorGet(style.colorFill),
 			this.isHighlighted,
 			false, // isCentered
 			this.size.x // widthMaxInPixels
@@ -248,8 +243,8 @@ class ControlTextBox
 			(
 				drawPosText,
 				new Coords(cursorWidth, this.fontHeightInPixels, 0), // size
-				style.colorFill,
-				style.colorFill,
+				Color.systemColorGet(style.colorFill),
+				Color.systemColorGet(style.colorFill),
 				null
 			);
 
@@ -258,12 +253,12 @@ class ControlTextBox
 				textAtCursor,
 				this.fontHeightInPixels,
 				drawPosText,
-				style.colorBorder,
+				Color.systemColorGet(style.colorBorder),
 				null, // colorBack
 				false, // isHighlighted
 				false, // isCentered
 				this.size.x // widthMaxInPixels
 			);
 		}
-	};
+	}
 }

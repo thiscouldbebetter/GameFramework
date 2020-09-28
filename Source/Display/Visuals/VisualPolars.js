@@ -22,11 +22,11 @@ class VisualPolars
 		this._toPos = new Coords(0, 0, 0);
 	}
 
-	draw(universe, world, display, entity)
+	draw(universe, world, place, entity, display)
 	{
 		var drawableLoc = entity.locatable().loc;
 		var drawablePos = drawableLoc.pos;
-		var drawableHeadingInTurns = drawableLoc.orientation.headingInTurns();
+		var drawableHeadingInTurns = drawableLoc.orientation.forward.headingInTurns();
 
 		var polar = this._polar;
 		var fromPos = this._fromPos.overwriteWith(drawablePos);
@@ -41,7 +41,7 @@ class VisualPolars
 
 			display.drawLine
 			(
-				fromPos, toPos, this.color, this.lineThickness
+				fromPos, toPos, this.color.systemColor(), this.lineThickness
 			);
 
 			fromPos.overwriteWith(toPos);

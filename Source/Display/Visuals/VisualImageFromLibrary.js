@@ -34,11 +34,11 @@ class VisualImageFromLibrary
 	image(universe)
 	{
 		return universe.mediaLibrary.imageGetByName(this.imageName);
-	};
+	}
 
 	// visual
 
-	draw(universe, world, display, entity)
+	draw(universe, world, place, entity, display)
 	{
 		var image = this.image(universe);
 		var imageSize = this.image(universe).sizeInPixels;
@@ -47,7 +47,7 @@ class VisualImageFromLibrary
 			entity.locatable().loc.pos
 		);
 		display.drawImageScaled(image, drawPos, imageSize);
-	};
+	}
 
 	// Clonable.
 

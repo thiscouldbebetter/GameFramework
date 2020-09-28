@@ -25,7 +25,7 @@ class VisualArc
 		this._polar = new Polar(0, 0, 0);
 	}
 
-	draw(universe, world, display, entity)
+	draw(universe, world, place, entity, display)
 	{
 		var drawableLoc = entity.locatable().loc;
 		var drawPos = this._drawPos.overwriteWith
@@ -33,7 +33,7 @@ class VisualArc
 			drawableLoc.pos
 		);
 
-		var drawableAngleInTurns = drawableLoc.orientation.headingInTurns();
+		var drawableAngleInTurns = drawableLoc.orientation.forward.headingInTurns();
 		var wedgeAngleMin =
 			drawableAngleInTurns
 			+ this._polar.fromCoords(this.directionMin).azimuthInTurns;
@@ -44,7 +44,8 @@ class VisualArc
 			drawPos, // center
 			this.radiusInner, this.radiusOuter,
 			wedgeAngleMin, wedgeAngleMax,
-			this.colorFill, this.colorBorder
+			Color.systemColorGet(this.colorFill),
+			Color.systemColorGet(this.colorBorder)
 		);
 	};
 
@@ -52,18 +53,36 @@ class VisualArc
 
 	clone()
 	{
-		return this; // todo
+		return new VisualArc
+		(
+			this.radiusOuter, this.radiusInner,
+			this.directionMin.clone(),
+			this.angleSpannedInTurns,
+			this.colorFill.clone(),
+			(this.colorBorder == null ? null : this.colorBorder.clone())
+		)
 	}
 
-	overwriteWith(other)
+	overwriteWith(otherAsVisual)
 	{
-		return this; // todo
+		var other = otherAsVisual ;
+		this.radiusOuter = other.radiusOuter;
+		this.radiusInner = other.radiusInner;
+		this.directionMin.overwriteWith(other.directionMin);
+		this.angleSpannedInTurns = other.angleSpannedInTurns;
+		this.colorFill.overwriteWith(other.colorFill);
+		if (this.colorBorder != null)
+		{
+			this.colorBorder.overwriteWith(other.colorBorder);
+		}
+		return this;
 	}
 
 	// Transformable.
 
 	transform(transformToApply)
 	{
-		return this; // todo
+		transformToApply.transformCoords(this.directionMin);
+		return this;
 	}
 }

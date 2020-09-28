@@ -21,7 +21,7 @@ class Transform_OrientRDF
 	transform(transformable)
 	{
 		return transformable.transform(this);
-	};
+	}
 
 	transformCoords(coordsToTransform)
 	{
@@ -40,5 +40,5 @@ class Transform_OrientRDF
 		);
 
 		return coordsToTransform;
-	};
+	}
 }

@@ -24,22 +24,44 @@ class ControlStyle
 			ControlStyle._instances = new ControlStyle_Instances();
 		}
 		return ControlStyle._instances;
-	};
+	}
+	
+	static byName(styleName)
+	{
+		return ControlStyle.Instances()._AllByName.get(styleName);
+	}
 }
 
 class ControlStyle_Instances
 {
 	Default;
+	Dark;
+
+	_All;
+	_AllByName;
 
 	constructor()
 	{
 		this.Default = new ControlStyle
 		(
 			"Default", // name
-			"rgb(240, 240, 240)", // colorBackground
-			"White", // colorFill
-			"Gray", // colorBorder
-			"LightGray" // colorDisabled
+			Color.fromRGB(240/255, 240/255, 240/255), // colorBackground
+			Color.byName("White"), // colorFill
+			Color.byName("Gray"), // colorBorder
+			Color.byName("GrayLight") // colorDisabled
 		);
+
+		this.Dark = new ControlStyle
+		(
+			"Dark", // name
+			Color.byName("GrayDark"), // colorBackground
+			Color.byName("Black"), // colorFill
+			Color.byName("White"), // colorBorder
+			Color.byName("GrayLight") // colorDisabled
+		);
+		
+		this._All = [ this.Default, this.Dark ];
+
+		this._AllByName = ArrayHelper.addLookupsByName(this._All);
 	}
 }

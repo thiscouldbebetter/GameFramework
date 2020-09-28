@@ -4,10 +4,14 @@ class VisualTransform
 	transformToApply;
 	child;
 
+	_childTransformed;
+
 	constructor(transformToApply, child)
 	{
 		this.transformToApply = transformToApply;
 		this.child = child;
+
+		this._childTransformed = child.clone();
 	}
 
 	// Cloneable.
@@ -33,9 +37,10 @@ class VisualTransform
 
 	// Visual.
 
-	draw(universe, world, display, entity)
+	draw(universe, world, place, entity, display)
 	{
-		this.child.transform(this.transformToApply);
-		this.child.draw(universe, world, display, entity);
+		this._childTransformed.overwriteWith(this.child);
+		this.transformToApply.transform(this._childTransformed);
+		this._childTransformed.draw(universe, world, place, entity, display);
 	};
 }

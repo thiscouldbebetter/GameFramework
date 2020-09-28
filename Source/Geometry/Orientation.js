@@ -20,9 +20,10 @@ class Orientation
 		this.axesRDF = [ this.right, this.down, this.forward ];
 	}
 
-	static default()
+	default()
 	{
-		return new Orientation(null, null);
+		var coordsInstances = Coords.Instances();
+		this.forwardDownSet(coordsInstances.OneZeroZero, coordsInstances.ZeroZeroOne);
 	}
 
 	// instances
@@ -145,33 +146,7 @@ class Orientation
 		}
 
 		return coordsToUnproject.overwriteWith(returnValue);
-	};
-
-	// heading
-
-	headingInTurns()
-	{
-		var returnValue;
-
-		var forward = this.forward;
-		if (forward.x == 0 && forward.y == 0)
-		{
-			returnValue = null;
-		}
-		else
-		{
-			returnValue = Math.atan2(forward.y, forward.x) / (Math.PI * 2);
-
-			if (returnValue < 0)
-			{
-				returnValue += 1;
-			}
-
-			returnValue = NumberHelper.wrapToRangeMinMax(returnValue, 0, 1);
-		}
-
-		return returnValue;
-	};
+	}
 }
 
 class Orientation_Instances

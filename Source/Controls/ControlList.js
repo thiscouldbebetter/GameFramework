@@ -1,9 +1,6 @@
 
-class ControlList
+class ControlList extends ControlBase
 {
-	name;
-	pos;
-	size;
 	_items;
 	bindingForItemText;
 	fontHeightInPixels;
@@ -14,10 +11,9 @@ class ControlList
 	widthInItems;
 
 	isHighlighted;
-	itemSpacing;
+	_itemSpacing;
 	parent;
 	scrollbar;
-	styleName;
 
 	_drawLoc;
 	_drawPos;
@@ -33,36 +29,28 @@ class ControlList
 		widthInItems
 	)
 	{
-		this.name = name;
-		this.pos = pos;
-		this.size = size;
+		super(name, pos, size, fontHeightInPixels);
 		this._items = items;
 		this.bindingForItemText = bindingForItemText;
-		this.fontHeightInPixels = fontHeightInPixels;
 		this.bindingForItemSelected = bindingForItemSelected;
 		this.bindingForItemValue = bindingForItemValue;
-		this.bindingForIsEnabled = bindingForIsEnabled || new DataBinding(true, null, null);
+		this.bindingForIsEnabled = bindingForIsEnabled || DataBinding.fromContext(true);
 		this.confirm = confirm;
 		this.widthInItems = widthInItems || 1;
 
 		var itemSpacingY = 1.2 * this.fontHeightInPixels; // hack
+		this._itemSpacing = new Coords(0, itemSpacingY, 0);
 		var scrollbarWidth = itemSpacingY;
-
-		this.itemSpacing = new Coords
-		(
-			(this.size.x - scrollbarWidth) / this.widthInItems,
-			itemSpacingY, 0
-		);
 
 		this.isHighlighted = false;
 
 		this.scrollbar = new ControlScrollbar
 		(
-			new Coords(this.size.x - scrollbarWidth, 0, 0), // pos
-			new Coords(scrollbarWidth, this.size.y, 0), // size
+			new Coords(size.x - scrollbarWidth, 0, 0), // pos
+			new Coords(scrollbarWidth, size.y, 0), // size
 			this.fontHeightInPixels,
-			this.itemSpacing.y, // itemHeight
-			this._items,
+			itemSpacingY, // itemHeight
+			items,
 			0 // value
 		);
 
@@ -84,12 +72,12 @@ class ControlList
 			10, // fontHeightInPixels,
 			null, // bindingForItemSelected,
 			null, // bindingForItemValue,
-			new DataBinding(true, null, null), // bindingForIsEnabled
+			DataBinding.fromContext(true), // isEnabled
 			null, null
 		);
 
 		return returnValue;
-	};
+	}
 
 	static fromPosSizeItemsAndBindingForItemText
 	(
@@ -107,12 +95,12 @@ class ControlList
 			10, // fontHeightInPixels,
 			null, // bindingForItemSelected,
 			null, // bindingForItemValue,
-			new DataBinding(true, null, null), // bindingForIsEnabled
+			DataBinding.fromContext(true), // isEnabled
 			null, null
 		);
 
 		return returnValue;
-	};
+	}
 
 	actionHandle(actionNameToHandle, universe)
 	{
@@ -137,37 +125,17 @@ class ControlList
 			}
 		}
 		return wasActionHandled;
-	};
-
-	actionToInputsMappings()
-	{
-		return null; // todo
 	}
-
-	childWithFocus()
-	{
-		return null; // todo
-	}
-
-	focusGain()
-	{
-		this.isHighlighted = true;
-	};
-
-	focusLose()
-	{
-		this.isHighlighted = false;
-	};
 
 	indexOfFirstItemVisible()
 	{
 		return this.indexOfFirstRowVisible() * this.widthInItems;
-	};
+	}
 
 	indexOfFirstRowVisible()
 	{
 		return this.scrollbar.sliderPosInItems();
-	};
+	}
 
 	indexOfItemSelected(valueToSet)
 	{
@@ -187,24 +155,24 @@ class ControlList
 			this.itemSelected(itemToSelect);
 		}
 		return returnValue;
-	};
+	}
 
 	indexOfLastItemVisible()
 	{
 		return this.indexOfLastRowVisible() * this.widthInItems;
-	};
+	}
 
 	indexOfLastRowVisible()
 	{
 		var rowCountVisible = Math.floor(this.scrollbar.windowSizeInItems) - 1;
 		var returnValue = this.indexOfFirstRowVisible() + rowCountVisible;
 		return returnValue;
-	};
+	}
 
 	isEnabled()
 	{
 		return (this.bindingForIsEnabled == null ? true : this.bindingForIsEnabled.get());
-	};
+	}
 
 	itemSelected(itemToSet)
 	{
@@ -227,16 +195,24 @@ class ControlList
 
 			if (this.bindingForItemSelected != null)
 			{
-				var valueToSet = this.bindingForItemValue.contextSet
-				(
-					this._itemSelected
-				).get();
+				var valueToSet;
+				if (this.bindingForItemValue == null)
+				{
+					valueToSet = this._itemSelected;
+				}
+				else
+				{
+					valueToSet = this.bindingForItemValue.contextSet
+					(
+						this._itemSelected
+					).get();
+				}
 				this.bindingForItemSelected.set(valueToSet);
 			}
 		}
 
 		return returnValue;
-	};
+	}
 
 	itemSelectedNextInDirection(direction)
 	{
@@ -285,18 +261,31 @@ class ControlList
 
 		var returnValue = this.itemSelected(null);
 		return returnValue;
-	};
+	}
+
+	itemSpacing()
+	{
+		var scrollbarWidthVisible = (this.scrollbar.isVisible() ? this.scrollbar.size.x : 0);
+		return this._itemSpacing.overwriteWithDimensions
+		(
+			(this.size.x - scrollbarWidthVisible) / this.widthInItems,
+			this._itemSpacing.y,
+			0
+		);
+	}
 
 	items()
 	{
 		return (this._items.get == null ? this._items : this._items.get());
-	};
+	}
 
 	mouseClick(clickPos)
 	{
 		clickPos = this._mouseClickPos.overwriteWith(clickPos);
 
-		if (clickPos.x - this.pos.x > this.size.x - this.scrollbar.handleSize.x)
+		var isClickPosInScrollbar =
+			(clickPos.x - this.pos.x > this.size.x - this.scrollbar.handleSize.x);
+		if (isClickPosInScrollbar)
 		{
 			if (clickPos.y - this.pos.y <= this.scrollbar.handleSize.y)
 			{
@@ -306,25 +295,12 @@ class ControlList
 			{
 				this.scrollbar.scrollDown();
 			}
-			else
-			{
-				// todo
-
-				/*
-				var clickPosRelativeToSlideInPixels = clickPos.subtract
-				(
-					this.scrollbar.pos
-				).subtract
-				(
-					new Coords(0, this.scrollbar.handleSize.y, 0)
-				);
-				*/
-			}
 		}
 		else
 		{
 			var clickOffsetInPixels = clickPos.clone().subtract(this.pos);
-			var clickOffsetInItems = clickOffsetInPixels.clone().divide(this.itemSpacing).floor();
+			var clickOffsetInItems =
+				clickOffsetInPixels.clone().divide(this.itemSpacing()).floor();
 			var rowOfItemClicked =
 				this.indexOfFirstRowVisible() + clickOffsetInItems.y;
 			var indexOfItemClicked =
@@ -333,12 +309,23 @@ class ControlList
 			var items = this.items();
 			if (indexOfItemClicked < items.length)
 			{
-				this.indexOfItemSelected(indexOfItemClicked);
+				var indexOfItemSelectedOld = this.indexOfItemSelected(null);
+				if (indexOfItemClicked == indexOfItemSelectedOld)
+				{
+					if (this.confirm != null)
+					{
+						this.confirm(null); // todo
+					}
+				}
+				else
+				{
+					this.indexOfItemSelected(indexOfItemClicked);
+				}
 			}
 		}
 
 		return true; // wasActionHandled
-	};
+	}
 
 	mouseEnter() {}
 
@@ -351,23 +338,18 @@ class ControlList
 		this.pos.multiply(scaleFactor);
 		this.size.multiply(scaleFactor);
 		this.fontHeightInPixels *= scaleFactor.y;
-		this.itemSpacing.multiply(scaleFactor);
+		this._itemSpacing.multiply(scaleFactor);
 		this.scrollbar.scalePosAndSize(scaleFactor);
-	};
-
-	style(universe)
-	{
-		return universe.controlBuilder.stylesByName.get(this.styleName == null ? "Default" : this.styleName);
-	};
+	}
 
 	// drawable
 
-	draw(universe, display, drawLoc)
+	draw(universe, display, drawLoc, style)
 	{
 		drawLoc = this._drawLoc.overwriteWith(drawLoc);
 		var drawPos = this._drawPos.overwriteWith(drawLoc.pos).add(this.pos);
 
-		var style = this.style(universe);
+		var style = style || this.style(universe);
 		var colorFore = (this.isHighlighted ? style.colorFill : style.colorBorder);
 		var colorBack = (this.isHighlighted ? style.colorBorder : style.colorFill);
 
@@ -375,8 +357,8 @@ class ControlList
 		(
 			drawPos,
 			this.size,
-			colorBack, // fill
-			style.colorBorder, // border
+			Color.systemColorGet(colorBack), // fill
+			Color.systemColorGet(style.colorBorder), // border
 			false // areColorsReversed
 		);
 
@@ -414,25 +396,22 @@ class ControlList
 
 			drawPos2.overwriteWith
 			(
-				this.itemSpacing
+				this.itemSpacing()
 			).multiply
 			(
 				offsetInItems
 			).add
 			(
 				drawPos
-			).addDimensions
-			(
-				textMarginLeft, 0, 0
-			);
+			)
 
 			if (item == itemSelected)
 			{
 				display.drawRectangle
 				(
 					drawPos2,
-					this.itemSpacing,
-					colorFore, // colorFill
+					this.itemSpacing(),
+					Color.systemColorGet(colorFore), // colorFill
 					null, null
 				);
 			}
@@ -442,19 +421,24 @@ class ControlList
 				item
 			).get();
 
+			drawPos2.addDimensions
+			(
+				textMarginLeft, 0, 0
+			);
+
 			display.drawText
 			(
 				text,
 				this.fontHeightInPixels,
 				drawPos2,
-				colorFore,
-				colorBack,
+				Color.systemColorGet(colorFore),
+				Color.systemColorGet(colorBack),
 				(i == this.indexOfItemSelected(null)), // areColorsReversed
 				false, // isCentered
 				this.size.x // widthMaxInPixels
 			);
 		}
 
-		this.scrollbar.draw(universe, display, drawLoc);
-	};
+		this.scrollbar.draw(universe, display, drawLoc, style);
+	}
 }

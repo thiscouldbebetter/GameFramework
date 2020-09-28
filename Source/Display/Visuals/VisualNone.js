@@ -1,10 +1,12 @@
 
 class VisualNone
 {
-	draw(universe, world, display, entity)
+	static Instance= new VisualNone();
+
+	draw(universe, world, place, entity, display)
 	{
 		// do nothing
-	};
+	}
 
 	// Clonable.
 

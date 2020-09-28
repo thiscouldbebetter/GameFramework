@@ -35,7 +35,7 @@ class ArrayHelper
 
 	static addLookupsMultiple(array, getKeysForElement)
 	{
-		var returnLookup= {};
+		var returnLookup = new Map();
 		for (var i = 0; i < array.length; i++)
 		{
 			var element = array[i];
@@ -43,7 +43,7 @@ class ArrayHelper
 			for (var k = 0; k < keys.length; k++)
 			{
 				var key = keys[k];
-				returnLookup[key] = element;
+				returnLookup.set(key, element);
 			}
 		}
 		return returnLookup;
@@ -67,13 +67,18 @@ class ArrayHelper
 
 	static clone(array)
 	{
-		var returnValue = [];
+		var returnValue= null;
 
-		for (var i = 0; i < array.length; i++)
+		if (array != null)
 		{
-			var element = array[i];
-			var elementCloned = element.clone();
-			returnValue.push(elementCloned);
+			returnValue = [];
+
+			for (var i = 0; i < array.length; i++)
+			{
+				var element = array[i];
+				var elementCloned = element.clone();
+				returnValue.push(elementCloned);
+			}
 		}
 
 		return returnValue;

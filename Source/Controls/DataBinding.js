@@ -12,6 +12,16 @@ class DataBinding
 		this._set = set;
 	}
 
+	static fromContext(context)
+	{
+		return new DataBinding(context, null, null);
+	}
+
+	static fromGet(get)
+	{
+		return new DataBinding(null, get, null);
+	}
+
 	contextSet(value)
 	{
 		this.context = value;

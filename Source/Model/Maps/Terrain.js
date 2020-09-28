@@ -4,15 +4,15 @@ class Terrain
 	name;
 	codeChar;
 	level;
-	isBlocking;
+	traversable;
 	visuals;
 
-	constructor(name, codeChar, level, isBlocking, visuals)
+	constructor(name, codeChar, level, traversable, visuals)
 	{
 		this.name = name;
 		this.codeChar = codeChar;
 		this.level = level;
-		this.isBlocking = isBlocking;
+		this.traversable = traversable;
 		this.visuals = visuals;
 	}
 }

@@ -40,11 +40,14 @@ class Display2D
 		this._zeroes = Coords.Instances().Zeroes;
 	}
 
+	static fromSizeAndIsInvisible(size, isInvisible)
+	{
+		return new Display2D([size], null, null, null, null, isInvisible);
+	}
+
 	// constants
 
 	static RadiansPerTurn = Math.PI * 2.0;
-
-	// methods
 
 	clear()
 	{
@@ -52,7 +55,7 @@ class Display2D
 		(
 			0, 0, this.sizeInPixels.x, this.sizeInPixels.y
 		);
-	};
+	}
 
 	displayToUse()
 	{
@@ -122,7 +125,7 @@ class Display2D
 			this.graphics.closePath();
 			this.graphics.stroke();
 		}
-	};
+	}
 
 	drawBackground(colorBack, colorBorder)
 	{
@@ -134,9 +137,13 @@ class Display2D
 			colorBorder || this.colorFore,
 			null
 		);
-	};
+	}
 
-	drawCircle(center, radius, colorFill, colorBorder)
+	drawCircle
+	(
+		center, radius, colorFill,
+		colorBorder, borderThickness
+	)
 	{
 		var drawPos = this._drawPos.overwriteWith(center);
 
@@ -156,10 +163,15 @@ class Display2D
 
 		if (colorBorder != null)
 		{
+			var lineWidthToRestore = this.graphics.lineWidth;
+
+			this.graphics.lineWidth = borderThickness;
 			this.graphics.strokeStyle = colorBorder;
 			this.graphics.stroke();
+
+			this.graphics.lineWidth = lineWidthToRestore;
 		}
-	};
+	}
 
 	drawCircleWithGradient(center, radius, gradientFill, colorBorder)
 	{
@@ -181,7 +193,8 @@ class Display2D
 		for (var i = 0; i < gradientStops.length; i++)
 		{
 			var stop = gradientStops[i];
-			systemGradient.addColorStop(stop.position, stop.color.systemColor());
+			var stopColor = stop.value ;
+			systemGradient.addColorStop(stop.position, stopColor.systemColor());
 		}
 
 		this.graphics.fillStyle = systemGradient;
@@ -192,7 +205,7 @@ class Display2D
 			this.graphics.strokeStyle = colorBorder;
 			this.graphics.stroke();
 		}
-	};
+	}
 
 	drawCrosshairs(center, radius, color)
 	{
@@ -243,30 +256,43 @@ class Display2D
 		}
 
 		this.graphics.restore();
-	};
+	}
 
 	drawImage(imageToDraw, pos)
 	{
 		this.graphics.drawImage(imageToDraw.systemImage, pos.x, pos.y);
-	};
+	}
 
-	drawImagePartial(imageToDraw, pos, boxToShow)
+	drawImagePartial(imageToDraw, pos, regionToDrawAsBox)
 	{
-		var sourcePos = boxToShow.min();
-		var sourceSize = boxToShow.size;
+		this.drawImagePartialScaled(imageToDraw, pos, regionToDrawAsBox, null);
+	}
+
+	drawImagePartialScaled
+	(
+		imageToDraw, pos, regionToDrawAsBox, sizeToDraw
+	)
+	{
+		var sourcePos = regionToDrawAsBox.min();
+		var sourceSize = regionToDrawAsBox.size;
+
+		if (sizeToDraw == null)
+		{
+			sizeToDraw = sourceSize;
+		}
 
 		this.graphics.drawImage
 		(
 			imageToDraw.systemImage,
 			sourcePos.x, sourcePos.y, sourceSize.x, sourceSize.y,
-			pos.x, pos.y, sourceSize.x, sourceSize.y
+			pos.x, pos.y, sizeToDraw.x, sizeToDraw.y
 		);
-	};
+	}
 
 	drawImageScaled(imageToDraw, pos, size)
 	{
 		this.graphics.drawImage(imageToDraw.systemImage, pos.x, pos.y, size.x, size.y);
-	};
+	}
 
 	drawLine(fromPos, toPos, color, lineThickness)
 	{
@@ -290,12 +316,12 @@ class Display2D
 		this.graphics.stroke();
 
 		this.graphics.lineWidth = lineWidthToRestore;
-	};
+	}
 
 	drawMeshWithOrientation(mesh, meshOrientation)
 	{
 		// todo
-	};
+	}
 
 	drawPath(vertices, color, lineThickness, isClosed)
 	{
@@ -340,7 +366,7 @@ class Display2D
 		(
 			pos.x, pos.y, 1, 1
 		);
-	};
+	}
 
 	drawPolygon(vertices, colorFill, colorBorder)
 	{
@@ -375,7 +401,7 @@ class Display2D
 			this.graphics.strokeStyle = colorBorder;
 			this.graphics.stroke();
 		}
-	};
+	}
 
 	drawRectangle
 	(
@@ -408,7 +434,7 @@ class Display2D
 				size.x, size.y
 			);
 		}
-	};
+	}
 
 	drawRectangleCentered
 	(
@@ -418,7 +444,7 @@ class Display2D
 		var sizeHalf = this._sizeHalf.overwriteWith(size).half();
 		var posAdjusted = this._drawPos.overwriteWith(pos).subtract(sizeHalf);
 		this.drawRectangle(posAdjusted, size, colorFill, colorBorder, null);
-	};
+	}
 
 	drawText
 	(
@@ -477,7 +503,12 @@ class Display2D
 
 			if (isCentered)
 			{
-				drawPos.addDimensions(0 - textWidthInPixels / 2, 0 - fontHeightInPixels / 2, 0);
+				drawPos.addDimensions
+				(
+					0 - textWidthInPixels / 2,
+					0 - (fontHeightInPixels / 2) * 1.2, // hack
+					0)
+				;
 			}
 
 			if (colorOutline != null)
@@ -492,7 +523,7 @@ class Display2D
 		}
 
 		this.graphics.font = fontToRestore;
-	};
+	}
 
 	drawWedge
 	(
@@ -546,7 +577,19 @@ class Display2D
 			this.graphics.closePath();
 			this.graphics.stroke();
 		}
-	};
+	}
+
+	eraseModeSet(value)
+	{
+		if (value)
+		{
+			this.graphics.globalCompositeOperation = "destination-out"; // todo - ?
+		}
+		else
+		{
+			this.graphics.globalCompositeOperation = "source-atop";
+		}
+	}
 
 	fontSet(fontName, fontHeightInPixels)
 	{
@@ -556,12 +599,14 @@ class Display2D
 			this.fontHeightInPixels = fontHeightInPixels || this.fontHeightInPixels;
 			this.graphics.font = this.fontHeightInPixels + "px " + this.fontName;
 		}
-	};
+	}
+
+	flush() {}
 
 	hide(universe)
 	{
 		universe.platformHelper.platformableRemove(this);
-	};
+	}
 
 	initialize(universe)
 	{
@@ -589,7 +634,7 @@ class Display2D
 		}
 
 		return this;
-	};
+	}
 
 	rotateTurnsAroundCenter(turnsToRotate, centerOfRotation)
 	{
@@ -606,7 +651,7 @@ class Display2D
 	sizeDefault()
 	{
 		return this._sizeDefault;
-	};
+	}
 
 	scaleFactor()
 	{
@@ -616,7 +661,7 @@ class Display2D
 			this._scaleFactor = this.sizeInPixels.clone().divide(sizeBase);
 		}
 		return this._scaleFactor;
-	};
+	}
 
 	stateRestore()
 	{
@@ -635,12 +680,12 @@ class Display2D
 		var returnValue = this.graphics.measureText(textToMeasure).width;
 		this.graphics.font = fontToRestore;
 		return returnValue;
-	};
+	}
 
 	toImage()
 	{
 		return Image2.fromSystemImage("[fromDisplay]", this.canvas);
-	};
+	}
 
 	// platformable
 
@@ -652,6 +697,7 @@ class Display2D
 
 			this.canvas.width = this.sizeInPixels.x;
 			this.canvas.height = this.sizeInPixels.y;
+			this.canvas.oncontextmenu = () => false;
 
 			this.graphics = this.canvas.getContext("2d");
 
@@ -667,5 +713,5 @@ class Display2D
 		}
 
 		return this.canvas;
-	};
+	}
 }

@@ -1,19 +1,12 @@
 
-class ControlSelect
+class ControlSelect extends ControlBase
 {
-	name;
-	pos;
-	size;
 	_valueSelected;
 	_options;
 	bindingForOptionValues;
 	bindingForOptionText;
-	fontHeightInPixels;
 
 	indexOfOptionSelected;
-	isHighlighted;
-	parent;
-	styleName;
 
 	_drawPos;
 	_sizeHalf;
@@ -30,14 +23,11 @@ class ControlSelect
 		fontHeightInPixels
 	)
 	{
-		this.name = name;
-		this.pos = pos;
-		this.size = size;
+		super(name, pos, size, fontHeightInPixels);
 		this._valueSelected = valueSelected;
 		this._options = options;
 		this.bindingForOptionValues = bindingForOptionValues;
 		this.bindingForOptionText = bindingForOptionText;
-		this.fontHeightInPixels = fontHeightInPixels;
 
 		this.indexOfOptionSelected = null;
 		var valueSelected = this.valueSelected();
@@ -56,8 +46,6 @@ class ControlSelect
 				break;
 			}
 		}
-
-		this.isHighlighted = false;
 
 		// Helper variables.
 		this._drawPos = new Coords(0, 0, 0);
@@ -80,45 +68,13 @@ class ControlSelect
 			this.optionSelectedNextInDirection(1);
 		}
 		return true; // wasActionHandled
-	};
-
-	actionToInputsMappings() 
-	{
-		return null;
 	}
-
-	childWithFocus()
-	{
-		return null;
-	}
-
-	focusGain()
-	{
-			this.isHighlighted = true;
-	};
-
-	focusLose()
-	{
-			this.isHighlighted = false;
-	};
-
-	isEnabled()
-	{
-		// todo
-		return true;
-	};
 
 	mouseClick(clickPos)
 	{
 		this.optionSelectedNextInDirection(1);
 		return true; // wasClickHandled
-	};
-
-	mouseEnter() {}
-
-	mouseExit() {}
-
-	mouseMove(pos) {}
+	}
 
 	optionSelected()
 	{
@@ -129,7 +85,7 @@ class ControlSelect
 			: this.options()[this.indexOfOptionSelected]
 		);
 		return optionSelected;
-	};
+	}
 
 	optionSelectedNextInDirection(direction)
 	{
@@ -156,29 +112,31 @@ class ControlSelect
 		{
 			this._valueSelected = valueToSelect;
 		}
-	};
+	}
 
 	options()
 	{
 		return (this._options.get == null ? this._options : this._options.get() );
-	};
+	}
 
 	scalePosAndSize(scaleFactor)
 	{
 		this.pos.multiply(scaleFactor);
 		this.size.multiply(scaleFactor);
 		this.fontHeightInPixels *= scaleFactor.y;
-	};
-
-	style(universe)
-	{
-		return universe.controlBuilder.stylesByName.get(this.styleName == null ? "Default" : this.styleName);
-	};
+	}
 
 	valueSelected()
 	{
-		return (this._valueSelected == null ? null : (this._valueSelected.get == null ? this._valueSelected : this._valueSelected.get() ) );
-	};
+		var returnValue =
+		(
+			this._valueSelected == null
+			? null
+			: (this._valueSelected.get == null ? this._valueSelected : this._valueSelected.get() )
+		);
+
+		return returnValue;
+	}
 
 	// drawable
 
@@ -191,7 +149,8 @@ class ControlSelect
 		display.drawRectangle
 		(
 			drawPos, this.size,
-			style.colorFill, style.colorBorder,
+			Color.systemColorGet(style.colorFill),
+			Color.systemColorGet(style.colorBorder),
 			this.isHighlighted // areColorsReversed
 		);
 
@@ -210,11 +169,11 @@ class ControlSelect
 			text,
 			this.fontHeightInPixels,
 			drawPos,
-			style.colorBorder,
-			style.colorFill,
+			Color.systemColorGet(style.colorBorder),
+			Color.systemColorGet(style.colorFill),
 			this.isHighlighted,
 			true, // isCentered
 			this.size.x // widthMaxInPixels
 		);
-	};
+	}
 }

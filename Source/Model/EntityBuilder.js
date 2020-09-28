@@ -1,12 +1,13 @@
 
 class EntityBuilder
 {
-	messageFloater(text, pos)
+	messageFloater(text, pos, color)
 	{
-		var color = "Red";
-		var ticksToLive = 20;
+		var ticksToLive = 32;
 		var riseSpeed = -1;
-		var visual = new VisualText(new DataBinding(text, null, null), color, null);
+		var visual = new VisualText(DataBinding.fromContext(text), null, color, null);
+		pos = pos.clone();
+		pos.z--;
 
 		var messageEntity = new Entity
 		(
@@ -17,7 +18,7 @@ class EntityBuilder
 				new Ephemeral(ticksToLive, null),
 				new Locatable
 				(
-					new Disposition(pos.clone(), null, null).velSet
+					new Disposition(pos, null, null).velSet
 					(
 						new Coords(0, riseSpeed, 0)
 					)

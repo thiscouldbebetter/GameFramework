@@ -1,5 +1,5 @@
 
-class ItemContainer
+class ItemContainer extends EntityProperty
 {
 	statusMessage;
 
@@ -8,7 +8,11 @@ class ItemContainer
 		var itemHolderFrom = entityFrom.itemHolder();
 		var itemHolderTo = entityTo.itemHolder();
 
-		if (itemHolderFrom.itemEntitySelected != null)
+		if (itemHolderFrom.itemEntitySelected == null)
+		{
+			this.statusMessage = "Select and click buttons transfer items."
+		}
+		else
 		{
 			var itemEntityToTransfer = itemHolderFrom.itemEntitySelected;
 			var itemToTransfer = itemEntityToTransfer.item();
@@ -24,8 +28,15 @@ class ItemContainer
 			this.statusMessage =
 				messagePrefix
 				+ " " + itemToTransfer.defnName + ".";
+
+			var equipmentUser = entityFrom.equipmentUser();
+			if (equipmentUser != null)
+			{
+				equipmentUser.unequipItemsNoLongerHeld(entityFrom);
+			}
+
 		}
-	};
+	}
 
 	// Controllable.
 
@@ -42,11 +53,11 @@ class ItemContainer
 
 		var fontHeight = 10;
 		var margin = fontHeight * 1.5;
-		var buttonSize = new Coords(4, 2, 0).multiplyScalar(fontHeight);
+		var buttonSize = new Coords(2, 2, 0).multiplyScalar(fontHeight);
 		var listSize = new Coords
 		(
-			(size.x - margin * 3) / 2,
-			size.y - margin * 4 - buttonSize.y - fontHeight,
+			(size.x - margin * 4 - buttonSize.x) / 2,
+			size.y - margin * 4 - fontHeight * 2,
 			0
 		);
 
@@ -82,7 +93,7 @@ class ItemContainer
 			[
 				new ControlLabel
 				(
-					"labelStoreName",
+					"labelContainerName",
 					new Coords(margin, margin, 0), // pos
 					new Coords(listSize.x, 25, 0), // size
 					false, // isTextCentered
@@ -92,7 +103,7 @@ class ItemContainer
 
 				new ControlList
 				(
-					"listStoreItems",
+					"listContainerItems",
 					new Coords(margin, margin * 2, 0), // pos
 					listSize.clone(),
 					new DataBinding
@@ -100,7 +111,7 @@ class ItemContainer
 						itemHolderContainer,
 						(c) =>
 						{
-							return c.itemEntities;//.filter(x => x.item().defnName != itemDefnNameCurrency);
+							return c.itemEntities;
 						},
 						null
 					), // items
@@ -117,20 +128,10 @@ class ItemContainer
 						(c) => c.itemEntitySelected,
 						(c, v) => { c.itemEntitySelected = v; }
 					), // bindingForItemSelected
-					new DataBinding(null, (c) => c, null ), // bindingForItemValue
-					new DataBinding(true, null, null), // isEnabled
+					DataBinding.fromGet( (c) => c ), // bindingForItemValue
+					DataBinding.fromContext(true), // isEnabled
 					get, // confirm
 					null
-				),
-
-				new ControlLabel
-				(
-					"labelCustomerName",
-					new Coords(size.x - margin - listSize.x, margin, 0), // pos
-					new Coords(85, 25, 0), // size
-					false, // isTextCentered
-					entityGetterPutter.name + ":",
-					fontHeight
 				),
 
 				new ControlButton
@@ -138,17 +139,45 @@ class ItemContainer
 					"buttonGet",
 					new Coords
 					(
-						size.x / 2 - buttonSize.x - margin / 2,
-						size.y - margin - buttonSize.y,
+						(size.x - buttonSize.x) / 2,
+						(size.y - buttonSize.y - margin) / 2,
 						0
 					), // pos
 					buttonSize.clone(),
 					">",
 					fontHeight,
 					true, // hasBorder
-					new DataBinding(true, null, null), // isEnabled
+					DataBinding.fromContext(true), // isEnabled
 					get, // click
 					null, null
+				),
+
+				new ControlButton
+				(
+					"buttonPut",
+					new Coords
+					(
+						(size.x - buttonSize.x) / 2,
+						(size.y + buttonSize.y + margin) / 2,
+						0
+					), // pos
+					buttonSize.clone(),
+					"<",
+					fontHeight,
+					true, // hasBorder
+					DataBinding.fromContext(true), // isEnabled
+					put, // click
+					null, null
+				),
+
+				new ControlLabel
+				(
+					"labelGetterPutterName",
+					new Coords(size.x - margin - listSize.x, margin, 0), // pos
+					new Coords(85, 25, 0), // size
+					false, // isTextCentered
+					entityGetterPutter.name + ":",
+					fontHeight
 				),
 
 				new ControlList
@@ -178,29 +207,16 @@ class ItemContainer
 						(c) => c.itemEntitySelected,
 						(c, v) => { c.itemEntitySelected = v; }
 					), // bindingForItemSelected
-					new DataBinding(null, (c) => c, null ), // bindingForItemValue
-					new DataBinding(true, null, null), // isEnabled
+					DataBinding.fromGet( (c) => c ), // bindingForItemValue
+					DataBinding.fromContext(true), // isEnabled
 					put, // confirm
 					null
-				),
-
-				new ControlButton
-				(
-					"buttonPut",
-					new Coords(size.x / 2 + margin / 2, size.y - margin - buttonSize.y, 0), // pos
-					buttonSize.clone(),
-					"<",
-					fontHeight,
-					true, // hasBorder
-					new DataBinding(true, null, null), // isEnabled
-					put, // click
-					null, null
 				),
 
 				new ControlLabel
 				(
 					"infoStatus",
-					new Coords(size.x / 2, size.y - margin * 2 - buttonSize.y, 0), // pos
+					new Coords(size.x / 2, size.y - margin - fontHeight, 0), // pos
 					new Coords(size.x, fontHeight, 0), // size
 					true, // isTextCentered
 					new DataBinding(this, c => c.statusMessage, null),
@@ -228,5 +244,5 @@ class ItemContainer
 		);
 
 		return returnValue;
-	};
+	}
 }

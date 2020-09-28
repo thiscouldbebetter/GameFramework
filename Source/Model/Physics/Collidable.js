@@ -1,57 +1,78 @@
 
-class Collidable
+class Collidable extends EntityProperty
 {
+	ticksToWaitBetweenCollisions;
 	colliderAtRest;
 	entityPropertyNamesToCollideWith;
-	collideEntities;
+	_collideEntities;
 
 	collider;
+	locPrev;
 	ticksUntilCanCollide;
 	entitiesAlreadyCollidedWith;
+	isDisabled;
 
-	_transformTranslate;
+	_transformLocate;
 
-	constructor(colliderAtRest, entityPropertyNamesToCollideWith, collideEntities)
+	constructor
+	(
+		ticksToWaitBetweenCollisions,
+		colliderAtRest,
+		entityPropertyNamesToCollideWith,
+		collideEntities
+	)
 	{
+		super();
+		this.ticksToWaitBetweenCollisions = ticksToWaitBetweenCollisions;
 		this.colliderAtRest = colliderAtRest;
-		this.entityPropertyNamesToCollideWith = entityPropertyNamesToCollideWith;
-		this.collideEntities = collideEntities;
+		this.entityPropertyNamesToCollideWith = entityPropertyNamesToCollideWith || [];
+		this._collideEntities = collideEntities;
 
 		this.collider = this.colliderAtRest.clone();
-
-		if (this.entityPropertyNamesToCollideWith == null)
-		{
-			this.entityPropertyNamesToCollideWith = [];
-		}
-
+		this.locPrev = new Disposition(null, null, null);
 		this.ticksUntilCanCollide = 0;
 		this.entitiesAlreadyCollidedWith = [];
+		this.isDisabled = false;
 
 		// Helper variables.
 
-		this._transformTranslate = new Transform_Translate(new Coords(0, 0, 0));
+		this._transformLocate = new Transform_Locate(null);
+	}
+
+	collideEntities(u, w, p, e0, e1, c)
+	{
+		if (this._collideEntities != null)
+		{
+			this._collideEntities(u, w, p, e0, e1, c);
+		}
 	}
 
 	colliderLocateForEntity(entity)
 	{
 		this.collider.overwriteWith(this.colliderAtRest);
+		this._transformLocate.loc = entity.locatable().loc;
+
 		Transforms.applyTransformToCoordsMany
 		(
-			this._transformTranslate.displacementSet
-			(
-				entity.locatable().loc.pos
-			),
+			this._transformLocate,
 			this.collider.coordsGroupToTranslate()
 		);
-	};
+	}
 
 	initialize(universe, world, place, entity)
 	{
 		this.colliderLocateForEntity(entity);
-	};
+	}
 
 	updateForTimerTick(universe, world, place, entity)
 	{
+		if (this.isDisabled)
+		{
+			return;
+		}
+
+		this.locPrev.overwriteWith(entity.locatable().loc);
+
 		if (this.ticksUntilCanCollide > 0)
 		{
 			this.ticksUntilCanCollide--;
@@ -71,33 +92,104 @@ class Collidable
 						var entityOther = entitiesWithProperty[e];
 						if (entityOther != entity)
 						{
-							var doEntitiesCollide = universe.collisionHelper.doEntitiesCollide
+							this.updateForTimerTick_Collide
 							(
-								entity, entityOther
+								universe, world, place, entity, entityOther
 							);
-							if (doEntitiesCollide)
-							{
-								this.collideEntities
-								(
-									universe, world, place, entity, entityOther
-								);
-
-								var collidableOtherCollideEntities =
-									entityOther.collidable().collideEntities;
-								if (collidableOtherCollideEntities != null)
-								{
-									collidableOtherCollideEntities
-									(
-										universe, world, place, entityOther, entity
-									);
-								}
-							}
 						}
 					}
 				}
 			}
 		}
-	};
+	}
+
+	updateForTimerTick_Collide
+	(
+		universe, world, place, entity0, entity1
+	)
+	{
+		var collisionHelper = universe.collisionHelper;
+
+		var collidable0 = entity0.collidable();
+		var collidable1 = entity1.collidable();
+
+		var collidable0EntitiesAlreadyCollidedWith = collidable0.entitiesAlreadyCollidedWith;
+		var collidable1EntitiesAlreadyCollidedWith = collidable1.entitiesAlreadyCollidedWith;
+
+		var doEntitiesCollide = false;
+
+		var canCollidablesCollideYet = 
+			(
+				collidable0.ticksUntilCanCollide <= 0
+				&& collidable1.ticksUntilCanCollide <= 0
+			);
+
+		if (canCollidablesCollideYet)
+		{
+			var collidable0Boundable = entity0.boundable();
+			var collidable1Boundable = entity1.boundable();
+			var doBoxesCollide =
+			(
+				collidable0Boundable == null
+				|| collidable1Boundable == null
+				|| collisionHelper.doCollidersCollide(collidable0Boundable.bounds, collidable1Boundable.bounds)
+			);
+
+			if (doBoxesCollide)
+			{
+				var collider0 = collidable0.collider;
+				var collider1 = collidable1.collider;
+
+				doEntitiesCollide = collisionHelper.doCollidersCollide(collider0, collider1);
+			}
+		}
+
+		var wereEntitiesAlreadyColliding =
+		(
+			this.ticksUntilCanCollide > 0
+			&&
+			(
+				collidable0EntitiesAlreadyCollidedWith.indexOf(entity1) >= 0
+				|| collidable1EntitiesAlreadyCollidedWith.indexOf(entity0) >= 0
+			)
+		);
+
+		if (doEntitiesCollide)
+		{
+			if (wereEntitiesAlreadyColliding)
+			{
+				doEntitiesCollide = false;
+			}
+			else
+			{
+				this.ticksUntilCanCollide = this.ticksToWaitBetweenCollisions;
+				collidable0EntitiesAlreadyCollidedWith.push(entity1);
+				collidable1EntitiesAlreadyCollidedWith.push(entity0);
+			}
+		}
+		else if (wereEntitiesAlreadyColliding)
+		{
+			ArrayHelper.remove(collidable0EntitiesAlreadyCollidedWith, entity1);
+			ArrayHelper.remove(collidable1EntitiesAlreadyCollidedWith, entity0);
+		}
+
+		if (doEntitiesCollide)
+		{
+			var collision = Collision.create();
+			collisionHelper.collisionOfEntities(entity0, entity1, collision);
+
+			this.collideEntities
+			(
+				universe, world, place, entity0, entity1, collision
+			);
+
+			var entity1Collidable = entity1.collidable();
+			entity1Collidable.collideEntities
+			(
+				universe, world, place, entity1, entity0, collision
+			);
+		}
+	}
 
 	// cloneable
 
@@ -105,9 +197,10 @@ class Collidable
 	{
 		return new Collidable
 		(
+			this.ticksToWaitBetweenCollisions,
 			this.colliderAtRest.clone(),
 			this.entityPropertyNamesToCollideWith,
-			this.collideEntities
+			this._collideEntities
 		);
-	};
+	}
 }

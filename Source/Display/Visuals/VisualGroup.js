@@ -8,31 +8,34 @@ class VisualGroup
 		this.children = children;
 	}
 
-	draw(universe, world, display, entity)
+	draw(universe, world, place, entity, display)
 	{
 		for (var i = 0; i < this.children.length; i++)
 		{
 			var child = this.children[i];
-			child.draw(universe, world, display, entity);
+			child.draw(universe, world, place, entity, display);
 		}
-	};
+	}
 
 	// Clonable.
 
 	clone()
 	{
-		return this; // todo
+		return new VisualGroup(ArrayHelper.clone(this.children) );
 	}
 
 	overwriteWith(other)
 	{
-		return this; // todo
+		var otherAsVisualGroup = other ;
+		ArrayHelper.overwriteWith(this.children, otherAsVisualGroup.children);
+		return this;
 	}
 
 	// Transformable.
 
 	transform(transformToApply)
 	{
-		return this; // todo
+		this.children.forEach(x => transformToApply.transform(x));
+		return this;
 	}
 }

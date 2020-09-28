@@ -1,28 +1,25 @@
 
-class ControlVisual
+class ControlVisual extends ControlBase
 {
-	name;
-	pos;
-	size;
 	visual;
 	colorBackground;
-
-	fontHeightInPixels;
-	parent;
-	styleName;
+	colorBorder;
 
 	_drawPos;
 	_locatable;
 	_locatableEntity;
 	_sizeHalf;
 
-	constructor(name, pos, size, visual, colorBackground)
+	constructor(
+		name, pos, size,
+		visual, colorBackground,
+		colorBorder
+	)
 	{
-		this.name = name;
-		this.pos = pos;
-		this.size = size;
+		super(name, pos, size, null);
 		this.visual = visual;
 		this.colorBackground = colorBackground;
+		this.colorBorder = colorBorder;
 
 		// Helper variables.
 		this._drawPos = new Coords(0, 0, 0);
@@ -32,34 +29,16 @@ class ControlVisual
 			"_drawableEntity",
 			[
 				this._locatable,
-				new Drawable(null, null)
+				new Drawable(new VisualNone(), null)
 			]
 		);
 		this._sizeHalf = new Coords(0, 0, 0);
 	}
 
-	style(universe)
-	{
-		return universe.controlBuilder.stylesByName.get(this.styleName == null ? "Default" : this.styleName);
-	};
-
 	actionHandle(actionName, universe)
 	{
 		return false;
 	}
-
-	actionToInputsMappings()
-	{
-		return null;
-	}
-
-	childWithFocus()
-	{
-		return null;
-	}
-
-	focusGain() {}
-	focusLose() {}
 
 	isEnabled()
 	{
@@ -71,12 +50,6 @@ class ControlVisual
 		return false;
 	}
 
-	mouseEnter() {}
-
-	mouseExit() {}
-
-	mouseMove(x) {}
-
 	scalePosAndSize(scaleFactors)
 	{
 		this.pos.multiply(scaleFactors);
@@ -87,21 +60,30 @@ class ControlVisual
 
 	// drawable
 
-	draw(universe, display, drawLoc)
+	draw(universe, display, drawLoc, style)
 	{
-		var drawPos = this._drawPos.overwriteWith(drawLoc.pos).add(this.pos);
-		var style = this.style(universe);
+		var visualToDraw = this.visual.get();
+		if (visualToDraw != null)
+		{
+			var drawPos = this._drawPos.overwriteWith(drawLoc.pos).add(this.pos);
+			var style = style || this.style(universe);
 
-		var colorFill = this.colorBackground || style.colorFill;
-		display.drawRectangle
-		(
-			drawPos, this.size,
-			colorFill, style.colorBorder, null
-		);
+			var colorFill = this.colorBackground || Color.Instances()._Transparent;
+			var colorBorder = this.colorBorder || style.colorBorder;
+			display.drawRectangle
+			(
+				drawPos, this.size,
+				Color.systemColorGet(colorFill),
+				Color.systemColorGet(colorBorder),
+				null
+			);
 
-		var locatableEntity = this._locatableEntity;
-		locatableEntity.locatable().loc.pos.overwriteWith(drawPos);
-		drawPos.add(this._sizeHalf.overwriteWith(this.size).half());
-		this.visual.draw(universe, universe.world, display, locatableEntity);
-	};
+			var locatableEntity = this._locatableEntity;
+			locatableEntity.locatable().loc.pos.overwriteWith(drawPos);
+			drawPos.add(this._sizeHalf.overwriteWith(this.size).half());
+			var world = universe.world;
+			var place = (world == null ? null : world.placeCurrent);
+			visualToDraw.draw(universe, world, place, locatableEntity, display);
+		}
+	}
 }

@@ -10,9 +10,10 @@ class VenueControls
 	_mouseMovePos;
 	_mouseMovePosPrev;
 
-	constructor(controlRoot)
+	constructor(controlRoot, ignoreKeyboardAndGamepadInputs)
 	{
 		this.controlRoot = controlRoot;
+		ignoreKeyboardAndGamepadInputs = ignoreKeyboardAndGamepadInputs || false;
 
 		function buildGamepadInputs(inputName)
 		{
@@ -77,9 +78,15 @@ class VenueControls
 			)
 		];
 
-		var mappings = this.controlRoot.actionToInputsMappings;
-		if (mappings != null)
+		if (ignoreKeyboardAndGamepadInputs)
 		{
+			this.actionToInputsMappings.length = 0;
+		}
+
+		var mappingsGet = this.controlRoot.actionToInputsMappings;
+		if (mappingsGet != null)
+		{
+			var mappings = mappingsGet.call(this.controlRoot);
 			ArrayHelper.addMany(this.actionToInputsMappings, mappings);
 		}
 
@@ -102,8 +109,9 @@ class VenueControls
 		var display = universe.display;
 		var drawLoc = this._drawLoc;
 		drawLoc.pos.clear();
-		this.controlRoot.draw(universe, display, drawLoc);
-	};
+		var styleOverrideNone = null;
+		this.controlRoot.draw(universe, display, drawLoc, styleOverrideNone);
+	}
 
 	finalize(universe) {}
 
@@ -124,7 +132,7 @@ class VenueControls
 			{
 				var inputPressedName = inputPressed.name;
 
-				var mapping = this.actionToInputsMappingsByInputName[inputPressedName];
+				var mapping = this.actionToInputsMappingsByInputName.get(inputPressedName);
 
 				if (inputPressedName.startsWith("Mouse") == false)
 				{
@@ -190,6 +198,6 @@ class VenueControls
 
 		} // end for
 
-	}; // end method
+	}
 
-} // end class
+}

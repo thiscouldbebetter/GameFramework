@@ -1,5 +1,5 @@
 
-class SkillLearner
+class SkillLearner extends EntityProperty
 {
 	skillBeingLearnedName;
 	learningAccumulated;
@@ -9,6 +9,7 @@ class SkillLearner
 
 	constructor(skillBeingLearnedName, learningAccumulated, skillsKnownNames)
 	{
+		super();
 		this.skillBeingLearnedName = skillBeingLearnedName;
 		this.learningAccumulated = learningAccumulated || 0;
 		this.skillsKnownNames = skillsKnownNames || [];
@@ -17,12 +18,12 @@ class SkillLearner
 	isLearningInProgress()
 	{
 		return (this.learningAccumulated > 0);
-	};
+	}
 
 	isSkillBeingLearned()
 	{
 		return (this.skillBeingLearnedName != null);
-	};
+	}
 
 	skillCheapestAvailable(skillsAll)
 	{
@@ -37,7 +38,7 @@ class SkillLearner
 			)[0];
 		}
 		return skillCheapest;
-	};
+	}
 
 	learningIncrement(skillsAll, skillsByName, amountToIncrement)
 	{
@@ -74,12 +75,12 @@ class SkillLearner
 		}
 
 		return message;
-	};
+	}
 
 	learningAccumulatedOverRequired(skillsAllByName)
 	{
 		return this.learningAccumulated + "/" + this.learningRequired(skillsAllByName);
-	};
+	}
 
 	learningRequired(skillsAllByName)
 	{
@@ -96,7 +97,7 @@ class SkillLearner
 	skillSelected(skillsAllByName)
 	{
 		return (this.skillSelectedName == null ? null : skillsAllByName.get(this.skillSelectedName));
-	};
+	}
 
 	skillsAvailableToLearn(skillsAll)
 	{
@@ -150,7 +151,7 @@ class SkillLearner
 		}
 
 		return skillsUnknownWithKnownPrerequisites;
-	};
+	}
 
 	skillsKnown(skillsAllByName)
 	{
@@ -164,14 +165,14 @@ class SkillLearner
 		}
 
 		return returnValues;
-	};
+	}
 
 	skillBeingLearned(skillsAllByName)
 	{
 		var returnValue = skillsAllByName.get(this.skillBeingLearnedName);
 
 		return returnValue;
-	};
+	}
 
 	// entity
 
@@ -182,21 +183,23 @@ class SkillLearner
 
 	// controls
 
-	toControl(universe, sizeIgnored, entity, venueToReturnTo, includeTitle)
+	toControl(universe, size, entity, venueToReturnTo, includeTitle)
 	{
 		var display = universe.display;
-		var size = display.sizeInPixels.clone();
+		//var size = display.sizeInPixels.clone();
 		var labelHeight = display.fontHeightInPixels * 1.2;
 		var margin = 20;
 		var labelHeightLarge = labelHeight * 2;
 
-		var listSize = new Coords(
-			(size.x - margin * 3) / 2,
-			150,
-			0
-		); // size
+		size = size.clone().add(new Coords(0, 30, 0)); // hack
+
+		var listSize = new Coords
+		(
+			(size.x - margin * 3) / 2, 150, 0
+		); 
 
 		var defns = universe.world.defn;
+		var skillLearner = this;
 		var skillsAll = defns.defnArraysByTypeName.get(Skill.name); // todo - Just use the -ByName lookup.
 		var skillsAllByName = defns.defnsByNameByTypeName.get(Skill.name);
 
@@ -229,7 +232,9 @@ class SkillLearner
 					),
 					new DataBinding(null, null, null), // bindingForItemText
 					labelHeight, // fontHeightInPixels
-					null, null, null, null, null
+					null, null,
+					DataBinding.fromContext(true), // isEnabled
+					null, null
 				),
 
 				new ControlLabel
@@ -265,19 +270,24 @@ class SkillLearner
 					new DataBinding
 					(
 						this,
-						(c) => { return c.skillBeingLearned(skillsAllByName); },
+						(c) =>
+						{
+							return c.skillSelected(skillsAllByName);
+						},
 						(c, v) =>
 						{
 							var skillName = v.name;
-							c.skillBeingLearnedName = skillName;
 							c.skillSelectedName = skillName;
 						}
 					), // bindingForItemSelected
-					new DataBinding
-					(
-						null, (c) => c.name, null
-					), // bindingForItemValue
-					null, null, null
+					null, // bindingForItemValue
+					DataBinding.fromContext(true), // isEnabled
+					(u) => 
+					{
+						skillLearner.skillBeingLearnedName =
+							skillLearner.skillSelectedName;
+					}, // confirm
+					null
 				),
 
 				new ControlLabel
@@ -305,6 +315,25 @@ class SkillLearner
 
 				new ControlLabel
 				(
+					"labelSkillSelectedDescription", // name,
+					new Coords(margin, 232, 0), // pos,
+					new Coords(size.x - margin * 2, labelHeight, 0), // size,
+					false, // isTextCentered,
+					new DataBinding
+					(
+						this,
+						(c) =>
+						{
+							var skill = c.skillSelected(skillsAllByName);
+							return (skill == null ? "-" : skill.description);
+						},
+						null
+					),
+					null
+				),
+
+				new ControlLabel
+				(
 					"labelSkillBeingLearned", // name,
 					new Coords(margin, size.y - margin - labelHeight * 2, 0), // pos,
 					new Coords(size.x - margin * 2, labelHeight, 0), // size,
@@ -316,7 +345,7 @@ class SkillLearner
 				new ControlLabel
 				(
 					"textSkillBeingLearned", // name,
-					new Coords(155, size.y - margin - labelHeight * 2, 0), // pos,
+					new Coords(145, size.y - margin - labelHeight * 2, 0), // pos,
 					new Coords(size.x - margin * 2, labelHeight, 0), // size,
 					false, // isTextCentered,
 					new DataBinding
@@ -344,7 +373,7 @@ class SkillLearner
 				new ControlLabel
 				(
 					"textLearningAccumulated", // name,
-					new Coords(160, size.y - margin - labelHeight, 0), // pos,
+					new Coords(145, size.y - margin - labelHeight, 0), // pos,
 					new Coords(30, labelHeight, 0), // size,
 					false, // isTextCentered,
 					new DataBinding
@@ -383,5 +412,5 @@ class SkillLearner
 		}
 
 		return returnValue;
-	};
+	}
 }

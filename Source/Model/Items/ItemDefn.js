@@ -1,5 +1,5 @@
 
-class ItemDefn
+class ItemDefn extends EntityProperty
 {
 	name;
 	appearance;
@@ -8,13 +8,18 @@ class ItemDefn
 	tradeValue;
 	stackSizeMax;
 	categoryNames;
-	use;
+	_use;
+	visual;
 
 	constructor
 	(
 		name, appearance, description, mass,
-		tradeValue, stackSizeMax, categoryNames, use)
+		tradeValue, stackSizeMax, categoryNames,
+		use,
+		visual
+	)
 	{
+		super();
 		this.name = name;
 
 		this.appearance = appearance || name;
@@ -23,13 +28,14 @@ class ItemDefn
 		this.tradeValue = tradeValue;
 		this.stackSizeMax = stackSizeMax || Number.POSITIVE_INFINITY;
 		this.categoryNames = categoryNames || [];
-		this.use = use;
+		this._use = use;
+		this.visual = visual;
 	}
 
 	static new1(name)
 	{
-		return new ItemDefn(name, null, null, null, null, null, null, null);
-	};
+		return new ItemDefn(name, null, null, null, null, null, null, null, null);
+	}
 
 	static fromNameCategoryNameAndUse(name, categoryName, use)
 	{
@@ -37,12 +43,26 @@ class ItemDefn
 		returnValue.categoryNames = [ categoryName ];
 		returnValue.use = use;
 		return returnValue;
-	};
+	}
 
 	static fromNameAndUse(name, use)
 	{
 		var returnValue = ItemDefn.new1(name);
 		returnValue.use = use;
 		return returnValue;
-	};
+	}
+
+	use(u, w, p, eUsing, eUsed)
+	{
+		var returnValue;
+		if (this._use == null)
+		{
+			returnValue = "Can't use " + this.name + ".";
+		}
+		else
+		{
+			returnValue = this._use(u, w, p, eUsing, eUsed);
+		}
+		return returnValue;
+	}
 }

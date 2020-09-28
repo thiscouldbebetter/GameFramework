@@ -4,24 +4,26 @@ class VisualText
 	_text;
 	colorFill;
 	colorBorder;
+	heightInPixels;
 
-	constructor(text, colorFill, colorBorder)
+	constructor(text, heightInPixels, colorFill, colorBorder)
 	{
 		this._text = text;
+		this.heightInPixels = heightInPixels || 10;
 		this.colorFill = colorFill;
 		this.colorBorder = colorBorder;
 	}
 
-	draw(universe, world, display, entity)
+	draw(universe, world, place, entity, display)
 	{
 		var text = this.text(universe, world, display, entity);
 		display.drawText
 		(
 			text,
-			display.fontHeightInPixels,
+			this.heightInPixels,
 			entity.locatable().loc.pos,
-			this.colorFill,
-			this.colorBorder,
+			Color.systemColorGet(this.colorFill),
+			Color.systemColorGet(this.colorBorder),
 			false, // areColorsReversed
 			true, // isCentered
 			null // widthMaxInPixels

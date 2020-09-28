@@ -23,7 +23,7 @@ class Mesh
 		var box = new Box(center, size);
 		var returnValue = Mesh.fromBox(box);
 		return returnValue;
-	};
+	}
 
 	static cubeUnit(center)
 	{
@@ -34,7 +34,7 @@ class Mesh
 		var size = new Coords(2, 2, 2);
 		var returnValue = Mesh.boxOfSize(center, size);
 		return returnValue;
-	};
+	}
 
 	static fromBox(box)
 	{
@@ -75,7 +75,7 @@ class Mesh
 		);
 
 		return returnValue;
-	};
+	}
 
 	static fromFace(center, faceToExtrude, thickness)
 	{
@@ -149,7 +149,7 @@ class Mesh
 		);
 
 		return returnValue;
-	};
+	}
 
 	// instance methods
 
@@ -161,12 +161,12 @@ class Mesh
 		}
 		this._box.ofPoints(this.vertices());
 		return this._box;
-	};
+	}
 
 	edges()
 	{
 		return null; // todo
-	};
+	}
 
 	faces()
 	{
@@ -185,7 +185,7 @@ class Mesh
 		}
 
 		return this._faces;
-	};
+	}
 
 	vertices()
 	{
@@ -206,7 +206,7 @@ class Mesh
 		}
 
 		return this._vertices;
-	};
+	}
 
 	// transformable
 
@@ -221,7 +221,7 @@ class Mesh
 		this.vertices(); // hack - Recalculate.
 
 		return this;
-	};
+	}
 
 	// clonable
 
@@ -233,21 +233,34 @@ class Mesh
 			ArrayHelper.clone(this.vertexOffsets),
 			ArrayHelper.clone(this.faceBuilders)
 		);
-	};
+	}
 
 	overwriteWith(other)
 	{
 		this.center.overwriteWith(other.center);
 		ArrayHelper.overwriteWith(this.vertexOffsets, other.vertexOffsets);
 		ArrayHelper.overwriteWith(this.faceBuilders, other.faceBuilders);
-	};
+		return this;
+	}
 
 	// transformable
 
 	coordsGroupToTranslate()
 	{
 		return [ this.center ];
-	};
+	}
+
+	// ShapeBase.
+
+	normalAtPos(posToCheck, normalOut)
+	{
+		return this.box().normalAtPos(posToCheck, normalOut);
+	}
+
+	surfacePointNearPos(posToCheck, surfacePointOut)
+	{
+		return surfacePointOut.overwriteWith(posToCheck); // todo
+	}
 }
 
 class Mesh_FaceBuilder
@@ -280,17 +293,17 @@ class Mesh_FaceBuilder
 			vertexIndex += offset;
 			this.vertexIndices[i] = vertexIndex;
 		}
-	};
+	}
 
 	// clonable
 
 	clone()
 	{
 		return new Mesh_FaceBuilder(this.vertexIndices.slice());
-	};
+	}
 
 	overwriteWith(other)
 	{
 		ArrayHelper.overwriteWith(this.vertexIndices, other.vertexIndices);
-	};
+	}
 }

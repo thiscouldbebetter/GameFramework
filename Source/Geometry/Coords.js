@@ -31,7 +31,7 @@ class Coords
 			Coords._instances = new Coords_Instances();
 		}
 		return Coords._instances;
-	};
+	}
 
 	// methods
 
@@ -41,7 +41,7 @@ class Coords
 		this.y = Math.abs(this.y);
 		this.z = Math.abs(this.z);
 		return this;
-	};
+	}
 
 	add(other)
 	{
@@ -49,7 +49,7 @@ class Coords
 		this.y += other.y;
 		this.z += other.z;
 		return this;
-	};
+	}
 
 	addDimensions(x, y, z)
 	{
@@ -57,7 +57,7 @@ class Coords
 		this.y += y;
 		this.z += z;
 		return this;
-	};
+	}
 
 	ceiling()
 	{
@@ -65,7 +65,7 @@ class Coords
 		this.y = Math.ceil(this.y);
 		this.z = Math.ceil(this.z);
 		return this;
-	};
+	}
 
 	clear()
 	{
@@ -73,18 +73,18 @@ class Coords
 		this.y = 0;
 		this.z = 0;
 		return this;
-	};
+	}
 
 	clearZ()
 	{
 		this.z = 0;
 		return this;
-	};
+	}
 
 	clone()
 	{
 		return new Coords(this.x, this.y, this.z);
-	};
+	}
 
 	crossProduct(other)
 	{
@@ -94,7 +94,7 @@ class Coords
 			this.z * other.x - this.x * other.z,
 			this.x * other.y - this.y * other.x
 		);
-	};
+	}
 
 	dimensionGet(dimensionIndex)
 	{
@@ -114,7 +114,7 @@ class Coords
 		}
 
 		return returnValue;
-	};
+	}
 
 	dimensionSet(dimensionIndex, valueToSet)
 	{
@@ -132,12 +132,12 @@ class Coords
 		}
 
 		return this;
-	};
+	}
 
 	dimensions()
 	{
 		return [ this.x, this.y, this.z ];
-	};
+	}
 
 	directions()
 	{
@@ -169,7 +169,7 @@ class Coords
 		}
 
 		return this;
-	};
+	}
 
 	divide(other)
 	{
@@ -177,7 +177,7 @@ class Coords
 		this.y /= other.y;
 		this.z /= other.z;
 		return this;
-	};
+	}
 
 	divideScalar(scalar)
 	{
@@ -185,27 +185,27 @@ class Coords
 		this.y /= scalar;
 		this.z /= scalar;
 		return this;
-	};
+	}
 
 	dotProduct(other)
 	{
 		return this.x * other.x + this.y * other.y + this.z * other.z;
-	};
+	}
 
 	double()
 	{
 		return this.multiplyScalar(2);
-	};
+	}
 
 	equals(other)
 	{
 		return (this.x == other.x && this.y == other.y && this.z == other.z);
-	};
+	}
 
 	equalsXY(other)
 	{
 		return (this.x == other.x && this.y == other.y);
-	};
+	}
 
 	floor()
 	{
@@ -213,11 +213,44 @@ class Coords
 		this.y = Math.floor(this.y);
 		this.z = Math.floor(this.z);
 		return this;
-	};
+	}
+
+	fromHeadingInTurns(headingInTurns)
+	{
+		var headingInRadians = headingInTurns * Polar.RadiansPerTurn;
+
+		this.x = Math.cos(headingInRadians);
+		this.y = Math.sin(headingInRadians);
+
+		return this;
+	}
 
 	half()
 	{
 		return this.divideScalar(2);
+	}
+
+	headingInTurns()
+	{
+		var returnValue;
+
+		if (this.x == 0 && this.y == 0)
+		{
+			returnValue = null;
+		}
+		else
+		{
+			returnValue = Math.atan2(this.y, this.x) / (Math.PI * 2);
+
+			if (returnValue < 0)
+			{
+				returnValue += 1;
+			}
+
+			returnValue = NumberHelper.wrapToRangeMinMax(returnValue, 0, 1);
+		}
+
+		return returnValue;
 	};
 
 	invert()
@@ -226,12 +259,17 @@ class Coords
 		this.y = 0 - this.y;
 		this.z = 0 - this.z;
 		return this;
-	};
+	}
 
 	isInRangeMax(max)
 	{
 		return this.isInRangeMinMax(Coords.Instances().Zeroes, max);
-	};
+	}
+
+	isInRangeMaxExclusive(max)
+	{
+		return this.isInRangeMinInclusiveMaxExclusive(Coords.Instances().Zeroes, max);
+	}
 
 	isInRangeMinMax(min, max)
 	{
@@ -246,12 +284,27 @@ class Coords
 		);
 
 		return returnValue;
-	};
+	}
+
+	isInRangeMinInclusiveMaxExclusive(min, max)
+	{
+		var returnValue =
+		(
+			this.x >= min.x
+			&& this.x < max.x
+			&& this.y >= min.y
+			&& this.y < max.y
+			&& this.z >= min.z
+			&& this.z < max.z
+		);
+
+		return returnValue;
+	}
 
 	magnitude()
 	{
 		return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
-	};
+	}
 
 	multiply(other)
 	{
@@ -259,7 +312,7 @@ class Coords
 		this.y *= other.y;
 		this.z *= other.z;
 		return this;
-	};
+	}
 
 	multiplyDimensions(x, y, z)
 	{
@@ -267,7 +320,7 @@ class Coords
 		this.y *= y;
 		this.z *= z;
 		return this;
-	};
+	}
 
 	multiplyScalar(scalar)
 	{
@@ -275,7 +328,7 @@ class Coords
 		this.y *= scalar;
 		this.z *= scalar;
 		return this;
-	};
+	}
 
 	normalize()
 	{
@@ -285,7 +338,7 @@ class Coords
 			this.divideScalar(magnitude);
 		}
 		return this;
-	};
+	}
 
 	overwriteWith(other)
 	{
@@ -293,7 +346,7 @@ class Coords
 		this.y = other.y;
 		this.z = other.z;
 		return this;
-	};
+	}
 
 	overwriteWithDimensions(x, y, z)
 	{
@@ -301,19 +354,19 @@ class Coords
 		this.y = y;
 		this.z = z;
 		return this;
-	};
+	}
 
 	overwriteWithXY(other)
 	{
 		this.x = other.x;
 		this.y = other.y;
 		return this;
-	};
+	}
 
 	productOfDimensions()
 	{
 		return this.x * this.y * this.z;
-	};
+	}
 
 	randomize(randomizer)
 	{
@@ -325,7 +378,7 @@ class Coords
 		this.y = randomizer.getNextRandom();
 		this.z = randomizer.getNextRandom();
 		return this;
-	};
+	}
 
 	right()
 	{
@@ -333,7 +386,7 @@ class Coords
 		this.y = this.x;
 		this.x = 0 - temp;
 		return this;
-	};
+	}
 
 	round()
 	{
@@ -341,7 +394,7 @@ class Coords
 		this.y = Math.round(this.y);
 		this.z = Math.round(this.z);
 		return this;
-	};
+	}
 
 	subtract(other)
 	{
@@ -349,7 +402,7 @@ class Coords
 		this.y -= other.y;
 		this.z -= other.z;
 		return this;
-	};
+	}
 
 	subtractWrappedToRangeMax(other, max)
 	{
@@ -357,12 +410,12 @@ class Coords
 		this.y = NumberHelper.subtractWrappedToRangeMax(this.y, other.y, max.y);
 		this.z = NumberHelper.subtractWrappedToRangeMax(this.z, other.z, max.z);
 		return this;
-	};
+	}
 
 	sumOfDimensions()
 	{
 		return this.x + this.y + this.z;
-	};
+	}
 
 	trimToMagnitudeMax(magnitudeMax)
 	{
@@ -372,7 +425,7 @@ class Coords
 			this.divideScalar(magnitude).multiplyScalar(magnitudeMax);
 		}
 		return this;
-	};
+	}
 
 	trimToRangeMax(max)
 	{
@@ -404,7 +457,7 @@ class Coords
 		}
 
 		return this;
-	};
+	}
 
 	trimToRangeMinMax(min, max)
 	{
@@ -436,7 +489,7 @@ class Coords
 		}
 
 		return this;
-	};
+	}
 
 	wrapToRangeMax(max)
 	{
@@ -471,37 +524,37 @@ class Coords
 		}
 
 		return this;
-	};
+	}
 
 	xSet(value)
 	{
 		this.x = value;
 		return this;
-	};
+	}
 
 	ySet(value)
 	{
 		this.y = value;
 		return this;
-	};
+	}
 
 	zSet(value)
 	{
 		this.z = value;
 		return this;
-	};
+	}
 
 	// string
 
 	toString()
 	{
 		return this.x + "x" + this.y + "x" + this.z;
-	};
+	}
 
 	toStringXY()
 	{
 		return this.x + "x" + this.y;
-	};
+	}
 }
 
 class Coords_Instances

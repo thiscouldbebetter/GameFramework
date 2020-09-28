@@ -19,6 +19,19 @@ class Entity
 		}
 	}
 
+	finalize(universe, world, place)
+	{
+		var entityProperties = this.properties;
+		for (var p = 0; p < entityProperties.length; p++)
+		{
+			var property = entityProperties[p];
+			if (property.finalize != null)
+			{
+				property.finalize(universe, world, place, this);
+			}
+		}
+	}
+
 	initialize(universe, world, place)
 	{
 		var entityProperties = this.properties;
@@ -30,7 +43,31 @@ class Entity
 				property.initialize(universe, world, place, this);
 			}
 		}
-	};
+	}
+
+	propertyAddForPlace(propertyToAdd, place)
+	{
+		this.properties.push(propertyToAdd);
+		this.propertiesByName.set(propertyToAdd.constructor.name, propertyToAdd);
+		if (place != null)
+		{
+			var propertyName = propertyToAdd.constructor.name;
+			var entitiesWithProperty = place.entitiesByPropertyName(propertyName);
+			entitiesWithProperty.push(this);
+		}
+	}
+
+	propertyRemoveForPlace(propertyToRemove, place)
+	{
+		ArrayHelper.remove(this.properties, propertyToRemove);
+		this.propertiesByName.delete(propertyToRemove.constructor.name);
+		if (place != null)
+		{
+			var propertyName = propertyToRemove.constructor.name;
+			var entitiesWithProperty = place.entitiesByPropertyName(propertyName);
+			ArrayHelper.remove(entitiesWithProperty, this);
+		}
+	}
 
 	// Cloneable.
 
@@ -41,7 +78,8 @@ class Entity
 		for (var i = 0; i < this.properties.length; i++)
 		{
 			var property = this.properties[i];
-			var propertyCloned = (property.clone == null ? property : property.clone());
+			var propertyAsAny = property ;
+			var propertyCloned = (propertyAsAny.clone == null ? propertyAsAny : propertyAsAny.clone()) ;
 			propertiesCloned.push(propertyCloned);
 		}
 		var returnValue = new Entity
@@ -49,55 +87,49 @@ class Entity
 			nameCloned, propertiesCloned
 		);
 		return returnValue;
-	};
+	}
 
 	// Convenience methods for properties.
 
 	actor() { return this.propertiesByName.get(Actor.name); }
-
 	boundable() { return this.propertiesByName.get(Boundable.name); }
-
 	camera() { return this.propertiesByName.get(Camera.name); }
-
 	collidable() { return this.propertiesByName.get(Collidable.name); }
-
 	constrainable() { return this.propertiesByName.get(Constrainable.name); }
-
 	controllable() { return this.propertiesByName.get(Controllable.name); }
-
 	damager() { return this.propertiesByName.get(Damager.name); }
-
 	device() { return this.propertiesByName.get(Device.name); }
-
 	drawable() { return this.propertiesByName.get(Drawable.name); }
-
+	drawableCamera() { return this.propertiesByName.get(DrawableCamera.name); }
+	effectable() { return this.propertiesByName.get(Effectable.name); }
 	ephemeral() { return this.propertiesByName.get(Ephemeral.name); }
-
 	equipmentUser() { return this.propertiesByName.get(EquipmentUser.name); }
-
+	equippable() { return this.propertiesByName.get(Equippable.name); }
+	enemy() { return this.propertiesByName.get(Enemy.name); }
+	forceField() { return this.propertiesByName.get(ForceField.name); }
 	item() { return this.propertiesByName.get(Item.name); }
-
 	itemContainer() { return this.propertiesByName.get(ItemContainer.name); }
-
 	itemCrafter() { return this.propertiesByName.get(ItemCrafter.name); }
-
+	itemDefn() { return this.propertiesByName.get(ItemDefn.name); }
 	itemHolder() { return this.propertiesByName.get(ItemHolder.name); }
-
 	itemStore() { return this.propertiesByName.get(ItemStore.name); }
-
+	journalKeeper() { return this.propertiesByName.get(JournalKeeper.name); }
 	killable() { return this.propertiesByName.get(Killable.name); }
-
+	loadable() { return this.propertiesByName.get(Loadable.name); }
 	locatable() { return this.propertiesByName.get(Locatable.name); }
-
 	movable() { return this.propertiesByName.get(Movable.name); }
-
+	obstacle() { return this.propertiesByName.get(Obstacle.name); }
+	phased() { return this.propertiesByName.get(Phased.name); }
 	recurrent() { return this.propertiesByName.get(Recurrent.name); }
-
+	perceptible() { return this.propertiesByName.get(Perceptible.name); }
+	perceptor() { return this.propertiesByName.get(Perceptor.name); }
 	playable() { return this.propertiesByName.get(Playable.name); }
-
 	portal() { return this.propertiesByName.get(Portal.name); }
-
+	selector() { return this.propertiesByName.get(Selector.name); }
 	skillLearner() { return this.propertiesByName.get(SkillLearner.name); }
-
+	starvable() { return this.propertiesByName.get(Starvable.name); }
 	talker() { return this.propertiesByName.get(Talker.name); }
+	tirable() { return this.propertiesByName.get(Tirable.name); }
+	traversable() { return this.propertiesByName.get(Traversable.name); }
+	usable() { return this.propertiesByName.get(Usable.name); }
 }
