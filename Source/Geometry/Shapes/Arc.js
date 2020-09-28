@@ -43,4 +43,17 @@ class Arc
 	{
 		return [ this.shell.sphereOuter.center, this.wedge.vertex ];
 	}
+
+	// ShapeBase.
+
+	normalAtPos(posToCheck, normalOut)
+	{
+		return this.shell.normalAtPos(posToCheck, normalOut);
+	}
+
+	surfacePointNearPos(posToCheck, surfacePointOut)
+	{
+		return surfacePointOut.overwriteWith(posToCheck); // todo
+	}
+
 }

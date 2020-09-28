@@ -36,7 +36,11 @@ class InputHelper
 		this.inputsPressedByName = new Map();
 	}
 
-	actionsFromInput(actionsByName, actionToInputsMappingsByInputName)
+	actionsFromInput
+	(
+		actionsByName,
+		actionToInputsMappingsByInputName
+	)
 	{
 		var returnValues = [];
 
@@ -46,7 +50,7 @@ class InputHelper
 			var inputPressed = inputsPressed[i];
 			if (inputPressed.isActive)
 			{
-				var mapping = actionToInputsMappingsByInputName[inputPressed.name];
+				var mapping = actionToInputsMappingsByInputName.get(inputPressed.name);
 				if (mapping != null)
 				{
 					var actionName = mapping.actionName;

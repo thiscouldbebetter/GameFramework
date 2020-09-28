@@ -6,7 +6,7 @@ class VisualPolygon
 	colorBorder;
 
 	verticesAsPathTransformed;
-	transformTranslate;
+	transformLocate;
 
 	constructor(verticesAsPath, colorFill, colorBorder)
 	{
@@ -15,13 +15,13 @@ class VisualPolygon
 		this.colorBorder = colorBorder;
 
 		this.verticesAsPathTransformed = this.verticesAsPath.clone();
-		this.transformTranslate = new Transform_Translate(new Coords(0, 0, 0));
+		this.transformLocate = new Transform_Locate(null);
 	}
 
-	draw(universe, world, display, entity)
+	draw(universe, world, place, entity, display)
 	{
-		var drawablePos = entity.locatable().loc.pos;
-		this.transformTranslate.displacement.overwriteWith(drawablePos);
+		var drawableLoc = entity.locatable().loc;
+		this.transformLocate.loc.overwriteWith(drawableLoc);
 
 		this.verticesAsPathTransformed.overwriteWith
 		(
@@ -30,33 +30,50 @@ class VisualPolygon
 
 		Transforms.applyTransformToCoordsMany
 		(
-			this.transformTranslate,
+			this.transformLocate,
 			this.verticesAsPathTransformed.points
 		);
 
 		display.drawPolygon
 		(
 			this.verticesAsPathTransformed.points,
-			this.colorFill, this.colorBorder
+			Color.systemColorGet(this.colorFill),
+			Color.systemColorGet(this.colorBorder)
 		);
-	};
+	}
 
 	// Clonable.
 
 	clone()
 	{
-		return this; // todo
+		return new VisualPolygon
+		(
+			this.verticesAsPath.clone(),
+			ClonableHelper.clone(this.colorFill),
+			ClonableHelper.clone(this.colorBorder)
+		);
 	}
 
 	overwriteWith(other)
 	{
-		return this; // todo
+		var otherAsVisualPolygon = other 
+		ArrayHelper.overwriteWith(this.verticesAsPath, otherAsVisualPolygon.verticesAsPath);
+		if (this.colorFill != null)
+		{
+			this.colorFill.overwriteWith(otherAsVisualPolygon.colorFill);
+		}
+		if (this.colorBorder != null)
+		{
+			this.colorBorder.overwriteWith(otherAsVisualPolygon.colorBorder);
+		}
+		return this;
 	}
 
 	// Transformable.
 
 	transform(transformToApply)
 	{
-		return this; // todo
+		this.verticesAsPath.transform(transformToApply);
+		return this;
 	}
 }

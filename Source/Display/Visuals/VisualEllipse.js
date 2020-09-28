@@ -20,17 +20,18 @@ class VisualEllipse
 		this.colorBorder = colorBorder;
 	}
 
-	draw(universe, world, display, entity)
+	draw(universe, world, place, entity, display)
 	{
 		var drawableLoc = entity.locatable().loc;
 		var drawableOrientation = drawableLoc.orientation;
-		var drawableRotationInTurns = drawableOrientation.headingInTurns();
+		var drawableRotationInTurns = drawableOrientation.forward.headingInTurns();
 		display.drawEllipse
 		(
 			drawableLoc.pos,
 			this.semimajorAxis, this.semiminorAxis,
 			NumberHelper.wrapToRangeZeroOne(this.rotationInTurns + drawableRotationInTurns),
-			this.colorFill, this.colorBorder
+			Color.systemColorGet(this.colorFill),
+			Color.systemColorGet(this.colorBorder)
 		);
 	};
 

@@ -70,7 +70,7 @@ class VenueMessage
 				venuesToLayer.push(this.venuePrev);
 			}
 
-			venuesToLayer.push(new VenueControls(controlMessage));
+			venuesToLayer.push(new VenueControls(controlMessage, false));
 
 			this._venueInner = new VenueLayered(venuesToLayer, null);
 		}

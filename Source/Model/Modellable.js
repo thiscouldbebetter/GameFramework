@@ -1,10 +1,11 @@
 
-class Modellable
+class Modellable extends EntityProperty
 {
 	model;
 
 	constructor(model)
 	{
+		super();
 		this.model = model;
 	}
 

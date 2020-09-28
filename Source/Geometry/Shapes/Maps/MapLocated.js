@@ -19,17 +19,30 @@ class MapLocated
 	clone()
 	{
 		return new MapLocated(this.map, this.loc.clone());
-	};
+	}
 
 	overwriteWith(other)
 	{
 		this.loc.overwriteWith(other.loc);
-	};
+		return this;
+	}
 
 	// translatable
 
 	coordsGroupToTranslate()
 	{
 		return [ this.loc.pos ];
-	};
+	}
+
+	// Shape.
+
+	normalAtPos(posToCheck, normalOut)
+	{
+		return normalOut.overwriteWith(posToCheck).subtract(this.loc.pos).normalize();
+	}
+
+	surfacePointNearPos(posToCheck, surfacePointOut)
+	{
+		return surfacePointOut.overwriteWith(posToCheck); // todo
+	}
 }

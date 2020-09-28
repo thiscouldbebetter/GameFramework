@@ -22,7 +22,7 @@ class VisualRectangle
 		this._drawPos = new Coords(0, 0, 0);
 	}
 
-	draw(universe, world, display, entity)
+	draw(universe, world, place, entity, display)
 	{
 		var drawPos = this._drawPos.overwriteWith
 		(
@@ -31,15 +31,15 @@ class VisualRectangle
 
 		if (this.isCentered)
 		{
-			drawPos.subtract
-			(
-				this.sizeHalf
-			);
+			drawPos.subtract(this.sizeHalf);
 		}
 
 		display.drawRectangle
 		(
-			drawPos, this.size, this.colorFill, this.colorBorder, null
+			drawPos, this.size,
+			Color.systemColorGet(this.colorFill),
+			Color.systemColorGet(this.colorBorder),
+			null
 		);
 	};
 

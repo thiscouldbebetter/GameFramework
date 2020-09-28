@@ -1,42 +1,42 @@
 
 class VisualImageScaled
 {
-	 visualImage;
-	 sizeScaled;
+	visualImage;
+	sizeToDraw;
 
-	 _drawPos;
+	sizeToDrawHalf;
+	_posSaved;
 
-	constructor(visualImage, sizeScaled)
+	constructor(visualImage, sizeToDraw)
 	{
 		this.visualImage = visualImage;
-		this.sizeScaled = sizeScaled;
+		this.sizeToDraw = sizeToDraw;
 
-		// Helper variables.
-		this._drawPos = new Coords(0, 0, 0);
+		this.sizeToDrawHalf = this.sizeToDraw.clone().half();
+		this._posSaved = new Coords(0, 0, 0);
 	}
 
-	static manyFromSizeAndVisuals(sizeScaled, visualsToScale)
+	static manyFromSizeAndVisuals(sizeToDraw, visualsToScale)
 	{
 		var returnValues = [];
 		for (var i = 0; i < visualsToScale.length; i++)
 		{
 			var visualToScale = visualsToScale[i];
-			var visualScaled = new VisualImageScaled(visualToScale, sizeScaled);
+			var visualScaled = new VisualImageScaled(visualToScale, sizeToDraw);
 			returnValues.push(visualScaled);
 		}
 		return returnValues;
 	};
 
-	draw(universe, world, display, entity)
+	draw(universe, world, place, entity, display)
 	{
 		var image = this.visualImage.image(universe);
-		var imageSize = this.sizeScaled;
-		var drawPos = this._drawPos.clear().subtract(imageSize).half().add
-		(
-			entity.locatable().loc.pos
-		);
-		display.drawImageScaled(image, drawPos, imageSize);
-	};
+		var entityPos = entity.locatable().loc.pos;
+		this._posSaved.overwriteWith(entityPos);
+		entityPos.subtract(this.sizeToDrawHalf);
+		display.drawImageScaled(image, entityPos, this.sizeToDraw);
+		entityPos.overwriteWith(this._posSaved);
+	}
 
 	image(universe)
 	{

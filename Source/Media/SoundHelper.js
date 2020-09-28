@@ -7,6 +7,7 @@ class SoundHelper
 	musicVolume;
 	soundVolume;
 	soundForMusic;
+	_audioContext;
 
 	constructor(sounds)
 	{
@@ -41,6 +42,16 @@ class SoundHelper
 
 	// instance methods
 
+	audioContext()
+	{
+		if (this._audioContext == null)
+		{
+			this._audioContext = new AudioContext();
+		}
+
+		return this._audioContext;
+	}
+
 	reset()
 	{
 		for (var i = 0; i < this.sounds.length; i++)
@@ -48,32 +59,31 @@ class SoundHelper
 			var sound = this.sounds[i];
 			sound.offsetInSeconds = 0;
 		}
-	};
+	}
 
 	soundWithNamePlayAsEffect(universe, soundName)
 	{
 		var sound = this.soundsByName.get(soundName);
 		sound.isRepeating = false;
 		sound.play(universe, this.soundVolume);
-	};
+	}
 
-	soundWithNamePlayAsMusic(universe, soundToPlayName)
+	soundWithNamePlayAsMusic(universe, soundName)
 	{
-		var soundToPlay = this.soundsByName.get(soundToPlayName);
-
-		soundToPlay.isRepeating = true;
+		var sound = this.soundsByName.get(soundName);
+		sound.isRepeating = true;
 
 		var soundAlreadyPlaying = this.soundForMusic;
 
 		if (soundAlreadyPlaying != null)
 		{
-			if (soundAlreadyPlaying.name != soundToPlayName)
+			if (soundAlreadyPlaying.name != soundName)
 			{
 				soundAlreadyPlaying.stop(universe);
 			}
 		}
 
-		soundToPlay.play(universe, this.musicVolume);
-		this.soundForMusic = soundToPlay;
-	};
+		sound.play(universe, this.musicVolume);
+		this.soundForMusic = sound;
+	}
 }

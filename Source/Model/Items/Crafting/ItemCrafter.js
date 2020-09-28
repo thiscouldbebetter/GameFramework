@@ -1,312 +1,379 @@
 
-class ItemCrafter
+class ItemCrafter extends EntityProperty
 {
-	recipes;
+	recipesAvailable;
 
-	recipeSelected;
-	itemEntitiesStaged;
-	itemEntitySelected;
-	itemEntityStagedSelected;
+	itemHolderStaged;
+	recipeAvailableSelected;
+	recipeInProgressTicksSoFar;
+	recipeQueuedSelected;
+	recipesQueued;
 	statusMessage;
 
-	constructor(recipes)
+	constructor(recipesAvailable)
 	{
-		this.recipes = recipes || [];
+		super();
 
-		this.recipeSelected = null;
-		this.itemEntitiesStaged = [];
+		this.recipesAvailable = recipesAvailable || [];
+
+		this.itemHolderStaged = new ItemHolder([], null, null);
+		this.recipeAvailableSelected = null;
+		this.recipeInProgressTicksSoFar = 0;
+		this.recipeQueuedSelected = null;
+		this.recipesQueued = [];
 		this.statusMessage = "-";
 	}
 
-	isRecipeSelectedFulfilled()
+	isRecipeAvailableSelectedFulfilled(itemHolder)
 	{
 		var returnValue =
 		(
-			this.recipeSelected == null
+			this.recipeAvailableSelected == null
 			? false
-			: this.recipeSelected.isFulfilledByItemEntities(this.itemEntitiesStaged)
+			: this.recipeAvailableSelected.isFulfilledByItemHolder(itemHolder)
 		);
 
 		return returnValue;
-	};
+	}
+
+	isRecipeInProgressFulfilled()
+	{
+		var recipeInProgress = this.recipesQueued[0];
+		var returnValue =
+		(
+			recipeInProgress == null
+			? false
+			: recipeInProgress.isFulfilledByItemHolder(this.itemHolderStaged)
+		);
+
+		return returnValue;
+	}
+
+	recipeInProgressCancel()
+	{
+		// todo
+	}
+
+	recipeInProgressSecondsSoFar(universe)
+	{
+		return this.recipeInProgressTicksSoFar / universe.timerHelper.ticksPerSecond;
+	}
+
+	recipeInProgressFinish(entityCrafter)
+	{
+		var recipe = this.recipesQueued[0];
+
+		var itemEntitiesOut = recipe.itemEntitiesOut;
+		for (var i = 0; i < itemEntitiesOut.length; i++)
+		{
+			var itemEntityOut = itemEntitiesOut[i];
+			entityCrafter.itemHolder().itemEntityAdd(itemEntityOut);
+		}
+
+		this.itemHolderStaged.itemEntities.length = 0;
+		this.recipeInProgressTicksSoFar = 0;
+		this.recipesQueued.splice(0, 1);
+	}
+
+	recipeProgressAsString(universe)
+	{
+		var returnValue = null;
+		var recipeInProgress = this.recipesQueued[0];
+		if (recipeInProgress == null)
+		{
+			returnValue = "-";
+		}
+		else
+		{
+			returnValue =
+				recipeInProgress.name
+				+ " ("
+				+ this.recipeInProgressSecondsSoFar(universe)
+				+ "/"
+				+ recipeInProgress.secondsToComplete(universe)
+				+ "s)";
+		}
+		return returnValue;
+	}
+
+	// venue
+
+	updateForTimerTick(universe, world, place, entityCrafter)
+	{
+		if (this.recipesQueued.length > 0)
+		{
+			var recipeInProgress = this.recipesQueued[0];
+			if (this.isRecipeInProgressFulfilled())
+			{
+				if (this.recipeInProgressTicksSoFar >= recipeInProgress.ticksToComplete)
+				{
+					this.recipeInProgressFinish(entityCrafter);
+				}
+				else
+				{
+					this.recipeInProgressTicksSoFar++;
+				}
+			}
+			else
+			{
+				this.recipeInProgressTicksSoFar = 0;
+				this.recipesQueued.splice(0, 1);
+			}
+		}
+	}
 
 	// controls
 
-	toControl(universe, size, entityItemHolder, venuePrev, includeTitleAndDoneButton)
+	toControl
+	(
+		universe,
+		size,
+		entityCrafter,
+		entityItemHolder,
+		venuePrev,
+		includeTitleAndDoneButton
+	)
 	{
-		this.statusMessage = "1. Select recipe.\n2. Stage materials.\n3.Click Combine.";
+		this.statusMessage = "Select a recipe and click Craft.";
 
 		if (size == null)
 		{
 			size = universe.display.sizeDefault().clone();
 		}
 
-		var sizeBase = new Coords(200, 150, 1);
-		var scaleMultiplier = size.clone().divide(sizeBase);
+		var sizeBase = new Coords(200, 135, 1);
 
 		var fontHeight = 10;
-		var fontHeightSmall = fontHeight * .6;
+		var fontHeightSmall = fontHeight * 0.6;
 		var fontHeightLarge = fontHeight * 1.5;
 
 		var itemHolder = entityItemHolder.itemHolder();
-		var itemEntities = itemHolder.itemEntities;
 		var crafter = this;
-		var world = universe.world;
 
-		var back = function()
+		var back = () =>
 		{
 			var venueNext = venuePrev;
 			venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
 			universe.venueNext = venueNext;
 		};
 
-		var stage = function()
+		var addToQueue = () =>
 		{
-			var itemEntityToStage = crafter.itemEntitySelected;
-			if (itemEntityToStage != null)
+			if (crafter.isRecipeAvailableSelectedFulfilled( entityCrafter.itemHolder() ) )
 			{
-				var itemEntitiesStaged = crafter.itemEntitiesStaged;
-				if (itemEntitiesStaged.indexOf(itemEntityToStage) == -1)
+				var recipe = crafter.recipeAvailableSelected;
+
+				var itemsIn = recipe.itemsIn;
+				for (var i = 0; i < itemsIn.length; i++)
 				{
-					itemEntitiesStaged.push(itemEntityToStage);
+					var itemIn = itemsIn[i];
+					itemHolder.itemTransferTo(itemIn, this.itemHolderStaged);
 				}
+				crafter.recipesQueued.push(crafter.recipeAvailableSelected);
 			}
-		};
-
-		var unstage = function()
-		{
-			var itemEntityToUnstage = crafter.itemEntityStagedSelected;
-			if (itemEntityToUnstage != null)
-			{
-				var itemEntitiesStaged = crafter.itemEntitiesStaged;
-				if (itemEntitiesStaged.some(x => x == itemEntityToUnstage))
-				{
-					ArrayHelper.remove(itemEntitiesStaged, itemEntityToUnstage);
-				}
-			}
-		};
-
-		var combine = function()
-		{
-			var recipe = crafter.recipeSelected;
-
-			var itemsIn = recipe.itemsIn;
-			for (var i = 0; i < itemsIn.length; i++)
-			{
-				var itemIn = itemsIn[i];
-				itemHolder.itemSubtract(itemIn);
-			}
-
-			var itemEntitiesOut = recipe.itemEntitiesOut;
-			for (var i = 0; i < itemEntitiesOut.length; i++)
-			{
-				var itemEntityOut = itemEntitiesOut[i];
-				itemHolder.itemEntityAdd(itemEntityOut);
-			}
-			crafter.itemEntitiesStaged.length = 0;
 		};
 
 		var returnValue = new ControlContainer
 		(
-			"Crafting",
+			"Craft",
 			new Coords(0, 0, 0), // pos
 			sizeBase.clone(), // size
 			// children
 			[
 				new ControlLabel
 				(
-					"labelMaterials",
-					new Coords(10, 20, 0), // pos
+					"labelRecipes",
+					new Coords(10, 5, 0), // pos
 					new Coords(70, 25, 0), // size
 					false, // isTextCentered
-					"Materials Held:",
+					"Recipes:",
 					fontHeightSmall
 				),
 
 				new ControlList
 				(
-					"listItemsHeld",
-					new Coords(10, 30, 0), // pos
-					new Coords(80, 110, 0), // size
-					new DataBinding(itemEntities, null, null), // items
+					"listRecipes",
+					new Coords(10, 15, 0), // pos
+					new Coords(85, 100, 0), // size
+					new DataBinding
+					(
+						this,
+						(c) => c.recipesAvailable,
+						null
+					), // items
 					new DataBinding
 					(
 						null,
-						(c) => c.item().toString(world),
+						(c) => c.name,
 						null
 					), // bindingForItemText
 					fontHeightSmall,
 					new DataBinding
 					(
 						this,
-						(c) => c.itemEntitySelected,
-						(c, v) => c.itemEntitySelected = v
+						(c) => c.recipeAvailableSelected,
+						(c, v) => { c.recipeAvailableSelected = v; }
 					), // bindingForItemSelected
-					new DataBinding(null, (c) => c, null ), // bindingForItemValue
-					new DataBinding(true, null, null), // isEnabled
-					(universe) =>
-					{
-						stage();
-					},
+					new DataBinding
+					(
+						null, (c) => c, null
+					), // bindingForItemValue
+					DataBinding.fromContext(true), // isEnabled
+					addToQueue, // confirm
 					null
 				),
 
-				new ControlButton
+				new ControlLabel
 				(
-					"buttonStage",
-					new Coords(95, 80, 0), // pos
-					new Coords(10, 10, 0), // size
-					">",
-					fontHeightSmall,
-					true, // hasBorder
-					new DataBinding
-					(
-						this,
-						(c) =>
-						{
-							var returnValue =
-							(
-								c.itemEntitySelected != null
-								&& c.itemEntitiesStaged.indexOf(c.itemEntitySelected) == -1
-							);
-							return returnValue;
-						},
-						null
-					), // isEnabled
-					stage, // click
-					null, null
+					"labelRecipeSelected",
+					new Coords(105, 5, 0), // pos
+					new Coords(70, 25, 0), // size
+					false, // isTextCentered
+					"Recipe Selected:",
+					fontHeightSmall
 				),
 
 				new ControlButton
 				(
-					"buttonUnstage",
-					new Coords(95, 95, 0), // pos
-					new Coords(10, 10, 0), // size
-					"<",
+					"buttonCraft",
+					new Coords(170, 5, 0), // pos
+					new Coords(20, 10, 0), // size
+					"Craft",
 					fontHeightSmall,
 					true, // hasBorder
 					new DataBinding
 					(
 						this,
 						(c) =>
-						{
-							return (c.itemEntityStagedSelected != null);
-						},
+							c.isRecipeAvailableSelectedFulfilled(entityCrafter.itemHolder()),
 						null
 					), // isEnabled
-					unstage, // click
+					addToQueue, // click
 					null, null
 				),
 
 				new ControlLabel
 				(
-					"labelRecipe",
-					new Coords(110, 20, 0), // pos
-					new Coords(70, 25, 0), // size
+					"infoRecipeSelected",
+					new Coords(105, 10, 0), // pos
+					new Coords(75, 25, 0), // size
 					false, // isTextCentered
-					"Recipe:",
-					fontHeightSmall
-				),
-
-				new ControlSelect
-				(
-					"selectRecipe",
-					new Coords(110, 30, 0), // pos
-					new Coords(80, 10, 0), // size
 					new DataBinding
 					(
 						this,
-						(c) => c.recipeSelected,
-						(c, v) => { c.recipeSelected = v; }
-					), // valueSelected
-					this.recipes, // options
-					new DataBinding
-					(
-						null, (c) => c, null
-					), // bindingForOptionValues
-					new DataBinding
-					(
-						null, (c) => c.name, null
-					), // bindingForOptionText
+						(c) =>
+							(
+								(c.recipeAvailableSelected == null)
+								? "-"
+								: c.recipeAvailableSelected.nameAndSecondsToCompleteAsString(universe)
+							),
+						null
+					),
 					fontHeightSmall
 				),
 
 				new ControlList
 				(
 					"listItemsInRecipe",
-					new Coords(110, 40, 0), // pos
-					new Coords(80, 25, 0), // size
+					new Coords(105, 20, 0), // pos
+					new Coords(85, 25, 0), // size
 					new DataBinding
 					(
 						this,
 						(c) =>
-						{
-							return (c.recipeSelected == null ? [] : c.recipeSelected.itemsIn);
-						},
+							(
+								c.recipeAvailableSelected == null
+								? []
+								: c.recipeAvailableSelected.itemsInHeldOverRequiredForItemHolder(itemHolder)
+							),
 						null
 					), // items
 					new DataBinding
 					(
 						null,
-						(c) => c.toString(),
+						(c) => c,
 						null
 					), // bindingForItemText
 					fontHeightSmall,
 					null, // bindingForItemSelected
-					new DataBinding(null, (c) => c, null ), // bindingForItemValue
+					DataBinding.fromGet( (c) => c ), // bindingForItemValue
 					null, null, null
+				),
+
+				new ControlLabel
+				(
+					"labelCrafting",
+					new Coords(105, 50, 0), // pos
+					new Coords(75, 25, 0), // size
+					false, // isTextCentered
+					DataBinding.fromContext("Crafting:"),
+					fontHeightSmall
 				),
 
 				new ControlButton
 				(
-					"buttonCombine",
-					new Coords(110, 70, 0), // pos
-					new Coords(30, 10, 0), // size
-					"Combine:",
+					"buttonCancel",
+					new Coords(170, 50, 0), // pos
+					new Coords(20, 10, 0), // size
+					"Cancel",
 					fontHeightSmall,
 					true, // hasBorder
 					new DataBinding
 					(
 						this,
-						(c) => c.isRecipeSelectedFulfilled(),
+						(c) => (c.recipesQueued.length > 0),
 						null
 					), // isEnabled
-					combine, // click
+					crafter.recipeInProgressCancel, // click
 					null, null
+				),
+
+				new ControlLabel
+				(
+					"infoCrafting",
+					new Coords(105, 55, 0), // pos
+					new Coords(75, 25, 0), // size
+					false, // isTextCentered
+					new DataBinding(
+						this,
+						(c) => ( c.recipeProgressAsString(universe) ),
+						null
+					),
+					fontHeightSmall
 				),
 
 				new ControlList
 				(
-					"listItemsStaged",
-					new Coords(110, 80, 0), // pos
-					new Coords(80, 25, 0), // size
+					"listCraftingsQueued",
+					new Coords(105, 65, 0), // pos
+					new Coords(85, 35, 0), // size
 					new DataBinding
 					(
 						this,
-						(c) => c.itemEntitiesStaged,
+						(c) => c.recipesQueued,
 						null
 					), // items
 					new DataBinding
 					(
 						null,
-						(c) => c.item().toString(world),
+						(c) => c.name,
 						null
 					), // bindingForItemText
 					fontHeightSmall,
 					new DataBinding
 					(
 						this,
-						(c) => c.itemEntityStagedSelected,
-						(c, v) => { c.itemEntityStagedSelected = v; }
+						(c) => c.recipeQueuedSelected,
+						(c, v) => { c.recipeQueuedSelected = v; }
 					), // bindingForItemSelected
-					new DataBinding(null, (c) => c, null ), // bindingForItemValue
+					DataBinding.fromGet( (c) => c ), // bindingForItemValue
 					null, null, null
 				),
 
 				new ControlLabel
 				(
 					"infoStatus",
-					new Coords(150, 110, 0), // pos
+					new Coords(100, 125, 0), // pos
 					new Coords(200, 15, 0), // size
 					true, // isTextCentered
 					new DataBinding
@@ -337,10 +404,10 @@ class ItemCrafter
 				new ControlLabel
 				(
 					"labelCrafting",
-					new Coords(100, 10, 0), // pos
+					new Coords(100, -5, 0), // pos
 					new Coords(100, 25, 0), // size
 					true, // isTextCentered
-					"Crafting",
+					"Craft",
 					fontHeightLarge
 				)
 			);
@@ -350,7 +417,7 @@ class ItemCrafter
 				new ControlButton
 				(
 					"buttonDone",
-					new Coords(170, 130, 0), // pos
+					new Coords(170, 115, 0), // pos
 					new Coords(20, 10, 0), // size
 					"Done",
 					fontHeightSmall,
@@ -360,14 +427,14 @@ class ItemCrafter
 					null, null
 				)
 			);
-		}
-		else
-		{
-			var titleHeightInverted = new Coords(0, -15, 0);
-			returnValue.size.add(titleHeightInverted);
-			returnValue.shiftChildPositions(titleHeightInverted);
+
+			var titleHeight = new Coords(0, 15, 0);
+			sizeBase.add(titleHeight);
+			returnValue.size.add(titleHeight);
+			returnValue.shiftChildPositions(titleHeight);
 		}
 
+		var scaleMultiplier = size.clone().divide(sizeBase);
 		returnValue.scalePosAndSize(scaleMultiplier);
 
 		return returnValue;
@@ -377,6 +444,6 @@ class ItemCrafter
 
 	clone()
 	{
-		return new ItemCrafter(ArrayHelper.clone(this.recipes) );
+		return new ItemCrafter(ArrayHelper.clone(this.recipesAvailable) );
 	};
 }

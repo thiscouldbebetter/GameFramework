@@ -1,15 +1,10 @@
 
-class ControlLabel
+class ControlLabel extends ControlBase
 {
-	name;
-	pos;
-	size;
 	isTextCentered;
 	_text;
-	fontHeightInPixels;
 
 	parent;
-	styleName;
 
 	_drawPos;
 
@@ -19,12 +14,9 @@ class ControlLabel
 		text, fontHeightInPixels
 	)
 	{
-		this.name = name;
-		this.pos = pos;
-		this.size = size;
+		super(name, pos, size, fontHeightInPixels);
 		this.isTextCentered = isTextCentered;
 		this._text = text;
-		this.fontHeightInPixels = fontHeightInPixels;
 
 		// Helper variables.
 
@@ -49,20 +41,6 @@ class ControlLabel
 		return false; // wasActionHandled
 	}
 
-	actionToInputsMappings()
-	{
-		return null; // todo
-	}
-
-	childWithFocus()
-	{
-		return null; // todo
-	}
-
-	focusGain() {}
-
-	focusLose() {}
-
 	isEnabled()
 	{
 		return false;
@@ -73,35 +51,24 @@ class ControlLabel
 		return false;
 	}
 
-	mouseEnter() {}
-
-	mouseExit() {}
-
-	mouseMove(pos) {}
-
 	scalePosAndSize(scaleFactor)
 	{
 		this.pos.multiply(scaleFactor);
 		this.size.multiply(scaleFactor);
 		this.fontHeightInPixels *= scaleFactor.y;
-	};
-
-	style(universe)
-	{
-		return universe.controlBuilder.stylesByName.get(this.styleName == null ? "Default" : this.styleName);
-	};
+	}
 
 	text()
 	{
 		return (this._text.get == null ? this._text : this._text.get() );
-	};
+	}
 
 	// drawable
 
-	draw(universe, display, drawLoc)
+	draw(universe, display, drawLoc, style)
 	{
 		var drawPos = this._drawPos.overwriteWith(drawLoc.pos).add(this.pos);
-		var style = this.style(universe);
+		var style = style || this.style(universe);
 		var text = this.text();
 
 		if (text != null)
@@ -116,8 +83,8 @@ class ControlLabel
 					textLine,
 					this.fontHeightInPixels,
 					drawPos,
-					style.colorBorder,
-					style.colorFill, // colorOutline
+					Color.systemColorGet(style.colorBorder),
+					Color.systemColorGet(style.colorFill), // colorOutline
 					null, // areColorsReversed
 					this.isTextCentered,
 					widthMaxInPixels
@@ -126,5 +93,5 @@ class ControlLabel
 				drawPos.y += this.fontHeightInPixels;
 			}
 		}
-	};
+	}
 }

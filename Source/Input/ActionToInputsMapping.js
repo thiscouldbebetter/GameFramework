@@ -14,8 +14,8 @@ class ActionToInputsMapping
 
 	action(universe)
 	{
-		return universe.world.defns.defnsByNameByTypeName.get(Action.name).get(this.actionName);
-	};
+		return universe.world.defn.actionDefnsByName().get(this.actionName);
+	}
 
 	// Cloneable implementation.
 
@@ -25,12 +25,12 @@ class ActionToInputsMapping
 		(
 			this.actionName, this.inputNames.slice(), this.inactivateInputWhenActionPerformed
 		);
-	};
+	}
 
 	overwriteWith(other)
 	{
 		this.actionName = other.actionName;
 		this.inputNames = other.inputNames.slice();
 		this.inactivateInputWhenActionPerformed = other.inactivateInputWhenActionPerformed;
-	};
+	}
 }

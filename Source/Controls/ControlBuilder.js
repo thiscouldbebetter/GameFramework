@@ -1,9 +1,11 @@
 
 class ControlBuilder
 {
+	buttonHeightBase;
+	buttonHeightSmallBase;
+	fontHeightInPixelsBase;
 	styles;
 	stylesByName;
-	fontHeightInPixelsBase;
 	sizeBase;
 
 	_zeroes;
@@ -15,6 +17,8 @@ class ControlBuilder
 		this.stylesByName = ArrayHelper.addLookupsByName(styles);
 
 		this.fontHeightInPixelsBase = 10;
+		this.buttonHeightBase = this.fontHeightInPixelsBase * 2;
+		this.buttonHeightSmallBase = this.fontHeightInPixelsBase * 1.5;
 		this.sizeBase = new Coords(200, 150, 1);
 
 		// Helper variables.
@@ -218,7 +222,7 @@ class ControlBuilder
 		);
 
 		return returnValue;
-	};
+	}
 
 	confirm(universe, size, message, confirm, cancel)
 	{
@@ -226,9 +230,41 @@ class ControlBuilder
 		(
 			universe, size, new DataBinding(message, null, null), ["Confirm", "Cancel"], [confirm, cancel], null
 		);
+	}
+
+	confirmAndReturnToVenue
+	(
+		universe, size, message,
+		venuePrev, confirm, cancel
+	)
+	{
+		var confirmThenReturnToVenuePrev = () =>
+		{
+			confirm();
+			var venueNext = new VenueFader(venuePrev, universe.venueCurrent, null, null);
+			universe.venueNext = venueNext;
+		};
+
+		var cancelThenReturnToVenuePrev = () =>
+		{
+			if (cancel != null)
+			{
+				cancel();
+			}
+			var venueNext = new VenueFader(venuePrev, universe.venueCurrent, null, null);
+			universe.venueNext = venueNext;
+		};
+
+		return this.choice
+		(
+			universe, size, new DataBinding(message, null, null),
+			["Confirm", "Cancel"],
+			[confirmThenReturnToVenuePrev, cancelThenReturnToVenuePrev],
+			null
+		);
 	};
 
-	game(universe, size)
+	game(universe, size, venuePrev)
 	{
 		if (size == null)
 		{
@@ -240,25 +276,25 @@ class ControlBuilder
 
 		var fontHeight = this.fontHeightInPixelsBase;
 
-		var buttonHeight = 20;
-		var buttonSize = new Coords(60, buttonHeight, 0);
-		var margin = 15;
+		var buttonHeight = this.buttonHeightBase;
 		var padding = 5;
-
-		var posX = 70;
 		var rowHeight = buttonHeight + padding;
+		var rowCount = 5;
+		var buttonsAllHeight = rowCount * buttonHeight + (rowCount - 1) * padding;
+		var margin = (this.sizeBase.y - buttonsAllHeight) / 2;
+
+		var buttonSize = new Coords(60, buttonHeight, 0);
+		var posX = (this.sizeBase.x - buttonSize.x) / 2;
+
 		var row0PosY = margin;
 		var row1PosY = row0PosY + rowHeight;
 		var row2PosY = row1PosY + rowHeight;
 		var row3PosY = row2PosY + rowHeight;
 		var row4PosY = row3PosY + rowHeight;
 
-		var back = function()
+		var back = () =>
 		{
-			var venueNext= new VenueControls
-			(
-				universe.controlBuilder.gameAndSettings(universe, size)
-			);
+			var venueNext = venuePrev;
 			venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
 			universe.venueNext = venueNext;
 		};
@@ -283,7 +319,7 @@ class ControlBuilder
 					{
 						var venueNext= new VenueControls
 						(
-							universe.controlBuilder.worldSave(universe, null)
+							Profile.toControlSaveStateSave(universe, size, universe.venueCurrent), false
 						);
 						venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
 						universe.venueNext = venueNext;
@@ -304,7 +340,7 @@ class ControlBuilder
 					{
 						var venueNext= new VenueControls
 						(
-							universe.controlBuilder.worldLoad(universe, null)
+							Profile.toControlSaveStateLoad(universe, null, universe.venueCurrent), false
 						);
 						venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
 						universe.venueNext = venueNext;
@@ -362,23 +398,20 @@ class ControlBuilder
 								universe.reset();
 								var venueNext= new VenueControls
 								(
-									universe.controlBuilder.title(universe, null)
+									universe.controlBuilder.title(universe, null), false
 								);
 								venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
 								universe.venueNext = venueNext;
 							},
 							() => // cancel
 							{
-								var venueNext= new VenueControls
-								(
-									universe.controlBuilder.gameAndSettings(universe, size)
-								);
+								var venueNext = venuePrev;
 								venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
 								universe.venueNext = venueNext;
 							}
 						);
 
-						var venueNext= new VenueControls(controlConfirm);
+						var venueNext= new VenueControls(controlConfirm, false);
 						venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
 						universe.venueNext = venueNext;
 					},
@@ -410,7 +443,7 @@ class ControlBuilder
 		return returnValue;
 	};
 
-	gameAndSettings(universe, size)
+	gameAndSettings(universe, size, venuePrev, includeResumeButton)
 	{
 		if (size == null)
 		{
@@ -422,35 +455,34 @@ class ControlBuilder
 
 		var fontHeight = this.fontHeightInPixelsBase;
 
-		var buttonHeight = 20;
-		var margin = 15;
+		var buttonWidth = 40;
+		var buttonHeight = this.buttonHeightBase;
 		var padding = 5;
-
+		var rowCount = (includeResumeButton ? 3 : 2);
 		var rowHeight = buttonHeight + padding;
-		var row0PosY = margin;
+		var buttonsAllHeight = rowCount * buttonHeight + (rowCount - 1) * padding;
+		var margin = new Coords
+		(
+			(this.sizeBase.x - buttonWidth) / 2,
+			(this.sizeBase.y - buttonsAllHeight) / 2, 0
+		);
+
+		var row0PosY = margin.y;
 		var row1PosY = row0PosY + rowHeight;
 		var row2PosY = row1PosY + rowHeight;
-		var row3PosY = row2PosY + rowHeight;
-
-		var back = function()
-		{
-			var venueNext= new VenueWorld(universe.world);
-			venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-			universe.venueNext = venueNext;
-		};
 
 		var returnValue = new ControlContainer
 		(
-			"containerGameAndSettings",
-			this._zeroes, // pos
+			"Game",
+			this._zeroes.clone(), // pos
 			this.sizeBase.clone(),
 			// children
 			[
 				new ControlButton
 				(
 					"buttonGame",
-					new Coords(70, row1PosY, 0), // pos
-					new Coords(60, buttonHeight, 0), // size
+					new Coords(margin.x, row0PosY, 0), // pos
+					new Coords(buttonWidth, buttonHeight, 0), // size
 					"Game",
 					fontHeight,
 					true, // hasBorder
@@ -459,7 +491,7 @@ class ControlBuilder
 					{
 						var venueNext= new VenueControls
 						(
-							universe.controlBuilder.game(universe, size)
+							universe.controlBuilder.game(universe, null, universe.venueCurrent), false
 						);
 						venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
 						universe.venueNext = venueNext;
@@ -470,8 +502,8 @@ class ControlBuilder
 				new ControlButton
 				(
 					"buttonSettings",
-					new Coords(70, row2PosY, 0), // pos
-					new Coords(60, buttonHeight, 0), // size
+					new Coords(margin.x, row1PosY, 0), // pos
+					new Coords(buttonWidth, buttonHeight, 0), // size
 					"Settings",
 					fontHeight,
 					true, // hasBorder
@@ -480,38 +512,54 @@ class ControlBuilder
 					{
 						var venueNext= new VenueControls
 						(
-							universe.controlBuilder.settings(universe, null)
+							universe.controlBuilder.settings(universe, null, universe.venueCurrent), false
 						);
 						venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
 						universe.venueNext = venueNext;
 					},
 					null, null
 				),
-
-				new ControlButton
-				(
-					"buttonResume",
-					new Coords(70, row3PosY, 0), // pos
-					new Coords(60, buttonHeight, 0), // size
-					"Resume",
-					fontHeight,
-					true, // hasBorder
-					true, // isEnabled
-					back,
-					null, null
-				),
 			],
-
-			[ new Action("Back", back) ],
-
-			[ new ActionToInputsMapping( "Back", [ "Escape" ], true ) ],
-
+			[], // actions
+			[] // mappings
 		);
+
+		if (includeResumeButton)
+		{
+			var back = () =>
+			{
+				var venueNext= venuePrev;
+				venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
+				universe.venueNext = venueNext;
+			};
+
+			var buttonResume = new ControlButton
+			(
+				"buttonResume",
+				new Coords(margin.x, row2PosY, 0), // pos
+				new Coords(buttonWidth, buttonHeight, 0), // size
+				"Resume",
+				fontHeight,
+				true, // hasBorder
+				true, // isEnabled
+				back,
+				null, null
+			);
+
+			returnValue.children.push(buttonResume);
+
+			returnValue.actions.push(new Action("Back", back));
+
+			returnValue._actionToInputsMappings.push
+			(
+				new ActionToInputsMapping( "Back", [ "Escape" ], true )
+			);
+		}
 
 		returnValue.scalePosAndSize(scaleMultiplier);
 
 		return returnValue;
-	};
+	}
 
 	inputs (universe, size, venuePrev)
 	{
@@ -527,7 +575,7 @@ class ControlBuilder
 
 		var world = universe.world;
 		var placeCurrentDefnName = "Demo"; // hack
-		var placeDefn = world.defns.defnsByNameByTypeName.get(PlaceDefn.name).get(placeCurrentDefnName);
+		var placeDefn = world.defn.placeDefnsByName().get(placeCurrentDefnName);
 		placeDefn.actionToInputsMappingsEdit();
 
 		var returnValue = new ControlContainer
@@ -541,7 +589,7 @@ class ControlBuilder
 				(
 					"labelActions",
 					new Coords(100, 15, 0), // pos
-					new Coords(100, 25, 0), // size
+					new Coords(100, 20, 0), // size
 					true, // isTextCentered
 					"Actions:",
 					fontHeight
@@ -566,7 +614,7 @@ class ControlBuilder
 						(c) => c.actionToInputsMappingSelected,
 						(c, v) => { c.actionToInputsMappingSelected = v; }
 					), // bindingForItemSelected
-					new DataBinding(null, (c) => c, null ), // bindingForItemValue
+					DataBinding.fromGet( (c) => c ), // bindingForItemValue
 					null, null, null
 				),
 
@@ -699,26 +747,19 @@ class ControlBuilder
 					() =>
 					{
 						var venueInputs = universe.venueCurrent;
-						var controlConfirm = universe.controlBuilder.confirm
+						var controlConfirm = universe.controlBuilder.confirmAndReturnToVenue
 						(
 							universe,
 							size,
 							"Are you sure you want to restore defaults?",
+							venueInputs,
 							() => // confirm
 							{
 								placeDefn.actionToInputsMappingsRestoreDefaults();
-								var venueNext= venueInputs;
-								venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-								universe.venueNext = venueNext;
 							},
-							() => // cancel
-							{
-								var venueNext= venueInputs;
-								venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-								universe.venueNext = venueNext;
-							}
+							null // cancel
 						);
-						var venueNext= new VenueControls(controlConfirm);
+						var venueNext= new VenueControls(controlConfirm, false);
 						venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
 						universe.venueNext = venueNext;
 					},
@@ -799,9 +840,9 @@ class ControlBuilder
 		(
 			universe, size, message, optionNames, optionFunctions, showMessageOnly
 		);
-	};
+	}
 
-	profileDetail (universe, size)
+	opening(universe, size)
 	{
 		if (size == null)
 		{
@@ -813,203 +854,71 @@ class ControlBuilder
 
 		var fontHeight = this.fontHeightInPixelsBase;
 
+		var start = () =>
+		{
+			var title = this.title(universe, size);
+
+			var venueTitle = new VenueControls(title, false);
+
+			universe.venueNext =
+				new VenueFader(venueTitle, universe.venueCurrent, null, null);
+		};
+
+		var visual = new VisualGroup
+		([
+			new VisualImageScaled
+			(
+				new VisualImageFromLibrary("Opening"), size
+			)
+		]);
+
 		var returnValue = new ControlContainer
 		(
-			"containerProfileDetail",
+			"containerOpening",
 			this._zeroes, // pos
 			this.sizeBase.clone(), // size
 			// children
 			[
-				new ControlLabel
+				new ControlVisual
 				(
-					"labelProfileName",
-					new Coords(100, 25, 0), // pos
-					new Coords(120, 25, 0), // size
-					true, // isTextCentered
-					"Profile: " + universe.profile.name,
-					fontHeight
-				),
-
-				new ControlLabel
-				(
-					"labelSelectAWorld",
-					new Coords(100, 40, 0), // pos
-					new Coords(100, 25, 0), // size
-					true, // isTextCentered
-					"Select a World:",
-					fontHeight
-				),
-
-				new ControlList
-				(
-					"listWorlds",
-					new Coords(25, 50, 0), // pos
-					new Coords(150, 50, 0), // size
+					"imageOpening",
+					this._zeroes.clone(),
+					this.sizeBase.clone(), // size
 					new DataBinding
 					(
-						universe.profile,
-						(c) => c.worlds,
-						null
+						visual, null, null
 					),
-					new DataBinding(null, (c) => { return c.name; }, null), // bindingForOptionText
-					fontHeight,
-					new DataBinding
-					(
-						universe.profile,
-						(c) => { return c.worldSelected; },
-						(c, v) => { c.worldSelected = v; }
-					), // bindingForOptionSelected
-					new DataBinding(null, (c) => c, null), // value
-					null, null, null
+					null, null // colors
 				),
 
 				new ControlButton
 				(
-					"buttonNew",
-					new Coords(50, 110, 0), // pos
-					new Coords(45, 25, 0), // size
-					"New",
-					fontHeight,
-					true, // hasBorder
+					"buttonStart",
+					new Coords(75, 120, 0), // pos
+					new Coords(50, fontHeight * 2, 0), // size
+					"Start",
+					fontHeight * 2,
+					false, // hasBorder
 					true, // isEnabled
-					() => // click
-					{
-						var world = World.new(universe);
-
-						var profile = universe.profile;
-						profile.worlds.push(world);
-
-						universe.profileHelper.profileSave
-						(
-							profile
-						);
-
-						universe.world = world;
-						var venueNext= new VenueControls
-						(
-							universe.controlBuilder.worldDetail(universe, size)
-						);
-						venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-						universe.venueNext = venueNext;
-					},
+					start, // click
 					null, null
-				),
+				)
+			], // end children
 
-				new ControlButton
-				(
-					"buttonSelect",
-					new Coords(105, 110, 0), // pos
-					new Coords(45, 25, 0), // size
-					"Select",
-					fontHeight,
-					true, // hasBorder
-					// isEnabled
-					new DataBinding
-					(
-						universe.profile,
-						(c) => (c.worldSelected != null),
-						null
-					),
-					() => // click
-					{
-						var worldSelected = universe.profile.worldSelected;
-						if (worldSelected != null)
-						{
-							universe.world = worldSelected;
-							var venueNext= new VenueControls
-							(
-								universe.controlBuilder.worldDetail(universe, size)
-							);
-							venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-							universe.venueNext = venueNext;
-						}
-					},
-					null, null
-				),
-
-				new ControlButton
-				(
-					"buttonBack",
-					new Coords(10, 10, 0), // pos
-					new Coords(15, 15, 0), // size
-					"<",
-					fontHeight,
-					true, // hasBorder
-					true, // isEnabled
-					() => // click
-					{
-						var venueNext= new VenueControls
-						(
-							universe.controlBuilder.profileSelect(universe, size)
-						);
-						venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-						universe.venueNext = venueNext;
-					},
-					null, null
-				),
-
-				new ControlButton
-				(
-					"buttonDelete",
-					new Coords(180, 10, 0), // pos
-					new Coords(15, 15, 0), // size
-					"x",
-					fontHeight,
-					true, // hasBorder
-					true, // isEnabled
-					() => // click
-					{
-						var profile = universe.profile;
-
-						var controlConfirm = universe.controlBuilder.confirm
-						(
-							universe,
-							size,
-							"Delete profile \""
-								+ profile.name
-								+ "\"?",
-							() => // confirm
-							{
-								var profile = universe.profile;
-								universe.profileHelper.profileDelete
-								(
-									profile
-								);
-
-								var venueNext= new VenueControls
-								(
-									universe.controlBuilder.profileSelect(universe, null)
-								);
-								venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-								universe.venueNext = venueNext;
-							},
-							() => // cancel
-							{
-								var venueNext= new VenueControls
-								(
-									universe.controlBuilder.profileDetail(universe, size)
-								);
-								venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-								universe.venueNext = venueNext;
-							}
-						);
-
-						var venueNext= new VenueControls(controlConfirm);
-						venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-						universe.venueNext = venueNext;
-					},
-					null, null
-				),
+			[
+				new Action( ControlActionNames.Instances().ControlCancel, start ),
+				new Action( ControlActionNames.Instances().ControlConfirm, start )
 			],
-			null, null
+
+			null
 		);
 
 		returnValue.scalePosAndSize(scaleMultiplier);
 
 		return returnValue;
-	};
+	}
 
-	profileNew (universe, size)
+	settings(universe, size, venuePrev)
 	{
 		if (size == null)
 		{
@@ -1021,354 +930,7 @@ class ControlBuilder
 
 		var fontHeight = this.fontHeightInPixelsBase;
 
-		var returnValue = new ControlContainer
-		(
-			"containerProfileNew",
-			this._zeroes, // pos
-			this.sizeBase.clone(), // size
-			// children
-			[
-				new ControlLabel
-				(
-					"labelName",
-					new Coords(100, 40, 0), // pos
-					new Coords(100, 25, 0), // size
-					true, // isTextCentered
-					"Profile Name:",
-					fontHeight
-				),
-
-				new ControlTextBox
-				(
-					"textBoxName",
-					new Coords(50, 50, 0), // pos
-					new Coords(100, 25, 0), // size
-					new DataBinding
-					(
-						universe.profile,
-						(c) => { return c.name; },
-						(c, v) => { c.name = v; },
-					), // text
-					fontHeight,
-					null
-				),
-
-				new ControlButton
-				(
-					"buttonCreate",
-					new Coords(50, 80, 0), // pos
-					new Coords(45, 25, 0), // size
-					"Create",
-					fontHeight,
-					true, // hasBorder
-					// isEnabled
-					new DataBinding
-					(
-						universe.profile,
-						(c) => { return c.name.length > 0; },
-						null
-					),
-					() => // click
-					{
-						var venueControls = universe.venueCurrent ;
-						var controlRootAsContainer = venueControls.controlRoot ;
-						var textBoxName = controlRootAsContainer.childrenByName.get("textBoxName") ;
-						var profileName = textBoxName.text(null, universe);
-						if (profileName == "")
-						{
-							return;
-						}
-
-						var profile = new Profile(profileName, []);
-						universe.profileHelper.profileAdd
-						(
-							profile
-						);
-
-						universe.profile = profile;
-						var venueNext= new VenueControls
-						(
-							universe.controlBuilder.profileDetail(universe, null)
-						);
-						venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-						universe.venueNext = venueNext;
-					},
-					null, null
-				),
-
-				new ControlButton
-				(
-					"buttonCancel",
-					new Coords(105, 80, 0), // pos
-					new Coords(45, 25, 0), // size
-					"Cancel",
-					fontHeight,
-					true, // hasBorder
-					true, // isEnabled
-					() => // click
-					{
-						var venueNext= new VenueControls
-						(
-							universe.controlBuilder.profileSelect(universe, null)
-						);
-						venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-						universe.venueNext = venueNext;
-					},
-					null, null
-				),
-			],
-			null, null
-		);
-
-		returnValue.scalePosAndSize(scaleMultiplier);
-
-		return returnValue;
-	};
-
-	profileSelect(universe, size)
-	{
-		if (size == null)
-		{
-			size = universe.display.sizeDefault();
-		}
-
-		var scaleMultiplier =
-			this._scaleMultiplier.overwriteWith(size).divide(this.sizeBase);
-
-		var fontHeight = this.fontHeightInPixelsBase;
-
-		var profiles = universe.profileHelper.profiles();
-
-		var returnValue = new ControlContainer
-		(
-			"containerProfileSelect",
-			this._zeroes, // pos
-			this.sizeBase.clone(), // size
-			// children
-			[
-				new ControlLabel
-				(
-					"labelSelectAProfile",
-					new Coords(100, 40, 0), // pos
-					new Coords(100, 25, 0), // size
-					true, // isTextCentered
-					"Select a Profile:",
-					fontHeight
-				),
-
-				new ControlList
-				(
-					"listProfiles",
-					new Coords(35, 50, 0), // pos
-					new Coords(130, 40, 0), // size
-					new DataBinding(profiles, (c) => c, null ), // items
-					new DataBinding(null, (c) => c.name, null ), // bindingForItemText
-					fontHeight,
-					new DataBinding
-					(
-						universe,
-						(c) => { return c.profile; },
-						(c, v) => { c.profile = v; }
-					), // bindingForOptionSelected
-					new DataBinding(null, (c) => c, null), // value
-					null, null, null
-				),
-
-				new ControlButton
-				(
-					"buttonNew",
-					new Coords(35, 95, 0), // pos
-					new Coords(40, 25, 0), // size
-					"New",
-					fontHeight,
-					true, // hasBorder
-					true, // isEnabled
-					() => // click
-					{
-						universe.profile = new Profile("", null);
-						var venueNext= new VenueControls
-						(
-							universe.controlBuilder.profileNew(universe, null)
-						);
-						venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-						universe.venueNext = venueNext;
-					},
-					null, null
-				),
-
-				new ControlButton
-				(
-					"buttonSelect",
-					new Coords(80, 95, 0), // pos
-					new Coords(40, 25, 0), // size
-					"Select",
-					fontHeight,
-					true, // hasBorder
-					// isEnabled
-					new DataBinding
-					(
-						universe,
-						(c) => { return (c.profile != null); },
-						null
-					),
-					() => // click
-					{
-						var venueControls = universe.venueCurrent ;
-						var controlRootAsContainer = venueControls.controlRoot ;
-						var listProfiles =
-							controlRootAsContainer.childrenByName.get("listProfiles") ;
-						var profileSelected = listProfiles.itemSelected(null);
-						universe.profile = profileSelected;
-						var venueNext= new VenueControls
-						(
-							universe.controlBuilder.profileDetail(universe, null)
-						);
-						venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-						universe.venueNext = venueNext;
-					},
-					null, null
-				),
-
-				new ControlButton
-				(
-					"buttonSkip",
-					new Coords(125, 95, 0), // pos
-					new Coords(40, 25, 0), // size
-					"Skip",
-					fontHeight,
-					true, // hasBorder
-					true, // isEnabled
-					() => // click
-					{
-						var messageAsDataBinding = new DataBinding
-						(
-							null, // Will be set below.
-							(c) => "Generating world...",
-							null
-						);
-
-						var venueMessage = new VenueMessage
-						(
-							messageAsDataBinding, null, null, null, null
-						);
-
-						var venueTask = new VenueTask
-						(
-							venueMessage,
-							() => //perform
-							{
-								return World.new(universe);
-							},
-							(universe, world) => // done
-							{
-								universe.world = world;
-
-								var now = DateTime.now();
-								var nowAsString = now.toStringMMDD_HHMM_SS();
-								var profileName = "Anon-" + nowAsString;
-								var profile = new Profile(profileName, [ world ]);
-								universe.profile = profile;
-
-								var venueNext= new VenueWorld(universe.world);
-								venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-								universe.venueNext = venueNext;
-							}
-						);
-
-						messageAsDataBinding.contextSet(venueTask);
-
-						universe.venueNext = new VenueFader(venueTask, universe.venueCurrent, null, null)
-
-					}, // end click
-					null, null
-				),
-
-				new ControlButton
-				(
-					"buttonBack",
-					new Coords(10, 10, 0), // pos
-					new Coords(15, 15, 0), // size
-					"<",
-					fontHeight,
-					true, // hasBorder
-					true, // isEnabled
-					() => // click
-					{
-						var venueNext= new VenueControls
-						(
-							universe.controlBuilder.title(universe, null)
-						);
-						venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-						universe.venueNext = venueNext;
-					},
-					null, null
-				),
-
-				new ControlButton
-				(
-					"buttonDelete",
-					new Coords(180, 10, 0), // pos
-					new Coords(15, 15, 0), // size
-					"x",
-					fontHeight,
-					true, // hasBorder
-					true, // isEnabled
-					() => // click
-					{
-						var controlConfirm = universe.controlBuilder.confirm
-						(
-							universe,
-							size,
-							"Delete all profiles?",
-							() => // confirm
-							{
-								universe.profileHelper.profilesAllDelete(null);
-								var venueNext= new VenueControls
-								(
-									universe.controlBuilder.profileSelect(universe, null)
-								);
-								venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-								universe.venueNext = venueNext;
-							},
-							() => // cancel
-							{
-								var venueNext= new VenueControls
-								(
-									universe.controlBuilder.profileSelect(universe, null)
-								);
-								venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-								universe.venueNext = venueNext;
-							}
-						);
-
-						var venueNext= new VenueControls(controlConfirm);
-						venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-						universe.venueNext = venueNext;
-					},
-					null, null
-				),
-			],
-			null, null
-		);
-
-		returnValue.scalePosAndSize(scaleMultiplier);
-
-		return returnValue;
-	};
-
-	settings(universe, size)
-	{
-		if (size == null)
-		{
-			size = universe.display.sizeDefault();
-		}
-
-		var scaleMultiplier =
-			this._scaleMultiplier.overwriteWith(size).divide(this.sizeBase);
-
-		var fontHeight = this.fontHeightInPixelsBase;
-
-		var buttonHeight = 20;
+		var buttonHeight = this.buttonHeightBase;
 		var margin = 15;
 		var padding = 5;
 		var labelPadding = 3;
@@ -1382,8 +944,7 @@ class ControlBuilder
 
 		var back = function()
 		{
-			var control = universe.controlBuilder.gameAndSettings(universe, size);
-			var venueNext= new VenueControls(control);
+			var venueNext = venuePrev;
 			venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
 			universe.venueNext = venueNext;
 		};
@@ -1408,7 +969,7 @@ class ControlBuilder
 				new ControlSelect
 				(
 					"selectMusicVolume",
-					new Coords(65, row1PosY, 0), // pos
+					new Coords(70, row1PosY, 0), // pos
 					new Coords(30, buttonHeight, 0), // size
 					new DataBinding
 					(
@@ -1450,8 +1011,8 @@ class ControlBuilder
 						(c, v) => { c.soundVolume = v; }
 					), // valueSelected
 					SoundHelper.controlSelectOptionsVolume(), // options
-					new DataBinding(null, (c) => c.value, null ), // bindingForOptionValues,
-					new DataBinding(null, (c) => { return c.text; }, null ), // bindingForOptionText
+					DataBinding.fromGet( (c) => c.value ), // bindingForOptionValues,
+					DataBinding.fromGet( (c) => c.text ), // bindingForOptionText
 					fontHeight
 				),
 
@@ -1469,12 +1030,12 @@ class ControlBuilder
 				(
 					"selectDisplaySize",
 					new Coords(70, row2PosY, 0), // pos
-					new Coords(60, buttonHeight, 0), // size
+					new Coords(65, buttonHeight, 0), // size
 					universe.display.sizeInPixels, // valueSelected
 					// options
 					universe.display.sizesAvailable,
-					new DataBinding(null, (c) => c, null ), // bindingForOptionValues,
-					new DataBinding(null, (c) => { return c.toStringXY(); }, null ), // bindingForOptionText
+					DataBinding.fromGet( (c) => c ), // bindingForOptionValues,
+					DataBinding.fromGet( (c) => c.toStringXY() ), // bindingForOptionText
 					fontHeight
 				),
 
@@ -1505,7 +1066,7 @@ class ControlBuilder
 
 						var venueNext= new VenueControls
 						(
-							universe.controlBuilder.settings(universe, null)
+							universe.controlBuilder.settings(universe, null, universe.venueCurrent), false
 						);
 						venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
 						universe.venueNext = venueNext;
@@ -1527,7 +1088,7 @@ class ControlBuilder
 						var venueCurrent = universe.venueCurrent;
 						var controlGameControls =
 							universe.controlBuilder.inputs(universe, size, venueCurrent);
-						var venueNext= new VenueControls(controlGameControls);
+						var venueNext= new VenueControls(controlGameControls, false);
 						venueNext = new VenueFader(venueNext, venueCurrent, null, null);
 						universe.venueNext = venueNext;
 					},
@@ -1589,8 +1150,12 @@ class ControlBuilder
 						"imageSlide",
 						this._zeroes,
 						this.sizeBase.clone(), // size
-						new VisualImageFromLibrary(imageName),
-						null
+						new DataBinding
+						(
+							new VisualImageFromLibrary(imageName),
+							null, null
+						),
+						null, null
 					),
 
 					new ControlLabel
@@ -1612,13 +1177,13 @@ class ControlBuilder
 						this.fontHeightInPixelsBase,
 						false, // hasBorder
 						true, // isEnabled
-						function click(slideIndexNext)
+						function(slideIndexNext)
 						{
 							var venueNext;
 							if (slideIndexNext < controlsForSlides.length)
 							{
 								var controlForSlideNext = controlsForSlides[slideIndexNext];
-								venueNext = new VenueControls(controlForSlideNext);
+								venueNext = new VenueControls(controlForSlideNext, false);
 							}
 							else
 							{
@@ -1639,7 +1204,7 @@ class ControlBuilder
 		}
 
 		return controlsForSlides[0];
-	};
+	}
 
 	title(universe, size)
 	{
@@ -1662,12 +1227,12 @@ class ControlBuilder
 				venueMessage,
 				() => // perform
 				{
-					var result = universe.controlBuilder.profileSelect(universe, null);
+					var result = Profile.toControlProfileSelect(universe, null, universe.venueCurrent);
 					return result;
 				},
 				(universe, result) => // done
 				{
-					var venueProfileSelect = new VenueControls(result);
+					var venueProfileSelect = new VenueControls(result, false);
 
 					universe.venueNext =
 						new VenueFader(venueProfileSelect, universe.venueCurrent, null, null);
@@ -1677,6 +1242,20 @@ class ControlBuilder
 			universe.venueNext =
 				new VenueFader(venueTask, universe.venueCurrent, null, null);
 		};
+
+		var visual = new VisualGroup
+		([
+			new VisualImageScaled
+			(
+				new VisualImageFromLibrary("Title"), size
+			)
+		]);
+
+		var soundNameMusic = "Music_Title";
+		visual.children.push
+		(
+			new VisualSound(soundNameMusic, true) // isMusic
+		);
 
 		var returnValue = new ControlContainer
 		(
@@ -1688,17 +1267,20 @@ class ControlBuilder
 				new ControlVisual
 				(
 					"imageTitle",
-					this._zeroes,
+					this._zeroes.clone(),
 					this.sizeBase.clone(), // size
-					new VisualImageScaled(new VisualImageFromLibrary("Title"), size),
-					null //?
+					new DataBinding
+					(
+						visual, null, null
+					),
+					null, null // colors
 				),
 
 				new ControlButton
 				(
 					"buttonStart",
-					new Coords(75, 100, 0), // pos
-					new Coords(50, 40, 0), // size
+					new Coords(75, 120, 0), // pos
+					new Coords(50, fontHeight * 2, 0), // size
 					"Start",
 					fontHeight * 2,
 					false, // hasBorder
@@ -1721,7 +1303,7 @@ class ControlBuilder
 		return returnValue;
 	};
 
-	worldDetail(universe, size)
+	worldDetail(universe, size, venuePrev)
 	{
 		if (size == null)
 		{
@@ -1749,7 +1331,7 @@ class ControlBuilder
 				(
 					"labelProfileName",
 					new Coords(100, 40, 0), // pos
-					new Coords(100, 25, 0), // size
+					new Coords(100, 20, 0), // size
 					true, // isTextCentered
 					"Profile: " + universe.profile.name,
 					fontHeight
@@ -1786,7 +1368,7 @@ class ControlBuilder
 				(
 					"buttonStart",
 					new Coords(50, 100, 0), // pos
-					new Coords(100, 25, 0), // size
+					new Coords(100, this.buttonHeightBase, 0), // size
 					"Start",
 					fontHeight,
 					true, // hasBorder
@@ -1821,7 +1403,7 @@ class ControlBuilder
 							);
 
 							var venueInstructions =
-								new VenueControls(controlInstructions);
+								new VenueControls(controlInstructions, false);
 
 							var venueMovie = new VenueVideo
 							(
@@ -1849,10 +1431,7 @@ class ControlBuilder
 					true, // isEnabled
 					() => // click
 					{
-						var venueNext= new VenueControls
-						(
-							universe.controlBuilder.profileDetail(universe, null)
-						);
+						var venueNext = venuePrev;
 						venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
 						universe.venueNext = venueNext;
 					},
@@ -1870,48 +1449,34 @@ class ControlBuilder
 					true, // isEnabled
 					() => // click
 					{
-						var world = universe.world;
+						var saveState = universe.profile.saveStateSelected();
+						var saveStateName = saveState.name;
 
-						var controlConfirm = universe.controlBuilder.confirm
+						var controlConfirm = universe.controlBuilder.confirmAndReturnToVenue
 						(
 							universe,
 							size,
-							"Delete world \""
-								+ world.name
+							"Delete save \""
+								+ saveStateName
 								+ "\"?",
+							universe.venueCurrent,
 							() => // confirm
 							{
+								var storageHelper = universe.storageHelper;
+
 								var profile = universe.profile;
-								var world = universe.world;
-								var worlds = profile.worlds;
 
-								ArrayHelper.remove(worlds, world);
+								var saveStates = profile.saveStates;
+								ArrayHelper.remove(saveStates, saveState);
+								storageHelper.save(profile.name, profile);
+
 								universe.world = null;
-
-								universe.profileHelper.profileSave
-								(
-									profile
-								);
-
-								var venueNext= new VenueControls
-								(
-									universe.controlBuilder.profileDetail(universe, null)
-								);
-								venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-								universe.venueNext = venueNext;
+								storageHelper.delete(saveStateName);
 							},
-							() => // cancel
-							{
-								var venueNext= new VenueControls
-								(
-									universe.controlBuilder.worldDetail(universe, null)
-								);
-								venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-								universe.venueNext = venueNext;
-							}
+							null // cancel
 						);
 
-						var venueNext= new VenueControls(controlConfirm);
+						var venueNext= new VenueControls(controlConfirm, false);
 						venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
 
 						universe.venueNext = venueNext;
@@ -1941,73 +1506,52 @@ class ControlBuilder
 
 		var confirm = () =>
 		{
-			var profileOld = universe.profile;
-			var profilesReloaded = universe.profileHelper.profiles();
-			for (var i = 0; i < profilesReloaded.length; i++)
-			{
-				var profileReloaded = profilesReloaded[i];
-				if (profileReloaded.name == profileOld.name)
-				{
-					universe.profile = profileReloaded;
-					break;
-				}
-			}
+			var storageHelper = universe.storageHelper;
 
-			var worldOld = universe.world;
-			var worldsReloaded = universe.profile.worlds;
-			var worldToReload = null;
-			for (var i = 0; i < worldsReloaded.length; i++)
-			{
-				var worldReloaded = worldsReloaded[i];
-				if (worldReloaded.name == worldOld.name)
-				{
-					worldToReload = worldReloaded;
-					break;
-				}
-			}
-
-			var venueNext= new VenueControls
+			var messageAsDataBinding = new DataBinding
 			(
-				universe.controlBuilder.worldLoad(universe, null)
+				null, // Will be set below.
+				(c) => "Loading game...",
+				null
 			);
-			venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-			universe.venueNext = venueNext;
 
-			if (worldToReload == null)
-			{
-				venueNext = new VenueControls
-				(
-					universe.controlBuilder.message
+			var venueMessage = new VenueMessage
+			(
+				messageAsDataBinding, null, null, null, null
+			);
+
+			var venueTask = new VenueTask
+			(
+				venueMessage,
+				() => // perform
+				{
+					var profile = universe.profile;
+					var saveStateSelected = profile.saveStateSelected;
+					return storageHelper.load(saveStateSelected.name);
+				},
+				(universe, saveStateReloaded) => // done
+				{
+					universe.world = saveStateReloaded.world;
+					var venueNext= new VenueControls
 					(
-						universe,
-						size,
-						new DataBinding("No save exists to reload!", null, null),
-						() => // acknowledge
-						{
-							var venueNext= new VenueControls
-							(
-								universe.controlBuilder.worldLoad(universe, null)
-							);
-							venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-							universe.venueNext = venueNext;
-						},
+						universe.controlBuilder.worldLoad(universe, null),
 						false
-					)
-				);
-				venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-				universe.venueNext = venueNext;
-			}
-			else
-			{
-				universe.world = worldReloaded;
-			}
+					);
+					venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
+					universe.venueNext = venueNext;
+				}
+			);
+
+			messageAsDataBinding.contextSet(venueTask);
+
+			universe.venueNext = new VenueFader(venueTask, universe.venueCurrent, null, null)
 		};
 
 		var cancel = () =>
 		{
 			var venueNext= new VenueControls
 			(
-				universe.controlBuilder.worldLoad(universe, null)
+				universe.controlBuilder.worldLoad(universe, null), false
 			);
 			venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
 			universe.venueNext = venueNext;
@@ -2020,27 +1564,66 @@ class ControlBuilder
 			this.sizeBase.clone(), // size
 			// children
 			[
+				new ControlLabel
+				(
+					"labelProfileName",
+					new Coords(100, 25, 0), // pos
+					new Coords(120, 25, 0), // size
+					true, // isTextCentered
+					"Profile: " + universe.profile.name,
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"labelSelectASave",
+					new Coords(100, 40, 0), // pos
+					new Coords(100, 25, 0), // size
+					true, // isTextCentered
+					"Select a Save:",
+					fontHeight
+				),
+
+				new ControlList
+				(
+					"listSaveStates",
+					new Coords(30, 50, 0), // pos
+					new Coords(140, 50, 0), // size
+					new DataBinding
+					(
+						universe.profile,
+						(c) => c.saveStates,
+						null
+					), // items
+					DataBinding.fromGet( (c) => c.name ), // bindingForOptionText
+					fontHeight,
+					new DataBinding
+					(
+						universe.profile,
+						(c) => c.saveStateSelected(),
+						(c, v) => { c.saveStateNameSelected = v.name; }
+					), // bindingForOptionSelected
+					DataBinding.fromGet( (c) => c ), // value
+					null, null, null
+				),
+
 				new ControlButton
 				(
 					"buttonLoadFromServer",
-					new Coords(30, 15, 0), // pos
-					new Coords(140, 25, 0), // size
-					"Reload from Local Storage",
+					new Coords(30, 105, 0), // pos
+					new Coords(40, this.buttonHeightBase, 0), // size
+					"Load",
 					fontHeight,
 					true, // hasBorder
-					true, // isEnabled
+					new DataBinding(true, null, null), // isEnabled
 					() => // click
 					{
 						var controlConfirm = universe.controlBuilder.confirm
 						(
-							universe,
-							size,
-							"Abandon the current game?",
-							confirm,
-							cancel
+							universe, size, "Abandon the current game?", 
+							confirm, cancel
 						);
-
-						var venueConfirm = new VenueControls(controlConfirm);
+						var venueConfirm = new VenueControls(controlConfirm, false);
 						universe.venueNext = new VenueFader(venueConfirm, universe.venueCurrent, null, null);
 					},
 					null, null
@@ -2049,9 +1632,9 @@ class ControlBuilder
 				new ControlButton
 				(
 					"buttonLoadFromFile",
-					new Coords(30, 50, 0), // pos
-					new Coords(140, 25, 0), // size
-					"Load from File",
+					new Coords(80, 105, 0), // pos
+					new Coords(40, this.buttonHeightBase, 0), // size
+					"Load File",
 					fontHeight,
 					true, // hasBorder
 					true, // isEnabled
@@ -2059,8 +1642,7 @@ class ControlBuilder
 					{
 						var venueFileUpload = new VenueFileUpload(null, null);
 
-						var venueMessageReadyToLoad = new VenueControls
-						(
+						var controlMessageReadyToLoad = 
 							universe.controlBuilder.message
 							(
 								universe,
@@ -2070,13 +1652,15 @@ class ControlBuilder
 								{
 									function callback(fileContentsAsString)
 									{
-										var worldAsJSON = fileContentsAsString;
-										var worldDeserialized = universe.serializer.deserialize(worldAsJSON);
+										var worldAsStringCompressed = fileContentsAsString;
+										var compressor = universe.storageHelper.compressor;
+										var worldSerialized = compressor.decompressString(worldAsStringCompressed);
+										var worldDeserialized = universe.serializer.deserialize(worldSerialized);
 										universe.world = worldDeserialized;
 
 										var venueNext= new VenueControls
 										(
-											universe.controlBuilder.game(universe, size)
+											universe.controlBuilder.game(universe, size, universe.venueCurrent), false
 										);
 										venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
 										universe.venueNext = venueNext;
@@ -2084,7 +1668,7 @@ class ControlBuilder
 
 									var inputFile = venueFileUpload.toDomElement().getElementsByTagName("input")[0];
 									var fileToLoad = inputFile.files[0];
-									new FileHelper().loadFileAsText
+									new FileHelper().loadFileAsBinaryString
 									(
 										fileToLoad,
 										callback,
@@ -2092,27 +1676,33 @@ class ControlBuilder
 									);
 								},
 								null
-							)
+							);
+
+						var venueMessageReadyToLoad = new VenueControls
+						(
+							controlMessageReadyToLoad, false
+						);
+
+						var controlMessageCancelled = universe.controlBuilder.message
+						(
+							universe,
+							size,
+							new DataBinding("No file specified.", null, null),
+							() => // acknowlege
+							{
+								var venueNext= new VenueControls
+								(
+									universe.controlBuilder.game(universe, size, universe.venueCurrent), false
+								);
+								venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
+								universe.venueNext = venueNext;
+							},
+							false //?
 						);
 
 						var venueMessageCancelled = new VenueControls
 						(
-							universe.controlBuilder.message
-							(
-								universe,
-								size,
-								new DataBinding("No file specified.", null, null),
-								() => // acknowlege
-								{
-									var venueNext= new VenueControls
-									(
-										universe.controlBuilder.game(universe, size)
-									);
-									venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-									universe.venueNext = venueNext;
-								},
-								false //?
-							)
+							controlMessageCancelled, false
 						);
 
 						venueFileUpload.venueNextIfFileSpecified = venueMessageReadyToLoad;
@@ -2126,8 +1716,8 @@ class ControlBuilder
 				new ControlButton
 				(
 					"buttonReturn",
-					new Coords(30, 105, 0), // pos
-					new Coords(140, 25, 0), // size
+					new Coords(130, 105, 0), // pos
+					new Coords(40, this.buttonHeightBase, 0), // size
 					"Return",
 					fontHeight,
 					true, // hasBorder
@@ -2136,216 +1726,13 @@ class ControlBuilder
 					{
 						var venueGame = new VenueControls
 						(
-							universe.controlBuilder.game(universe, size)
+							universe.controlBuilder.game(universe, size, universe.venueCurrent), false
 						);
 						universe.venueNext = new VenueFader(venueGame, universe.venueCurrent, null, null);
 					},
 					null, null
 				),
 			],
-			null, null
-		);
-
-		returnValue.scalePosAndSize(scaleMultiplier);
-
-		return returnValue;
-	};
-
-	worldSave(universe, size)
-	{
-		if (size == null)
-		{
-			size = universe.display.sizeDefault();
-		}
-
-		var scaleMultiplier =
-			this._scaleMultiplier.overwriteWith(size).divide(this.sizeBase);
-
-		var fontHeight = this.fontHeightInPixelsBase;
-
-		var handleSaveToLocalStorage = (wasSaveSuccessful) =>
-		{
-			var message =
-			(
-				wasSaveSuccessful ? "Profile saved successfully." : "Save failed due to errors."
-			);
-
-			var venueNext= new VenueControls
-			(
-				universe.controlBuilder.message
-				(
-					universe,
-					size,
-					new DataBinding(message, null, null),
-					() => // acknowledge
-					{
-						var venueNext= new VenueControls
-						(
-							universe.controlBuilder.game(universe, null)
-						);
-						venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-						universe.venueNext = venueNext;
-					},
-					false
-				)
-			);
-			venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-			universe.venueNext = venueNext;
-		}
-
-		var saveToLocalStorage = () =>
-		{
-			var messageAsDataBinding = new DataBinding
-			(
-				null, // context - Set below.
-				(c) => "Building record of game...",
-				null
-			);
-
-			var venueMessage = new VenueMessage
-			(
-				messageAsDataBinding,
-				null, null, null, null
-			);
-
-			var wasSaveSuccessful = false;
-
-			var venueTask = new VenueTask
-			(
-				venueMessage,
-				() => // perform
-				{
-					var profile = universe.profile;
-					var world = universe.world;
-
-					world.dateSaved = DateTime.now();
-					wasSaveSuccessful = universe.profileHelper.profileSave
-					(
-						profile
-					);
-
-					return wasSaveSuccessful;
-				},
-				(universe, result) => // done
-				{
-					handleSaveToLocalStorage(result);
-				}
-			);
-			messageAsDataBinding.contextSet(venueTask);
-
-			universe.venueNext = new VenueFader(venueTask, universe.venueCurrent, null, null);
-		};
-
-		var saveToFilesystem = () =>
-		{
-			var venueMessage = VenueMessage.fromText("Building record of game...");
-
-			var venueTask = new VenueTask
-			(
-				venueMessage,
-				() => // perform
-				{
-					var world = universe.world;
-
-					world.dateSaved = DateTime.now();
-					var worldSerialized = universe.serializer.serialize(world, null);
-
-					return worldSerialized;
-				},
-				(universe, worldSerialized) => // done
-				{
-					var wasSaveSuccessful = (worldSerialized != null);
-					var message =
-					(
-						wasSaveSuccessful ? "Save ready: choose location on dialog." : "Save failed due to errors."
-					);
-
-					new FileHelper().saveTextStringToFileWithName
-					(
-						worldSerialized, universe.world.name + ".json"
-					);
-
-					var venueMessage = new VenueControls
-					(
-						universe.controlBuilder.message
-						(
-							universe,
-							size,
-							new DataBinding(message, null, null),
-							() => // acknowledge
-							{
-								var venueNext= new VenueControls
-								(
-									universe.controlBuilder.game(universe, null)
-								);
-								venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-								universe.venueNext = venueNext;
-							},
-							null
-						)
-					);
-					universe.venueNext = new VenueFader(venueMessage, universe.venueCurrent, null, null);
-				}
-			);
-
-			universe.venueNext = new VenueFader(venueTask, universe.venueCurrent, null, null);
-		};
-
-
-		var returnValue = new ControlContainer
-		(
-			"containerSave",
-			this._zeroes, // pos
-			this.sizeBase.clone(), // size
-			// children
-			[
-				new ControlButton
-				(
-					"buttonSaveToLocalStorage",
-					new Coords(30, 15, 0), // pos
-					new Coords(140, 25, 0), // size
-					"Save to Local Storage",
-					fontHeight,
-					true, // hasBorder
-					true, // isEnabled
-					saveToLocalStorage,
-					null, null
-				),
-
-				new ControlButton
-				(
-					"buttonSaveToFile",
-					new Coords(30, 50, 0), // pos
-					new Coords(140, 25, 0), // size
-					"Save to File",
-					fontHeight,
-					true, // hasBorder
-					true, // isEnabled
-					saveToFilesystem, // click
-					null, null
-				),
-
-				new ControlButton
-				(
-					"buttonReturn",
-					new Coords(30, 105, 0), // pos
-					new Coords(140, 25, 0), // size
-					"Return",
-					fontHeight,
-					true, // hasBorder
-					true, // isEnabled
-					() => // click
-					{
-						var venueNext= new VenueControls
-						(
-							universe.controlBuilder.game(universe, null)
-						);
-						venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
-						universe.venueNext = venueNext;
-					},
-					null, null
-				),
-			], // end children
 			null, null
 		);
 

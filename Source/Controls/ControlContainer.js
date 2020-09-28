@@ -1,22 +1,16 @@
 
-class ControlContainer
+class ControlContainer extends ControlBase
 {
-	name;
-	pos;
-	size;
 	children;
 	childrenByName;
 	actions;
 	actionsByName;
 	_actionToInputsMappings;
+	_actionToInputsMappingsByInputName;
 
 	childrenContainingPos;
 	childrenContainingPosPrev;
 	indexOfChildWithFocus;
-	styleName;
-
-	fontHeightInPixels;
-	parent;
 
 	_childMax;
 	_drawPos;
@@ -25,16 +19,23 @@ class ControlContainer
 	_mouseMovePos;
 	_posToCheck;
 
-	constructor(name, pos, size, children, actions, actionToInputsMappings)
+	constructor
+	(
+		name, pos, size, children,
+		actions, actionToInputsMappings
+	)
 	{
-		this.name = name;
-		this.pos = pos;
-		this.size = size;
+		super(name, pos, size, null);
 		this.children = children;
-		this.childrenByName = ArrayHelper.addLookupsByName(this.children);
 		this.actions = (actions || []);
-		this.actionsByName = ArrayHelper.addLookupsByName(this.actions);
 		this._actionToInputsMappings = actionToInputsMappings || [];
+		this._actionToInputsMappingsByInputName = ArrayHelper.addLookupsMultiple
+		(
+			this._actionToInputsMappings, x => x.inputNames
+		);
+
+		this.childrenByName = ArrayHelper.addLookupsByName(this.children);
+		this.actionsByName = ArrayHelper.addLookupsByName(this.actions);
 
 		for (var i = 0; i < this.children.length; i++)
 		{
@@ -56,16 +57,6 @@ class ControlContainer
 	}
 
 	// instance methods
-
-	isEnabled()
-	{
-		return true;
-	};
-
-	style(universe)
-	{
-		return universe.controlBuilder.stylesByName.get(this.styleName == null ? "Default" : this.styleName);
-	};
 
 	// actions
 
@@ -116,7 +107,16 @@ class ControlContainer
 				}
 			}
 		}
-		else if (this.actionsByName.get(actionNameToHandle) != null)
+		else if (this._actionToInputsMappingsByInputName.has(actionNameToHandle))
+		{
+			var inputName = actionNameToHandle; // Likely passed from parent 
+			var mapping = this._actionToInputsMappingsByInputName.get(inputName);
+			var actionName = mapping.actionName;
+			var action = this.actionsByName.get(actionName);
+			action.perform(universe, null, null, null);
+			wasActionHandled = true;
+		}
+		else if (this.actionsByName.has(actionNameToHandle))
 		{
 			var action = this.actionsByName.get(actionNameToHandle);
 			action.perform(universe, null, null, null);
@@ -136,12 +136,12 @@ class ControlContainer
 	actionToInputsMappings()
 	{
 		return this._actionToInputsMappings;
-	};
+	}
 
 	childWithFocus()
 	{
 		return (this.indexOfChildWithFocus == null ? null : this.children[this.indexOfChildWithFocus] );
-	};
+	}
 
 	childWithFocusNextInDirection(direction)
 	{
@@ -200,7 +200,7 @@ class ControlContainer
 		var returnValue = this.childWithFocus();
 
 		return returnValue;
-	};
+	}
 
 	childrenAtPosAddToList
 	(
@@ -230,7 +230,7 @@ class ControlContainer
 		}
 
 		return listToAddTo;
-	};
+	}
 
 	focusGain()
 	{
@@ -240,7 +240,7 @@ class ControlContainer
 		{
 			childWithFocus.focusGain();
 		}
-	};
+	}
 
 	focusLose()
 	{
@@ -250,7 +250,7 @@ class ControlContainer
 			childWithFocus.focusLose();
 			this.indexOfChildWithFocus = null;
 		}
-	};
+	}
 
 	mouseClick(mouseClickPos)
 	{
@@ -284,17 +284,7 @@ class ControlContainer
 		}
 
 		return wasClickHandled;
-	};
-
-	mouseEnter()
-	{
-		// Do nothing.
-	};
-
-	mouseExit()
-	{
-		// Do nothing.
-	};
+	}
 
 	mouseMove(mouseMovePos)
 	{
@@ -339,7 +329,7 @@ class ControlContainer
 				}
 			}
 		}
-	};
+	}
 
 	scalePosAndSize(scaleFactor)
 	{
@@ -365,7 +355,7 @@ class ControlContainer
 		}
 
 		return this;
-	};
+	}
 
 	shiftChildPositions(displacement)
 	{
@@ -374,32 +364,34 @@ class ControlContainer
 			var child = this.children[i];
 			child.pos.add(displacement);
 		}
-	};
+	}
 
 	toVenue()
 	{
-		return new VenueFader(new VenueControls(this), null, null, null);
-	};
+		return new VenueFader(new VenueControls(this, false), null, null, null);
+	}
 
 	// drawable
 
-	draw(universe, display, drawLoc)
+	draw(universe, display, drawLoc, style)
 	{
 		drawLoc = this._drawLoc.overwriteWith(drawLoc);
 		var drawPos = this._drawPos.overwriteWith(drawLoc.pos).add(this.pos);
-		var style = this.style(universe);
+		style = style || this.style(universe);
 
 		display.drawRectangle
 		(
 			drawPos, this.size,
-			style.colorBackground, style.colorBorder, null
+			Color.systemColorGet(style.colorBackground),
+			Color.systemColorGet(style.colorBorder),
+			null
 		);
 
 		var children = this.children;
 		for (var i = 0; i < children.length; i++)
 		{
 			var child = children[i];
-			child.draw(universe, display, drawLoc);
+			child.draw(universe, display, drawLoc, style);
 		}
-	};
+	}
 }

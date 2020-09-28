@@ -1,40 +1,46 @@
 
-class Item
+class Item extends EntityProperty
 {
 	defnName;
 	quantity;
 
 	constructor(defnName, quantity)
 	{
+		super();
 		this.defnName = defnName;
 		this.quantity = quantity;
 	}
 
 	defn(world)
 	{
-		return world.defns.defnsByNameByTypeName.get(ItemDefn.name).get(this.defnName);
-	};
+		return world.defn.itemDefnsByName().get(this.defnName);
+	}
 
 	isUsable(world)
 	{
 		return (this.defn(world).use != null);
-	};
+	}
+
+	mass(world)
+	{
+		return this.quantity * this.defn(world).mass;
+	}
 
 	toEntity()
 	{
 		// todo
 		return new Entity(this.defnName, [ this ]);
-	};
+	}
 
 	toString(world)
 	{
 		return this.defn(world).appearance + " (" + this.quantity + ")";
-	};
+	}
 
 	tradeValue(world)
 	{
 		return this.quantity * this.defn(world).tradeValue;
-	};
+	}
 
 	use(universe, world, place, userEntity, itemEntity)
 	{
@@ -45,12 +51,12 @@ class Item
 			returnValue = defn.use(universe, world, place, userEntity, itemEntity, this);
 		}
 		return returnValue;
-	};
+	}
 
 	// cloneable
 
 	clone()
 	{
 		return new Item(this.defnName, this.quantity);
-	};
+	}
 }

@@ -1,10 +1,11 @@
 
-class Boundable
+class Boundable extends EntityProperty
 {
 	bounds;
 
 	constructor(bounds)
 	{
+		super();
 		this.bounds = bounds;
 	}
 

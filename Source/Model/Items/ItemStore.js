@@ -1,5 +1,5 @@
 
-class ItemStore
+class ItemStore extends EntityProperty
 {
 	itemDefnNameCurrency;
 
@@ -7,6 +7,7 @@ class ItemStore
 
 	constructor(itemDefnNameCurrency)
 	{
+		super();
 		this.itemDefnNameCurrency = itemDefnNameCurrency;
 		this.statusMessage = "-";
 	}
@@ -45,7 +46,24 @@ class ItemStore
 				this.statusMessage = "Not enough currency!";
 			}
 		}
-	};
+	}
+
+	use(universe, world, place, entityUsing, entityUsed)
+	{
+		//entityUsed.collidable().ticksUntilCanCollide = 50; // hack
+		var storeAsControl = entityUsed.itemStore().toControl
+		(
+			universe, universe.display.sizeInPixels,
+			entityUsing, entityUsed,
+			universe.venueCurrent
+		);
+		var venueNext= new VenueControls(storeAsControl, false);
+		venueNext = new VenueFader(venueNext, null, null, null);
+		universe.venueNext = venueNext;
+	}
+
+
+	// Controllable.
 
 	toControl(universe, size, entityCustomer, entityStore, venuePrev)
 	{
@@ -131,8 +149,8 @@ class ItemStore
 						(c) => { return c.itemEntitySelected; },
 						(c, v) => { c.itemEntitySelected = v; }
 					), // bindingForItemSelected
-					new DataBinding(null, (c) => c, null), // bindingForItemValue
-					new DataBinding(true, null, null), // isEnabled
+					DataBinding.fromGet( (c) => c ), // bindingForItemValue
+					DataBinding.fromContext(true), // isEnabled
 					buy, // confirm
 					null
 				),
@@ -155,7 +173,7 @@ class ItemStore
 					"Buy",
 					fontHeight,
 					true, // hasBorder
-					new DataBinding(true, null, null), // isEnabled
+					DataBinding.fromContext(true), // isEnabled
 					buy, // click
 					null, null
 				),
@@ -187,8 +205,8 @@ class ItemStore
 						(c) => { return c.itemEntitySelected; },
 						(c, v) => { c.itemEntitySelected = v; }
 					), // bindingForItemSelected
-					new DataBinding(null, (c) => c, null ), // bindingForItemValue
-					new DataBinding(true, null, null), // isEnabled
+					DataBinding.fromGet( (c) => c ), // bindingForItemValue
+					DataBinding.fromContext(true), // isEnabled
 					sell, // confirm
 					null
 				),
@@ -206,7 +224,7 @@ class ItemStore
 					"Sell",
 					fontHeight,
 					true, // hasBorder
-					new DataBinding(true, null, null), // isEnabled
+					DataBinding.fromContext(true), // isEnabled
 					sell, // click
 					null, null
 				),

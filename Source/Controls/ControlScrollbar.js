@@ -1,20 +1,13 @@
 
-class ControlScrollbar
+class ControlScrollbar extends ControlBase
 {
-	pos;
-	size;
-	fontHeightInPixels;
 	itemHeight;
 	_items;
 	_sliderPosInItems;
 
-	name;
 	buttonScrollDown;
 	buttonScrollUp;
 	handleSize;
-	isHighlighted;
-	parent;
-	styleName;
 	windowSizeInItems;
 
 	_drawPos;
@@ -25,9 +18,7 @@ class ControlScrollbar
 		itemHeight, items, sliderPosInItems
 	)
 	{
-		this.pos = pos;
-		this.size = size;
-		this.fontHeightInPixels = fontHeightInPixels;
+		super(null, pos, size, fontHeightInPixels);
 		this.itemHeight = itemHeight;
 		this._items = items;
 		this._sliderPosInItems = sliderPosInItems;
@@ -69,42 +60,22 @@ class ControlScrollbar
 	actionHandle(actionNameToHandle, universe)
 	{
 		return true;
-	};
-
-	actionToInputsMappings()
-	{
-		return null; // todo
 	}
 
-	childWithFocus()
+	isVisible()
 	{
-		return null; // todo
-	}
-
-	focusGain() {}
-
-	focusLose() {}
-
-	isEnabled()
-	{
-		return true;
+		return this.windowSizeInItems < this.items().length
 	}
 
 	items()
 	{
 		return (this._items.get == null ? this._items : this._items.get());
-	};
+	}
 
 	mouseClick(pos)
 	{
 		return false;
 	}
-
-	mouseEnter() {}
-
-	mouseExit() {}
-
-	mouseMove(pos) {}
 
 	scalePosAndSize(scaleFactor)
 	{
@@ -124,7 +95,7 @@ class ControlScrollbar
 		);
 
 		this._sliderPosInItems = sliderPosInItems;
-	};
+	}
 
 	scrollUp()
 	{
@@ -134,7 +105,7 @@ class ControlScrollbar
 		);
 
 		this._sliderPosInItems = sliderPosInItems;
-	};
+	}
 
 	slideSizeInPixels()
 	{
@@ -146,17 +117,17 @@ class ControlScrollbar
 		);
 
 		return slideSizeInPixels;
-	};
+	}
 
 	sliderPosInItems()
 	{
 		return this._sliderPosInItems;
-	};
+	}
 
 	sliderMaxInItems()
 	{
 		return this.items().length - Math.floor(this.windowSizeInItems);
-	};
+	}
 
 	sliderPosInPixels()
 	{
@@ -171,7 +142,7 @@ class ControlScrollbar
 		);
 
 		return sliderPosInPixels;
-	};
+	}
 
 	sliderSizeInPixels()
 	{
@@ -181,43 +152,35 @@ class ControlScrollbar
 		);
 
 		return sliderSizeInPixels;
-	};
-
-	style(universe)
-	{
-		return universe.controlBuilder.stylesByName.get(this.styleName == null ? "Default" : this.styleName);
-	};
+	}
 
 	// drawable
 
-	draw(universe, display, drawLoc)
+	draw(universe, display, drawLoc, style)
 	{
-		var numberOfItems = this.items().length;
-
-		if (this.windowSizeInItems < numberOfItems)
+		if (this.isVisible())
 		{
-			var style = this.style(universe);
+			style = style || this.style(universe);
 			var colorFore = (this.isHighlighted ? style.colorFill : style.colorBorder);
 			var colorBack = (this.isHighlighted ? style.colorBorder : style.colorFill);
 
 			var drawPos = this._drawPos.overwriteWith(drawLoc.pos).add(this.pos);
-			display.drawRectangle(drawPos, this.size, colorFore, null, null);
+			display.drawRectangle(drawPos, this.size, Color.systemColorGet(colorFore), null, null);
 
 			drawLoc.pos.add(this.pos);
-			this.buttonScrollDown.draw(universe, display, drawLoc);
-			this.buttonScrollUp.draw(universe, display, drawLoc);
+			this.buttonScrollDown.draw(universe, display, drawLoc, style);
+			this.buttonScrollUp.draw(universe, display, drawLoc, style);
 
 			var sliderPosInPixels = this.sliderPosInPixels().add(drawPos);
 			var sliderSizeInPixels = this.sliderSizeInPixels();
 
 			display.drawRectangle
 			(
-				sliderPosInPixels,
-				sliderSizeInPixels,
-				colorBack,
-				colorFore,
+				sliderPosInPixels, sliderSizeInPixels,
+				Color.systemColorGet(colorBack), 
+				Color.systemColorGet(colorFore),
 				null
 			);
 		}
-	};
+	}
 }

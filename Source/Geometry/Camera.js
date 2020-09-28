@@ -1,5 +1,5 @@
 
-class Camera
+class Camera extends EntityProperty
 {
 	viewSize;
 	focalLength;
@@ -13,6 +13,7 @@ class Camera
 
 	constructor(viewSize, focalLength, loc)
 	{
+		super();
 		this.viewSize = viewSize;
 		this.focalLength = focalLength;
 		this.loc = loc;
@@ -175,7 +176,7 @@ class Camera
 		return viewCoords;
 	};
 
-	drawEntitiesInViewThenClear(universe, world, display)
+	drawEntitiesInViewThenClear(universe, world, place, display)
 	{
 		this.loc.pos.round(); // hack - To prevent lines between map tiles.
 
@@ -189,11 +190,11 @@ class Camera
 				var returnValue;
 				if (aPos.z != bPos.z)
 				{
-					returnValue = (aPos.z > bPos.z ? 1 : -1)
+					returnValue = bPos.z - aPos.z;
 				}
 				else
 				{
-					returnValue = (aPos.y > bPos.y ? 1 : -1)
+					returnValue = aPos.y - bPos.y;
 				}
 
 				return returnValue;
@@ -203,8 +204,8 @@ class Camera
 		for (var i = 0; i < this.entitiesInView.length; i++)
 		{
 			var entity = this.entitiesInView[i];
-			var visual = entity.drawable().visual;
-			visual.drawImmediate(universe, world, display, entity)
+			var visual = entity.drawable().visual ;
+			visual.drawImmediate(universe, world, place, entity, display);
 		}
 
 		this.entitiesInView.length = 0;

@@ -45,7 +45,7 @@ class VisualRepeating
 		}
 	}
 
-	draw(universe, world, display, entity)
+	draw(universe, world, place, entity, display)
 	{
 		var drawPos = entity.locatable().loc.pos;
 
@@ -77,7 +77,7 @@ class VisualRepeating
 					drawPosWrapped
 				);
 
-				this.child.draw(universe, world, display, entity);
+				this.child.draw(universe, world, place, entity, display);
 			}
 		}
 

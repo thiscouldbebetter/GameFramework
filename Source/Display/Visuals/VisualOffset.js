@@ -15,12 +15,12 @@ class VisualOffset
 		this._posSaved = new Coords(0, 0, 0);
 	}
 
-	draw(universe, world, display, entity)
+	draw(universe, world, place, entity, display)
 	{
 		var drawablePos = entity.locatable().loc.pos;
 		this._posSaved.overwriteWith(drawablePos);
 		drawablePos.add(this.offset);
-		this.child.draw(universe, world, display, entity);
+		this.child.draw(universe, world, place, entity, display);
 		drawablePos.overwriteWith(this._posSaved);
 	};
 

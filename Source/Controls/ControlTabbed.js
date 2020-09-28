@@ -1,19 +1,14 @@
 
-class ControlTabbed
+class ControlTabbed extends ControlBase
 {
-	name;
-	pos;
-	size;
+	tabButtonSize;
 	children;
 	childrenByName;
-	fontHeightInPixels;
 	cancel;
 
 	buttonsForChildren;
 	childSelectedIndex;
 	isChildSelectedActive;
-	parent;
-	styleName;
 
 	_childMax;
 	_childrenContainingPos;
@@ -23,11 +18,15 @@ class ControlTabbed
 	_mouseMovePos;
 	_posToCheck;
 
-	constructor(name, pos, size, children, fontHeightInPixels, cancel)
+	constructor
+	(
+		name, pos, size, tabButtonSize,
+		children, fontHeightInPixels,
+		cancel
+	)
 	{
-		this.name = name;
-		this.pos = pos;
-		this.size = size;
+		super(name, pos, size, fontHeightInPixels);
+		this.tabButtonSize = tabButtonSize;
 		this.children = children;
 		this.childrenByName = ArrayHelper.addLookupsByName(this.children);
 		this.cancel = cancel;
@@ -35,26 +34,27 @@ class ControlTabbed
 		this.childSelectedIndex = 0;
 		this.isChildSelectedActive = false;
 
-		fontHeightInPixels = fontHeightInPixels || 10;
-
-		var marginSize = fontHeightInPixels;
-		var buttonSize = new Coords(50, fontHeightInPixels * 2, 0);
+		var marginSize = this.fontHeightInPixels;
+		var tabPaneHeight = marginSize + this.tabButtonSize.y;
 		var buttonsForChildren= [];
 
 		for (var i = 0; i < this.children.length; i++)
 		{
 			var child = this.children[i];
 
-			child.pos.y += marginSize + buttonSize.y;
+			child.pos.y += tabPaneHeight;
 
 			var childName = child.name;
+
+			var buttonPos = new Coords(marginSize + this.tabButtonSize.x * i, marginSize, 0);
+
 			var button = new ControlButton
 			(
 				"button" + childName,
-				new Coords(marginSize + buttonSize.x * i, marginSize, 0), // pos
-				buttonSize.clone(),
+				buttonPos,
+				this.tabButtonSize.clone(),
 				childName, // text
-				fontHeightInPixels,
+				this.fontHeightInPixels,
 				true, // hasBorder
 				true, // isEnabled
 				(b) => this.childSelectedIndex = buttonsForChildren.indexOf(b), // hack
@@ -70,10 +70,10 @@ class ControlTabbed
 			var button = new ControlButton
 			(
 				"buttonCancel",
-				new Coords(this.size.x - marginSize - buttonSize.x, marginSize, 0), // pos
-				buttonSize.clone(),
+				new Coords(this.size.x - marginSize - this.tabButtonSize.x, marginSize, 0), // pos
+				this.tabButtonSize.clone(),
 				"Done", // text
-				fontHeightInPixels,
+				this.fontHeightInPixels,
 				true, // hasBorder
 				true, // isEnabled
 				this.cancel, // click
@@ -96,22 +96,7 @@ class ControlTabbed
 
 	// instance methods
 
-	isEnabled()
-	{
-		return true;
-	};
-
-	style(universe)
-	{
-		return universe.controlBuilder.stylesByName.get(this.styleName == null ? "Default" : this.styleName);
-	};
-
 	// actions
-
-	actionToInputsMappings()
-	{
-		return null;
-	}
 
 	actionHandle(actionNameToHandle, universe)
 	{
@@ -173,12 +158,12 @@ class ControlTabbed
 		}
 
 		return wasActionHandled;
-	};
+	}
 
 	childSelected()
 	{
 		return (this.childSelectedIndex == null ? null : this.children[this.childSelectedIndex] );
-	};
+	}
 
 	childSelectNextInDirection(direction)
 	{
@@ -218,7 +203,7 @@ class ControlTabbed
 		var returnValue = this.childSelected();
 
 		return returnValue;
-	};
+	}
 
 	childWithFocus()
 	{
@@ -261,7 +246,7 @@ class ControlTabbed
 		}
 
 		return listToAddTo;
-	};
+	}
 
 	focusGain()
 	{
@@ -271,7 +256,7 @@ class ControlTabbed
 		{
 			childSelected.focusGain();
 		}
-	};
+	}
 
 	focusLose()
 	{
@@ -281,7 +266,7 @@ class ControlTabbed
 			childSelected.focusLose();
 			this.childSelectedIndex = null;
 		}
-	};
+	}
 
 	mouseClick(mouseClickPos)
 	{
@@ -330,7 +315,7 @@ class ControlTabbed
 		}
 
 		return wasClickHandled;
-	};
+	}
 
 	mouseEnter() {}
 	mouseExit() {}
@@ -360,7 +345,7 @@ class ControlTabbed
 		}
 
 		return wasMoveHandled;
-	};
+	}
 
 	scalePosAndSize(scaleFactor)
 	{
@@ -386,16 +371,16 @@ class ControlTabbed
 		}
 
 		return this;
-	};
+	}
 
 	toVenue()
 	{
-		return new VenueFader(new VenueControls(this), null, null, null);
-	};
+		return new VenueFader(new VenueControls(this, false), null, null, null);
+	}
 
 	// drawable
 
-	draw(universe, display, drawLoc)
+	draw(universe, display, drawLoc, style)
 	{
 		drawLoc = this._drawLoc.overwriteWith(drawLoc);
 		var drawPos = this._drawPos.overwriteWith(drawLoc.pos).add(this.pos);
@@ -404,7 +389,9 @@ class ControlTabbed
 		display.drawRectangle
 		(
 			drawPos, this.size,
-			style.colorBackground, style.colorBorder, null
+			Color.systemColorGet(style.colorBackground),
+			Color.systemColorGet(style.colorBorder),
+			null
 		);
 
 		var buttons = this.buttonsForChildren;
@@ -418,7 +405,7 @@ class ControlTabbed
 		var child = this.childSelected();
 		if (child != null)
 		{
-			child.draw(universe, display, drawLoc);
+			child.draw(universe, display, drawLoc, style);
 		}
-	};
+	}
 }

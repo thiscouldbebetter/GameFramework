@@ -1,16 +1,29 @@
 
-class Movable
+class Movable extends EntityProperty
 {
 	accelerationPerTick;
-	accelerate;
+	speedMax;
+	_accelerate;
 
-	constructor(accelerationPerTick, accelerate)
+	constructor
+	(
+		accelerationPerTick,
+		speedMax,
+		accelerate
+	)
 	{
+		super();
 		this.accelerationPerTick = accelerationPerTick;
-		this.accelerate = accelerate || this.accelerateForward;
+		this.speedMax = speedMax;
+		this._accelerate = accelerate || this.accelerateForward;
 	}
 
-	accelerateForward(universe, world, place, entityMovable)
+	accelerate(universe, world, place, entityMovable)
+	{
+		this._accelerate(universe, world, place, entityMovable, this.accelerationPerTick);
+	}
+
+	accelerateForward(universe, world, place, entityMovable, accelerationPerTick)
 	{
 		var entityLoc = entityMovable.locatable().loc;
 		entityLoc.accel.overwriteWith
@@ -21,6 +34,21 @@ class Movable
 			entityMovable.movable().accelerationPerTick
 		);
 	};
+
+	accelerateInDirection
+	(
+		universe, world, place, entity, directionToMove
+	)
+	{
+		var entityLoc = entity.locatable().loc;
+		var isEntityStandingOnGround =
+			(entityLoc.pos.z >= 0 && entityLoc.vel.z >= 0);
+		if (isEntityStandingOnGround)
+		{
+			entityLoc.orientation.forwardSet(directionToMove);
+			entity.movable().accelerate(universe, world, place, entity);
+		}
+	}
 
 	// cloneable
 

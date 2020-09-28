@@ -4,6 +4,8 @@ class VenueWorld
 	name;
 	world;
 
+	venueControls;
+
 	constructor(world)
 	{
 		this.name = "World";
@@ -13,12 +15,12 @@ class VenueWorld
 	draw(universe)
 	{
 		this.world.draw(universe);
-	};
+	}
 
 	finalize(universe)
 	{
 		universe.soundHelper.soundForMusic.pause(universe);
-	};
+	}
 
 	initialize(universe)
 	{
@@ -26,12 +28,19 @@ class VenueWorld
 		this.world.initialize(universe);
 
 		var soundHelper = universe.soundHelper;
-		soundHelper.soundWithNamePlayAsMusic(universe, "Music");
-	};
+		soundHelper.soundWithNamePlayAsMusic(universe, "Music_Music");
+
+		this.venueControls = new VenueControls
+		(
+			this.world.toControl(universe),
+			true // ignoreKeyboardAndGamepadInputs 
+		);
+	}
 
 	updateForTimerTick(universe)
 	{
 		this.world.updateForTimerTick(universe);
 		this.draw(universe);
-	};
+		this.venueControls.updateForTimerTick(universe);
+	}
 }
