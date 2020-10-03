@@ -645,6 +645,7 @@ class PlaceBuilderDemo
 
 		var visualBackgroundCellSize =
 			new Coords(.5, .5, .01).multiplyScalar(visualBackgroundDimension);
+		var colorHazy = new Color("Hazy", "", [1, 1, 1, 0.02])";
 		var visualBackgroundBottom = new VisualRepeating
 		(
 			visualBackgroundCellSize,
@@ -652,7 +653,9 @@ class PlaceBuilderDemo
 			new VisualRectangle
 			(
 				visualBackgroundCellSize,
-				null, "rgba(255, 255, 255, 0.02)", null
+				null,
+				colorHazy,
+				null
 			),
 			true // expandViewStartAndEndByCell
 		);
@@ -669,6 +672,7 @@ class PlaceBuilderDemo
 
 		visualBackgroundCellSize =
 			new Coords(1, 1, .01).multiplyScalar(visualBackgroundDimension);
+		var colorHazier = new Color("Hazier", "", [1, 1, 1, 0.06])";
 		var visualBackgroundTop = new VisualRepeating
 		(
 			visualBackgroundCellSize, // cellSize
@@ -676,7 +680,7 @@ class PlaceBuilderDemo
 			new VisualRectangle
 			(
 				visualBackgroundCellSize,
-				null, "rgba(255, 255, 255, 0.06)", null
+				null, colorHazier, null
 			),
 			true // expandViewStartAndEndByCell
 		);
@@ -981,7 +985,7 @@ class PlaceBuilderDemo
 						new Portal(neighborName, "PortalToNeighbor" + ((i + 2) % 4), false),
 						new Drawable
 						(
-							new VisualRectangle(portalSize, "Violet", null, null),
+							new VisualRectangle(portalSize, Color.byName("Violet"), null, null),
 							null
 						),
 						new DrawableCamera()

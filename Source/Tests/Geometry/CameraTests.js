@@ -9,7 +9,7 @@ function CameraTests()
 		(
 			new Coords(100, 100, 1), // viewSize
 			100, // focalLength
-			new Location
+			new Disposition
 			(
 				new Coords(0, 0, -100),
 				new Orientation

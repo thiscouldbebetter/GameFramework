@@ -76,6 +76,13 @@ class Box
 		return pointToCheck.isInRangeMinMax(this.min(), this.max());
 	}
 
+	fromMinAndMax(min, max)
+	{
+		this.center.overwriteWith(min).add(max).half();
+		this.size.overwriteWith(max).subtract(min);
+		return this;
+	}
+
 	intersectWith(other)
 	{
 		var thisMinDimensions = this.min().dimensions();

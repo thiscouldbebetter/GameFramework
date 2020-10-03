@@ -5,7 +5,10 @@ class EntityBuilder
 	{
 		var ticksToLive = 32;
 		var riseSpeed = -1;
-		var visual = new VisualText(DataBinding.fromContext(text), null, color, null);
+		var visual = new VisualText
+		(
+			DataBinding.fromContext(text), null, color, null
+		);
 		pos = pos.clone();
 		pos.z--;
 
