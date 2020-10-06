@@ -15,8 +15,8 @@ class Transform_Overwrite
 
 	transform(transformable)
 	{
-		return transformable; // todo
-	};
+		transformable.overwriteWith(this.transformableToOverwriteWith);
+	}
 
 	transformCoords(coordsToTransform)
 	{

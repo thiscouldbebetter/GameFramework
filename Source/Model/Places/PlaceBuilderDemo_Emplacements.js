@@ -248,6 +248,7 @@ class PlaceBuilderDemo_Emplacements
 		(
 			campfireName,
 			[
+				new Animatable(),
 				new Locatable( new Disposition(new Coords(0, 0, 0), null, null) ),
 				campfireCollidable,
 				new Drawable(campfireVisual, null),

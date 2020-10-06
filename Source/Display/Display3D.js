@@ -579,7 +579,7 @@ class Display3D
 		return this._scaleFactor;
 	}
 
-	show()
+	show() {}
 
 	sizeDefault()
 	{

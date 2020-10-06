@@ -57,6 +57,11 @@ class Entity
 		}
 	}
 
+	propertyByName(name)
+	{
+		return this.propertiesByName.get(name);
+	}
+
 	propertyRemoveForPlace(propertyToRemove, place)
 	{
 		ArrayHelper.remove(this.properties, propertyToRemove);
@@ -92,6 +97,7 @@ class Entity
 	// Convenience methods for properties.
 
 	actor() { return this.propertiesByName.get(Actor.name); }
+	animatable() { return this.propertiesByName.get(Animatable.name); }
 	boundable() { return this.propertiesByName.get(Boundable.name); }
 	camera() { return this.propertiesByName.get(Camera.name); }
 	collidable() { return this.propertiesByName.get(Collidable.name); }

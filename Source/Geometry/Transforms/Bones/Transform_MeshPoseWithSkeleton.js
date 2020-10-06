@@ -10,19 +10,15 @@ class Transform_MeshPoseWithSkeleton
 	_orientation;
 	_vertex;
 
-	constructor
-	(
-		meshAtRest,
-		skeletonAtRest,
-		boneInfluences,
-		skeletonPosed
-	)
+	constructor(meshAtRest, skeletonAtRest, boneInfluences, skeletonPosed)
 	{
 		this.meshAtRest = meshAtRest;
 		this.skeletonAtRest = skeletonAtRest;
 		this.skeletonPosed = skeletonPosed || this.skeletonAtRest.clone();
 		this.boneInfluences = boneInfluences;
-		this.boneInfluencesByName = ArrayHelper.addLookups( this.boneInfluences, (x) => x.boneName );
+		this.boneInfluencesByName = ArrayHelper.addLookups(
+			this.boneInfluences, (x) => x.boneName
+		);
 
 		// Helper variables.
 		this._orientation = new Orientation(new Coords(0, 0, 0), new Coords(0, 0, 0));
@@ -38,7 +34,7 @@ class Transform_MeshPoseWithSkeleton
 	{
 		this.transformMesh(transformable );
 		return transformable;
-	};
+	}
 
 	transformCoords(coordsToTransform)
 	{
@@ -58,8 +54,8 @@ class Transform_MeshPoseWithSkeleton
 			var boneInfluence = this.boneInfluences[i];
 			var boneName = boneInfluence.boneName;
 
-			var boneAtRest = bonesAtRest[boneName];
-			var bonePosed = bonesPosed[boneName];
+			var boneAtRest = bonesAtRest.get(boneName);
+			var bonePosed = bonesPosed.get(boneName);
 
 			var boneAtRestOrientation = boneAtRest.orientation;
 
@@ -121,6 +117,6 @@ class Transform_MeshPoseWithSkeleton
 			}
 
 		} // end for each boneInfluence
-	};
+	}
 
 }

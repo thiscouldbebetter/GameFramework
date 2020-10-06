@@ -2993,11 +2993,12 @@ class PlaceBuilderDemo // Main.
 		(
 			itemDefnName,
 			[
-				new Item(itemDefnName, 1),
-				new Locatable(null),
+				new Animatable(),
 				new Collidable(0, itemTorchCollider, null, null),
 				new Drawable(itemTorchVisual, null),
-				new DrawableCamera()
+				new DrawableCamera(),
+				new Item(itemDefnName, 1),
+				new Locatable(null)
 			]
 		);
 

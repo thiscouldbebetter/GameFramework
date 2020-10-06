@@ -446,7 +446,7 @@ class SkeletonHelper
 			meshAtRest,
 			skeletonAtRest,
 			boneInfluences,
-			skeletonPosed,
+			skeletonPosed
 		);
 
 		return returnValue;
