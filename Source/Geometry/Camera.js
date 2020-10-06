@@ -176,11 +176,15 @@ class Camera extends EntityProperty
 		return viewCoords;
 	};
 
-	drawEntitiesInViewThenClear(universe, world, place, display)
+	drawEntitiesInViewThenClear(universe, world, place, display, shouldDrawBackground)
 	{
 		this.loc.pos.round(); // hack - To prevent lines between map tiles.
 
-		display.drawBackground("Black", "Black");
+		if (shouldDrawBackground)
+		{
+			display.drawBackground("Black", "Black");
+		}
+
 		this.entitiesInView.sort
 		(
 			(a, b) =>

@@ -86,5 +86,5 @@ function mediaFilePathsBuild()
 		textStringDirectoryPath + "Instructions.txt",
 	];
 
-	return mediaFilePaths
+	return mediaFilePaths;
 }

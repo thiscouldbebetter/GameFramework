@@ -10,7 +10,10 @@ class VisualDynamic
 
 	draw(universe, world, place, entity, display)
 	{
-		var visual = this.methodForVisual.call(this, universe, world, display, entity);
+		var visual = this.methodForVisual.call
+		(
+			this, universe, world, place, entity, display
+		);
 		visual.draw(universe, world, place, entity, display);
 	};
 
