@@ -22,7 +22,8 @@ class Display2D
 	constructor
 	(
 		sizesAvailable, fontName, fontHeightInPixels,
-		colorFore, colorBack, isInvisible)
+		colorFore, colorBack, isInvisible
+	)
 	{
 		this.sizesAvailable = sizesAvailable;
 		this._sizeDefault = this.sizesAvailable[0];

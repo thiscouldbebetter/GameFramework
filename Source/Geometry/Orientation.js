@@ -59,14 +59,14 @@ class Orientation
 	{
 		this.forward.overwriteWith(value);
 		return this.orthogonalize();
-	};
+	}
 
 	forwardDownSet(forward, down)
 	{
 		this.forward.overwriteWith(forward);
 		this.down.overwriteWith(down);
 		return this.orthogonalize();
-	};
+	}
 
 	orthogonalize()
 	{
@@ -74,7 +74,7 @@ class Orientation
 		this.right.overwriteWith(this.down).crossProduct(this.forward).normalize();
 		this.down.overwriteWith(this.forward).crossProduct(this.right).normalize();
 		return this;
-	};
+	}
 
 	overwriteWith(other)
 	{
@@ -82,7 +82,7 @@ class Orientation
 		this.right.overwriteWith(other.right);
 		this.down.overwriteWith(other.down);
 		return this;
-	};
+	}
 
 	projectCoords(coordsToProject)
 	{
@@ -93,7 +93,7 @@ class Orientation
 			coordsToProject.dotProduct(this.down)
 		);
 		return coordsToProject;
-	};
+	}
 
 	unprojectCoords(coordsToUnproject)
 	{
@@ -114,7 +114,7 @@ class Orientation
 		}
 
 		return coordsToUnproject.overwriteWith(returnValue);
-	};
+	}
 
 	projectCoordsRDF(coordsToProject)
 	{
@@ -125,7 +125,7 @@ class Orientation
 			coordsToProject.dotProduct(this.forward)
 		);
 		return coordsToProject;
-	};
+	}
 
 	unprojectCoordsRDF(coordsToUnproject)
 	{
