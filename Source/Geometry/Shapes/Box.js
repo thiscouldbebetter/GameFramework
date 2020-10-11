@@ -83,6 +83,13 @@ class Box
 		return this;
 	}
 
+	fromMinAndSize(min, max)
+	{
+		this.center.overwriteWith(max).half().add(min);
+		this.size.overwriteWith(max).subtract(min);
+		return this;
+	}
+
 	intersectWith(other)
 	{
 		var thisMinDimensions = this.min().dimensions();

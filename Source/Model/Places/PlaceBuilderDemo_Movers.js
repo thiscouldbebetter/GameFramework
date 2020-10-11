@@ -349,7 +349,7 @@ class PlaceBuilderDemo_Movers
 		var generatorActivityPerform =
 			(universe, world, place, actor, activity) => 
 		{
-			var enemyCount = place.entitiesByPropertyName(Enemy.name).filter
+			var enemyCount = place.enemies().filter
 			(
 				x => x.name.startsWith(enemyEntityPrototype.name)
 			).length;

@@ -33,7 +33,7 @@ class Place
 
 	draw(universe, world, display)
 	{
-		var entitiesDrawable = this.entitiesByPropertyName(Drawable.name);
+		var entitiesDrawable = this.drawables();
 		for (var i = 0; i < entitiesDrawable.length; i++)
 		{
 			var entity = entitiesDrawable[i];
@@ -209,29 +209,11 @@ class Place
 		return (cameraEntity == null ? null : cameraEntity.camera());
 	}
 
-	items()
-	{
-		return this.entitiesByPropertyName(Item.name);
-	}
-
-	loadables()
-	{
-		return this.entitiesByPropertyName(Loadable.name);
-	}
-
-	movables()
-	{
-		return this.entitiesByPropertyName(Movable.name);
-	}
-
-	player()
-	{
-		return this.entitiesByPropertyName(Playable.name)[0];
-	}
-
-	usables()
-	{
-		return this.entitiesByPropertyName(Usable.name);
-	}
+	drawables() { return this.entitiesByPropertyName(Drawable.name); }
+	items() { return this.entitiesByPropertyName(Item.name); }
+	loadables() { return this.entitiesByPropertyName(Loadable.name); }
+	movables() { return this.entitiesByPropertyName(Movable.name); }
+	player() { return this.entitiesByPropertyName(Playable.name)[0]; }
+	usables() { return this.entitiesByPropertyName(Usable.name); }
 
 }
