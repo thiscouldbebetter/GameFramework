@@ -45,6 +45,12 @@ class Entity
 		}
 	}
 
+	nameSet(value)
+	{
+		this.name = value;
+		return this;
+	}
+
 	propertyAddForPlace(propertyToAdd, place)
 	{
 		this.properties.push(propertyToAdd);
@@ -55,6 +61,7 @@ class Entity
 			var entitiesWithProperty = place.entitiesByPropertyName(propertyName);
 			entitiesWithProperty.push(this);
 		}
+		return this;
 	}
 
 	propertyByName(name)

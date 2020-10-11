@@ -2,21 +2,46 @@
 class VisualText
 {
 	_text;
+	shouldTextContextBeReset;
 	colorFill;
 	colorBorder;
 	heightInPixels;
 
-	constructor(text, heightInPixels, colorFill, colorBorder)
+	_universeWorldPlaceEntities;
+
+	constructor
+	(
+		text,
+		shouldTextContextBeReset,
+		heightInPixels,
+		colorFill,
+		colorBorder
+	)
 	{
 		this._text = text;
+		this.shouldTextContextBeReset = shouldTextContextBeReset || false;
 		this.heightInPixels = heightInPixels || 10;
 		this.colorFill = colorFill;
 		this.colorBorder = colorBorder;
+
+		this._universeWorldPlaceEntities = UniverseWorldPlaceEntities.create();
+	}
+
+	static fromTextAndColor(text, colorFill)
+	{
+		return new VisualText
+		(
+			DataBinding.fromContext(text),
+			false, // shouldTextContextBeReset
+			null, // heightInPixels
+			colorFill,
+			null // colorBorder
+		);
 	}
 
 	draw(universe, world, place, entity, display)
 	{
-		var text = this.text(universe, world, display, entity);
+		var text = this.text(universe, world, place, entity, display);
 		display.drawText
 		(
 			text,
@@ -28,12 +53,23 @@ class VisualText
 			true, // isCentered
 			null // widthMaxInPixels
 		);
-	};
+	}
 
-	text(universe, world, display, entity)
+	text(universe, world, place, entity, display)
 	{
-		return this._text.get();
-	};
+		if (this.shouldTextContextBeReset)
+		{
+			this._universeWorldPlaceEntities.fieldsSet
+			(
+				universe, world, place, entity, null
+			);
+			this._text.contextSet(this._universeWorldPlaceEntities);
+		}
+
+		var returnValue = this._text.get();
+
+		return returnValue;
+	}
 
 	// Clonable.
 

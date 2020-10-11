@@ -7,7 +7,7 @@ class EntityBuilder
 		var riseSpeed = -1;
 		var visual = new VisualText
 		(
-			DataBinding.fromContext(text), null, color, null
+			DataBinding.fromContext(text), false, null, color, null
 		);
 		pos = pos.clone();
 		pos.z--;

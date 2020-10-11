@@ -33,7 +33,7 @@ class VenueTask
 	draw(universe)
 	{
 		this.venueInner.draw(universe);
-	};
+	}
 
 	finalize(universe) {}
 
@@ -56,5 +56,5 @@ class VenueTask
 		clearInterval(timer);
 
 		this.done(universe, result);
-	};
+	}
 }
