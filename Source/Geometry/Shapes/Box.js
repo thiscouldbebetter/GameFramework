@@ -3,7 +3,7 @@ class Box
 {
 	center;
 	size;
-	sizeHalf;
+	_sizeHalf;
 
 	_min;
 	_max;
@@ -15,9 +15,9 @@ class Box
 		this.center = center || new Coords(0, 0, 0);
 		this.size = size || new Coords(0, 0, 0);
 
-		this.sizeHalf = this.size.clone().half();
 		this._min = new Coords(0, 0, 0);
 		this._max = new Coords(0, 0, 0);
+		this._sizeHalf = null;
 
 		this._range = new RangeExtent(0, 0);
 	}
@@ -34,8 +34,6 @@ class Box
 		var center = size.clone().half().add(min);
 		return new Box(center, size);
 	}
-
-	// Static methods.
 
 	static doBoxesInSetsOverlap(boxSet0, boxSet1)
 	{
@@ -80,13 +78,15 @@ class Box
 	{
 		this.center.overwriteWith(min).add(max).half();
 		this.size.overwriteWith(max).subtract(min);
+		this._sizeHalf = null;
 		return this;
 	}
 
-	fromMinAndSize(min, max)
+	fromMinAndSize(min, size)
 	{
-		this.center.overwriteWith(max).half().add(min);
-		this.size.overwriteWith(max).subtract(min);
+		this.center.overwriteWith(size).half().add(min);
+		this.size.overwriteWith(size);
+		this._sizeHalf = null;
 		return this;
 	}
 
@@ -140,12 +140,12 @@ class Box
 
 	max()
 	{
-		return this._max.overwriteWith(this.center).add(this.sizeHalf);
+		return this._max.overwriteWith(this.center).add(this.sizeHalf());
 	}
 
 	min()
 	{
-		return this._min.overwriteWith(this.center).subtract(this.sizeHalf);
+		return this._min.overwriteWith(this.center).subtract(this.sizeHalf());
 	}
 
 	ofPoints(points)
@@ -188,7 +188,7 @@ class Box
 
 		this.center.overwriteWith(minSoFar).add(maxSoFar).half();
 		this.size.overwriteWith(maxSoFar).subtract(minSoFar);
-		this.sizeHalf.overwriteWith(this.size).half();
+		this._sizeHalf = null;
 
 		return this;
 	}
@@ -232,8 +232,17 @@ class Box
 	sizeOverwriteWith(sizeOther)
 	{
 		this.size.overwriteWith(sizeOther);
-		this.sizeHalf.overwriteWith(this.size).half();
+		this._sizeHalf = null;
 		return this;
+	}
+
+	sizeHalf()
+	{
+		if (this._sizeHalf == null)
+		{
+			this._sizeHalf = this.size.clone().half();
+		}
+		return this._sizeHalf;
 	}
 
 	touches(other)
@@ -291,7 +300,7 @@ class Box
 	{
 		this.center.overwriteWith(other.center);
 		this.size.overwriteWith(other.size);
-		this.sizeHalf.overwriteWith(other.size).half();
+		this._sizeHalf = null;
 		return this;
 	};
 
@@ -354,7 +363,7 @@ class Box
 			this.center
 		).divide
 		(
-			this.sizeHalf
+			this.sizeHalf()
 		);
 
 		var dimensionIndex =

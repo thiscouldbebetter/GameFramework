@@ -772,7 +772,7 @@ class CollisionHelper
 		var displacementBetweenCentersAbsolute =
 			displacementBetweenCenters.absolute();
 
-		var boxSizeHalf = box.sizeHalf;
+		var boxSizeHalf = box.sizeHalf();
 		var sphereRadius = sphere.radius;
 
 		var doExtentsCollide =
@@ -1299,7 +1299,7 @@ class CollisionHelper
 			cylinder.center
 		);
 
-		if (displacementBetweenCenters.z < box.sizeHalf.z + cylinder.lengthHalf)
+		if (displacementBetweenCenters.z < box.sizeHalf().z + cylinder.lengthHalf)
 		{
 			displacementBetweenCenters.clearZ();
 
