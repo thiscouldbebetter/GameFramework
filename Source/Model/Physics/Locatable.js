@@ -13,7 +13,8 @@ class Locatable extends EntityProperty
 	(
 		locatableToApproach,
 		accelerationPerTick,
-		speedMax,distanceMin
+		speedMax,
+		distanceMin
 	)
 	{
 		accelerationPerTick = accelerationPerTick || .1;
@@ -111,4 +112,11 @@ class Locatable extends EntityProperty
 	{
 		return new Locatable(this.loc.clone());
 	}
+
+	overwriteWith(other)
+	{
+		this.loc.overwriteWith(other.loc);
+		return this;
+	}
+
 }

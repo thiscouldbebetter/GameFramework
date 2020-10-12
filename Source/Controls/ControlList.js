@@ -3,7 +3,6 @@ class ControlList extends ControlBase
 {
 	_items;
 	bindingForItemText;
-	fontHeightInPixels;
 	bindingForItemSelected;
 	bindingForItemValue;
 	bindingForIsEnabled;

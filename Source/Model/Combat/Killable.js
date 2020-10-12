@@ -4,6 +4,7 @@ class Killable extends EntityProperty
 	integrityMax;
 	_damageApply;
 	_die;
+	entityDropChances;
 
 	integrity;
 
@@ -11,13 +12,15 @@ class Killable extends EntityProperty
 	(
 		integrityMax,
 		damageApply,
-		die
+		die,
+		entityDropChances
 	)
 	{
 		super();
 		this.integrityMax = integrityMax;
 		this._damageApply = damageApply;
 		this._die = die;
+		this.entityDropChances = entityDropChances;
 
 		this.integrity = this.integrityMax;
 	}
@@ -42,6 +45,15 @@ class Killable extends EntityProperty
 		if (this._die != null)
 		{
 			this._die(u, w, p, e);
+		}
+
+		if (this.entityDropChances != null)
+		{
+			for (var i = 0; i < this.entityDropChances.length; i++)
+			{
+				var entityDropChance = this.entityDropChances[i];
+				entityDropChance.dropPerChance(u, w, p, e);
+			}
 		}
 	}
 
@@ -83,6 +95,33 @@ class Killable extends EntityProperty
 
 	clone()
 	{
-		return new Killable(this.integrityMax, this._damageApply, this._die);
+		return new Killable
+		(
+			this.integrityMax, this._damageApply, this._die, this.entityDropChances
+		);
+	}
+}
+
+class EntityDropChance
+{
+	constructor(chanceToDrop, entityToDropDefn)
+	{
+		this.chanceToDrop = chanceToDrop;
+		this.entityToDropDefn = entityToDropDefn;
+	}
+
+	dropPerChance(universe, world, place, entityDropping)
+	{
+		var randomizer = universe.randomizer;
+		var doesDrop = (randomizer.getNextRandom() <= this.chanceToDrop);
+		if (doesDrop)
+		{
+			var entityBeingDropped = this.entityToDropDefn.clone();
+			entityBeingDropped.locatable().overwriteWith
+			(
+				entityDropping.locatable()
+			);
+			place.entitiesToSpawn.push(entityBeingDropped);
+		}
 	}
 }
