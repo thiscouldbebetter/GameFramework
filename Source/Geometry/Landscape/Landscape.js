@@ -1,3 +1,5 @@
+
+
 class LandscapeMap
 {
 	name;

@@ -1,4 +1,5 @@
 
+
 class Transform_RotateRight
 {
 	quarterTurnsToRotate;

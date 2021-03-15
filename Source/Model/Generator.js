@@ -1,4 +1,5 @@
 
+
 class Generator extends EntityProperty
 {
 	entityToGenerate;

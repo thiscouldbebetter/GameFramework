@@ -1,4 +1,5 @@
 
+
 class ControlContainer extends ControlBase
 {
 	children;
@@ -109,7 +110,7 @@ class ControlContainer extends ControlBase
 		}
 		else if (this._actionToInputsMappingsByInputName.has(actionNameToHandle))
 		{
-			var inputName = actionNameToHandle; // Likely passed from parent 
+			var inputName = actionNameToHandle; // Likely passed from parent input.
 			var mapping = this._actionToInputsMappingsByInputName.get(inputName);
 			var actionName = mapping.actionName;
 			var action = this.actionsByName.get(actionName);

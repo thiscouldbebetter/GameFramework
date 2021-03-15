@@ -6,7 +6,7 @@ class Constraint_None
 	constrain(universe, world, place, entity)
 	{
 		// Do nothing.
-	};
+	}
 }
 
 class Constraint_AttachToEntityWithName
@@ -27,7 +27,7 @@ class Constraint_AttachToEntityWithName
 			var targetPos = targetEntity.locatable().loc.pos;
 			entityToConstrain.locatable().loc.pos.overwriteWith(targetPos);
 		}
-	};
+	}
 }
 
 class Constraint_Conditional
@@ -48,7 +48,7 @@ class Constraint_Conditional
 		{
 			this.child.constrain(universe, world, place, entity);
 		}
-	};
+	}
 }
 
 class Constraint_ContainInBox
@@ -63,7 +63,7 @@ class Constraint_ContainInBox
 	constrain(universe, world, place, entity)
 	{
 		this.boxToContainWithin.trimCoords(entity.locatable().loc.pos);
-	};
+	}
 }
 
 class Constraint_ContainInHemispace
@@ -136,7 +136,7 @@ class Constraint_ContainInHemispace
 				);
 			}
 		}
-	};
+	}
 }
 
 class Constraint_FrictionXY
@@ -171,7 +171,7 @@ class Constraint_FrictionXY
 			);
 		}
 		entityVel.z = entityVelZSaved;
-	};
+	}
 }
 
 class Constraint_FrictionDry
@@ -202,7 +202,7 @@ class Constraint_FrictionDry
 				entityDirection.multiplyScalar(-frictionMagnitude)
 			);
 		}
-	};
+	}
 }
 
 class Constraint_Gravity
@@ -237,7 +237,7 @@ class Constraint_Offset
 	{
 		var targetOffset = this.target;
 		entity.locatable().loc.pos.add(targetOffset);
-	};
+	}
 }
 
 class Constraint_OrientToward
@@ -270,7 +270,7 @@ class Constraint_OrientToward
 		).normalize();
 
 		constrainableOrientation.forwardSet(constrainableForward);
-	};
+	}
 }
 
 class Constraint_SpeedMaxXY
@@ -295,7 +295,7 @@ class Constraint_SpeedMaxXY
 			entityVel.normalize().multiplyScalar(targetSpeedMax);
 		}
 		entityVel.z = zSaved;
-	};
+	}
 }
 
 class Constraint_StopBelowSpeedMin
@@ -317,7 +317,7 @@ class Constraint_StopBelowSpeedMin
 		{
 			entityVel.clear();
 		}
-	};
+	}
 }
 
 class Constraint_TrimToRange
@@ -334,7 +334,7 @@ class Constraint_TrimToRange
 		var targetSize = this.target;
 		var entityLoc = entity.locatable().loc;
 		entityLoc.pos.trimToRangeMax(targetSize);
-	};
+	}
 }
 
 class Constraint_WrapToRange
@@ -351,7 +351,7 @@ class Constraint_WrapToRange
 		var targetRange = this.target;
 		var entityLoc = entity.locatable().loc;
 		entityLoc.pos.wrapToRangeMax(targetRange);
-	};
+	}
 }
 
 class Constraint_WrapXTrimY
@@ -386,5 +386,5 @@ class Constraint_WrapXTrimY
 		{
 			entityPos.y = max.y;
 		}
-	};
+	}
 }

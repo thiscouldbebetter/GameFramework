@@ -1,4 +1,5 @@
 
+
 class ControlBuilder
 {
 	buttonHeightBase;
@@ -1739,5 +1740,5 @@ class ControlBuilder
 		returnValue.scalePosAndSize(scaleMultiplier);
 
 		return returnValue;
-	};
+	}
 }

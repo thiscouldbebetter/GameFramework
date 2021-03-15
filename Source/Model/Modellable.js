@@ -1,4 +1,5 @@
 
+
 class Modellable extends EntityProperty
 {
 	model;
@@ -12,6 +13,5 @@ class Modellable extends EntityProperty
 	updateForTimerTick(universe, world, place, entity)
 	{
 		// Do nothing.
-	};
+	}
 }
-

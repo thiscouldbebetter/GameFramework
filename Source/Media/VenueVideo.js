@@ -1,4 +1,5 @@
 
+
 class VenueVideo
 {
 	videoName;
@@ -32,7 +33,7 @@ class VenueVideo
 	draw()
 	{
 		// do nothing
-	};
+	}
 
 	finalize(universe) {}
 	initialize(universe) {}
@@ -92,5 +93,5 @@ class VenueVideo
 			universe.platformHelper.platformableShow(display);
 			universe.venueNext = new VenueFader(this.venueNext, this, null, null);
 		}
-	};
+	}
 }

@@ -1,4 +1,5 @@
 
+
 class ShapeGroupAny
 {
 	shapes;
@@ -8,3 +9,4 @@ class ShapeGroupAny
 		this.shapes = shapes;
 	}
 }
+

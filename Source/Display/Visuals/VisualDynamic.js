@@ -1,4 +1,5 @@
 
+
 class VisualDynamic
 {
 	methodForVisual;
@@ -10,10 +11,7 @@ class VisualDynamic
 
 	draw(universe, world, place, entity, display)
 	{
-		var visual = this.methodForVisual.call
-		(
-			this, universe, world, place, entity, display
-		);
+		var visual = this.methodForVisual.call(this, universe, world, display, entity);
 		visual.draw(universe, world, place, entity, display);
 	};
 
@@ -36,3 +34,4 @@ class VisualDynamic
 		return this; // todo
 	}
 }
+

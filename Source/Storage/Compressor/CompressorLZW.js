@@ -1,4 +1,5 @@
 
+
 class CompressorLZW
 {
 	static ControlSymbolCount = 2;

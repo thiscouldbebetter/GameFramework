@@ -1,4 +1,5 @@
 
+
 class TalkNodeDefn
 {
 	name;
@@ -320,4 +321,3 @@ class TalkNodeDefn_Instances
 		this._AllByName = ArrayHelper.addLookupsByName(this._All);
 	}
 }
-

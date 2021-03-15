@@ -1,4 +1,5 @@
 
+
 class TalkNode
 {
 	name;
@@ -23,7 +24,7 @@ class TalkNode
 		var returnValue = "_" + TalkNode._idNext;
 		TalkNode._idNext++;
 		return returnValue;
-	};
+	}
 
 	// instance methods
 
@@ -34,23 +35,23 @@ class TalkNode
 		{
 			defn.activate(conversationRun, scope, this);
 		}
-	};
+	}
 
 	defn(conversationDefn)
 	{
 		return conversationDefn.talkNodeDefnsByName.get(this.defnName);
-	};
+	}
 
 	execute(universe, conversationRun, scope)
 	{
 		var defn = this.defn(conversationRun.defn);
 		defn.execute(universe, conversationRun, scope, this);
-	};
+	}
 
 	textForTranscript(conversationDefn)
 	{
 		var speakerName = (this.defnName == "Option" ? "YOU" : "THEY" );
 		var returnValue = speakerName + ": " + this.text;
 		return returnValue;
-	};
+	}
 }

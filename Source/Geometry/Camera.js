@@ -1,4 +1,5 @@
 
+
 class Camera extends EntityProperty
 {
 	viewSize;
@@ -126,7 +127,7 @@ class Camera extends EntityProperty
 		}
 
 		return this._clipPlanes;
-	};
+	}
 
 	coordsTransformViewToWorld(viewCoords, ignoreZ)
 	{
@@ -150,7 +151,7 @@ class Camera extends EntityProperty
 		);
 
 		return worldCoords;
-	};
+	}
 
 	coordsTransformWorldToView(worldCoords)
 	{
@@ -174,17 +175,13 @@ class Camera extends EntityProperty
 		viewCoords.add(this.viewSizeHalf);
 
 		return viewCoords;
-	};
+	}
 
-	drawEntitiesInViewThenClear(universe, world, place, display, shouldDrawBackground)
+	drawEntitiesInViewThenClear(universe, world, place, display)
 	{
 		this.loc.pos.round(); // hack - To prevent lines between map tiles.
 
-		if (shouldDrawBackground)
-		{
-			display.drawBackground("Black", "Black");
-		}
-
+		display.drawBackground("Black", "Black");
 		this.entitiesInView.sort
 		(
 			(a, b) =>
@@ -213,10 +210,10 @@ class Camera extends EntityProperty
 		}
 
 		this.entitiesInView.length = 0;
-	};
+	}
 
 	updateForTimerTick()
 	{
 		// Do nothing.  Rendering is done in Place.draw().
-	};
+	}
 }

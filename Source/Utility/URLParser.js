@@ -1,4 +1,5 @@
 
+
 class URLParser
 {
 	urlAsString;
@@ -27,5 +28,5 @@ class URLParser
 	static fromWindow()
 	{
 		return new URLParser(window.location.toString());
-	};
+	}
 }

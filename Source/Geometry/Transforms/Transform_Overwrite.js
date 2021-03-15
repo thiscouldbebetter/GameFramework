@@ -1,4 +1,5 @@
 
+
 class Transform_Overwrite
 {
 	transformableToOverwriteWith;
@@ -15,7 +16,9 @@ class Transform_Overwrite
 
 	transform(transformable)
 	{
-		transformable.overwriteWith(this.transformableToOverwriteWith);
+		// todo
+		//transformable.overwriteWith(this.transformableToOverwriteWith);
+		return this;
 	}
 
 	transformCoords(coordsToTransform)

@@ -1,4 +1,5 @@
 
+
 class SkeletonHelper
 {
 	static biped(heightInPixels)
@@ -180,7 +181,7 @@ class SkeletonHelper
 		);
 
 		return skeletonBiped;
-	};
+	}
 
 	static bipedAnimationDefnGroup()
 	{
@@ -195,7 +196,7 @@ class SkeletonHelper
 		);
 
 		return returnValue;
-	};
+	}
 
 	static bipedAnimationDefnDoSomething()
 	{
@@ -231,7 +232,7 @@ class SkeletonHelper
 		);
 
 		return returnValue;
-	};
+	}
 
 	static bipedAnimationDefnJump()
 	{
@@ -381,7 +382,7 @@ class SkeletonHelper
 		);
 
 		return animationDefnBipedWalk;
-	};
+	}
 
 	static transformBuildForMeshAndSkeleton_Proximity
 	(
@@ -450,5 +451,5 @@ class SkeletonHelper
 		);
 
 		return returnValue;
-	};
+	}
 }

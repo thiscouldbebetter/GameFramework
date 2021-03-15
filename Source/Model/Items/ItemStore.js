@@ -1,4 +1,5 @@
 
+
 class ItemStore extends EntityProperty
 {
 	itemDefnNameCurrency;
@@ -61,7 +62,6 @@ class ItemStore extends EntityProperty
 		venueNext = new VenueFader(venueNext, null, null, null);
 		universe.venueNext = venueNext;
 	}
-
 
 	// Controllable.
 
@@ -260,5 +260,5 @@ class ItemStore extends EntityProperty
 		);
 
 		return returnValue;
-	};
+	}
 }

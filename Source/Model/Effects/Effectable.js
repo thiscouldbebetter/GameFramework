@@ -1,4 +1,5 @@
 
+
 class Effectable extends EntityProperty
 {
 	effects;

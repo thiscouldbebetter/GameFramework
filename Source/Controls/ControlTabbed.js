@@ -1,4 +1,5 @@
 
+
 class ControlTabbed extends ControlBase
 {
 	tabButtonSize;

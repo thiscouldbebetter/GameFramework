@@ -1,4 +1,5 @@
 
+
 class Boundable extends EntityProperty
 {
 	bounds;

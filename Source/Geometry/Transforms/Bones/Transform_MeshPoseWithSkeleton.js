@@ -1,4 +1,5 @@
 
+
 class Transform_MeshPoseWithSkeleton
 {
 	meshAtRest;
@@ -10,13 +11,20 @@ class Transform_MeshPoseWithSkeleton
 	_orientation;
 	_vertex;
 
-	constructor(meshAtRest, skeletonAtRest, boneInfluences, skeletonPosed)
+	constructor
+	(
+		meshAtRest,
+		skeletonAtRest,
+		boneInfluences,
+		skeletonPosed
+	)
 	{
 		this.meshAtRest = meshAtRest;
 		this.skeletonAtRest = skeletonAtRest;
 		this.skeletonPosed = skeletonPosed || this.skeletonAtRest.clone();
 		this.boneInfluences = boneInfluences;
-		this.boneInfluencesByName = ArrayHelper.addLookups(
+		this.boneInfluencesByName = ArrayHelper.addLookups
+		(
 			this.boneInfluences, (x) => x.boneName
 		);
 
@@ -118,5 +126,4 @@ class Transform_MeshPoseWithSkeleton
 
 		} // end for each boneInfluence
 	}
-
 }

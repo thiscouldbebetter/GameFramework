@@ -1,4 +1,5 @@
 
+
 class ValueBreakGroup
 {
 	stops;
@@ -62,3 +63,4 @@ class ValueBreak
 		this.value = value;
 	}
 }
+

@@ -1,4 +1,5 @@
 
+
 class Display2D
 {
 	sizesAvailable;
@@ -22,8 +23,7 @@ class Display2D
 	constructor
 	(
 		sizesAvailable, fontName, fontHeightInPixels,
-		colorFore, colorBack, isInvisible
-	)
+		colorFore, colorBack, isInvisible)
 	{
 		this.sizesAvailable = sizesAvailable;
 		this._sizeDefault = this.sizesAvailable[0];
@@ -194,7 +194,7 @@ class Display2D
 		for (var i = 0; i < gradientStops.length; i++)
 		{
 			var stop = gradientStops[i];
-			var stopColor = stop.color;
+			var stopColor = stop.value ;
 			systemGradient.addColorStop(stop.position, stopColor.systemColor());
 		}
 

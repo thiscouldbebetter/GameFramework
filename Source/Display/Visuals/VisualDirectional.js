@@ -1,4 +1,5 @@
 
+
 class VisualDirectional
 {
 	visualForNoDirection;

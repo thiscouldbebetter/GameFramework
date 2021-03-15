@@ -1,6 +1,9 @@
 
+
 class VisualSound
 {
+	// Yes, obviously sounds aren't really visual.
+
 	soundNameToPlay;
 	isMusic;
 
@@ -34,6 +37,7 @@ class VisualSound
 	{
 		return this; // todo
 	}
+
 	// Transformable.
 
 	transform(transformToApply)

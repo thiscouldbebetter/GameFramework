@@ -1,4 +1,5 @@
 
+
 class Movable extends EntityProperty
 {
 	accelerationPerTick;
@@ -33,7 +34,7 @@ class Movable extends EntityProperty
 		(
 			entityMovable.movable().accelerationPerTick
 		);
-	};
+	}
 
 	accelerateInDirection
 	(
@@ -55,5 +56,5 @@ class Movable extends EntityProperty
 	clone()
 	{
 		return this;
-	};
+	}
 }

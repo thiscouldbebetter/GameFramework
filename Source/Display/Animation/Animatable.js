@@ -1,4 +1,5 @@
 
+
 class Animatable extends EntityProperty
 {
 	animationDefnGroup;
@@ -6,7 +7,12 @@ class Animatable extends EntityProperty
 	transformableTransformed;
 	ticksStartedByAnimationName;
 
-	constructor(animationDefnGroup, transformableAtRest, transformableTransformed)
+	constructor
+	(
+		animationDefnGroup,
+		transformableAtRest,
+		transformableTransformed
+	)
 	{
 		super();
 		this.animationDefnGroup = animationDefnGroup;

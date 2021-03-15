@@ -1,5 +1,4 @@
 
-// classes
 
 class ConversationDefn
 {
@@ -25,7 +24,7 @@ class ConversationDefn
 	talkNodeByName(nameOfTalkNodeToGet)
 	{
 		return this.talkNodesByName.get(nameOfTalkNodeToGet);
-	};
+	}
 
 	talkNodesByNames(namesOfTalkNodesToGet)
 	{
@@ -39,7 +38,7 @@ class ConversationDefn
 		}
 
 		return returnNodes;
-	};
+	}
 
 	expandFromContentTextString(contentTextString)
 	{
@@ -111,7 +110,7 @@ class ConversationDefn
 
 		this.talkNodes = talkNodesExpanded;
 		this.talkNodesByName = ArrayHelper.addLookupsByName(this.talkNodes);
-	};
+	}
 
 	// serialization
 
@@ -122,7 +121,14 @@ class ConversationDefn
 		// Additional processing to support minification.
 		conversationDefn.name = conversationDefn["name"];
 		var imagePortraitName = conversationDefn["imagePortraitName"];
-		conversationDefn.visualPortrait = new VisualImageFromLibrary(imagePortraitName);
+		if (imagePortraitName == null)
+		{
+			conversationDefn.visualPortrait = new VisualNone();
+		}
+		else
+		{
+			conversationDefn.visualPortrait = new VisualImageFromLibrary(imagePortraitName);
+		}
 		conversationDefn.contentTextStringName =
 			conversationDefn["contentTextStringName"];
 
@@ -161,7 +167,7 @@ class ConversationDefn
 			ArrayHelper.addLookupsByName(conversationDefn.talkNodeDefns);
 
 		return conversationDefn;
-	};
+	}
 
 	serialize()
 	{
@@ -172,5 +178,5 @@ class ConversationDefn
 
 		this.talkNodeDefns = talkNodeDefnsToRestore;
 		return returnValue;
-	};
+	}
 }

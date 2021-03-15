@@ -1,4 +1,5 @@
 
+
 class Matrix
 {
 	// A 4x4 matrix for interacting with WebGL.
@@ -23,7 +24,7 @@ class Matrix
 		]);
 
 		return returnValue;
-	};
+	}
 
 	// instance methods
 
@@ -39,7 +40,7 @@ class Matrix
 		var returnValue = new Matrix(valuesCloned);
 
 		return returnValue;
-	};
+	}
 
 	divideScalar(scalar)
 	{
@@ -49,7 +50,7 @@ class Matrix
 		}
 
 		return this;
-	};
+	}
 
 	multiply(other)
 	{
@@ -80,7 +81,7 @@ class Matrix
 		this.overwriteWithValues(valuesMultiplied);
 
 		return this;
-	};
+	}
 
 	multiplyScalar(scalar)
 	{
@@ -90,7 +91,7 @@ class Matrix
 		}
 
 		return this;
-	};
+	}
 
 	overwriteWith(other)
 	{
@@ -100,7 +101,7 @@ class Matrix
 		}
 
 		return this;
-	};
+	}
 
 	overwriteWithOrientationEntity(orientation)
 	{
@@ -128,7 +129,7 @@ class Matrix
 
 
 		return this;
-	};
+	}
 
 	overwriteWithOrientationCamera(orientation)
 	{
@@ -145,7 +146,7 @@ class Matrix
 		]);
 
 		return this;
-	};
+	}
 
 	overwriteWithOrientationMover(orientation)
 	{
@@ -170,7 +171,7 @@ class Matrix
 		]);
 
 		return this;
-	};
+	}
 
 	overwriteWithPerspectiveForCamera(camera)
 	{
@@ -209,7 +210,7 @@ class Matrix
 		]);
 
 		return this;
-	};
+	}
 
 	overwriteWithTranslate(displacement)
 	{
@@ -222,7 +223,7 @@ class Matrix
 		]);
 
 		return this;
-	};
+	}
 
 	overwriteWithValues(otherValues)
 	{
@@ -232,7 +233,7 @@ class Matrix
 		}
 
 		return this;
-	};
+	}
 
 	toWebGLArray()
 	{
@@ -249,5 +250,5 @@ class Matrix
 		var returnValuesAsFloat32Array = new Float32Array(returnValues);
 
 		return returnValuesAsFloat32Array;
-	};
+	}
 }

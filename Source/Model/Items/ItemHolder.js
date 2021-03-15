@@ -1,4 +1,5 @@
 
+
 class ItemHolder extends EntityProperty
 {
 	itemEntities;

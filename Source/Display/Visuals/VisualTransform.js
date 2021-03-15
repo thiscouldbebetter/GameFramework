@@ -1,4 +1,5 @@
 
+
 class VisualTransform
 {
 	transformToApply;
@@ -19,21 +20,21 @@ class VisualTransform
 	clone()
 	{
 		return new VisualTransform(this.transformToApply, this.child.clone());
-	};
+	}
 
 	overwriteWith(other)
 	{
 		var otherAsVisualTransform = other ;
 		this.child.overwriteWith(otherAsVisualTransform.child);
 		return this;
-	};
+	}
 
 	// Transformable.
 
 	transform(transformToApply)
 	{
 		return this.child.transform(transformToApply);
-	};
+	}
 
 	// Visual.
 
@@ -42,5 +43,5 @@ class VisualTransform
 		this._childTransformed.overwriteWith(this.child);
 		this.transformToApply.transform(this._childTransformed);
 		this._childTransformed.draw(universe, world, place, entity, display);
-	};
+	}
 }

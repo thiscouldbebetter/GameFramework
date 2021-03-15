@@ -1,4 +1,5 @@
 
+
 class Reference
 {
 	value;
@@ -11,12 +12,11 @@ class Reference
 	get()
 	{
 		return this.value;
-	};
+	}
 
 	set(valueToSet)
 	{
 		this.value = valueToSet;
 		return this.value;
-	};
-
+	}
 }

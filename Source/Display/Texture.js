@@ -1,4 +1,5 @@
 
+
 class Texture
 {
 	name;
@@ -36,5 +37,5 @@ class Texture
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
 		gl.bindTexture(gl.TEXTURE_2D, null);
-	};
+	}
 }

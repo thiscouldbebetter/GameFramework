@@ -1,4 +1,5 @@
 
+
 class PlaceBuilderDemo // Main.
 {
 	universe;
@@ -75,14 +76,21 @@ class PlaceBuilderDemo // Main.
 		this.entities.push(...this.entitiesBuildFromDefnAndCount(entityDefns.get("Heart"), 1, null, entityPosRange, randomizer));
 		this.entities.push(...this.entitiesBuildFromDefnAndCount(entityDefns.get("Meat"), 1, null, entityPosRange, randomizer));
 		this.entities.push(...this.entitiesBuildFromDefnAndCount(entityDefns.get("Pillow"), 1, null, entityPosRange, randomizer));
-		this.entities.push(...this.entitiesBuildFromDefnAndCount(entityDefns.get("Ring"), 1, null, entityPosRange, randomizer));
 		this.entities.push(...this.entitiesBuildFromDefnAndCount(entityDefns.get("Sword"), 1, null, entityPosRange, randomizer));
 		this.entities.push(...this.entitiesBuildFromDefnAndCount(entityDefns.get("SwordCold"), 1, null, entityPosRange, randomizer));
 		this.entities.push(...this.entitiesBuildFromDefnAndCount(entityDefns.get("SwordHeat"), 1, null, entityPosRange, randomizer));
 		this.entities.push(...this.entitiesBuildFromDefnAndCount(entityDefns.get("Toolset"), 1, null, entityPosRange, randomizer));
 		this.entities.push(...this.entitiesBuildFromDefnAndCount(entityDefns.get("Torch"), 1, null, entityPosRange, randomizer));
-		this.entities.push(...this.entitiesBuildFromDefnAndCount(entityDefns.get("TrafficCone"), 20, null, entityPosRange, randomizer));
+		this.entities.push(...this.entitiesBuildFromDefnAndCount(entityDefns.get("TrafficCone"), 10, null, entityPosRange, randomizer));
 		this.entities.push(...this.entitiesBuildFromDefnAndCount(entityDefns.get("Weight"), 1, null, entityPosRange, randomizer));
+
+		var ring = this.entitiesBuildFromDefnAndCount
+		(
+			entityDefns.get("Ring"), 1, null, entityPosRange, randomizer
+		)[0];
+		var ringLoc = ring.locatable().loc;
+		ringLoc.spin.angleInTurnsRef.value = .001;
+		this.entities.push(ring);
 
 		var container = this.entityBuildFromDefn(entityDefns.get("Container"), entityPosRange, randomizer);
 		var itemEntityOre = this.entityBuildFromDefn(entityDefns.get("Iron Ore"), entityPosRange, randomizer);
@@ -353,6 +361,33 @@ class PlaceBuilderDemo // Main.
 
 		var mapCellSource =
 		[
+			/*
+			"................................",
+			"................................",
+			"..~.............................",
+			"................................",
+			"................................",
+			"................................",
+			"................................",
+			"................................",
+			"................................",
+			"................................",
+			"................................",
+			"................................",
+			"................................",
+			"................................",
+			"................................",
+			"................................",
+			"................................",
+			"................................",
+			"................................",
+			"................................",
+			"................................",
+			"................................",
+			"................................",
+			"................................",
+			*/
+
 			"....................::::QQAA****",
 			".....................:::QQAAA***",
 			"~~~~~~~~~~~~.......:QQQQQQAAAAAA",
@@ -396,7 +431,7 @@ class PlaceBuilderDemo // Main.
 		exit.portal().destinationEntityName = this.name;
 		this.entities.push(exit);
 
-		var cellCollider = new Box(new Coords(0, 0, 0), mapCellSize);
+		var cellCollider = new Box(mapCellSizeHalf.clone(), mapCellSize);
 		var cellCollide = (u, w, p, e0, e1) =>
 		{
 			var traversable = e0.traversable();
@@ -973,6 +1008,14 @@ class PlaceBuilderDemo // Main.
 			(
 				this.name + cellPosInCells.toString(),
 				[
+					new Boundable
+					(
+						new Box
+						(
+							new Coords(0, 0, 0), //cellPosInPixels,
+							mapCellSize
+						)
+					),
 					cellCollidable.clone(),
 					new Drawable(cellVisual, null),
 					new DrawableCamera(),
@@ -1080,7 +1123,10 @@ class PlaceBuilderDemo // Main.
 			entities, entityDimension, entitySize, numberOfKeysToUnlockGoal
 		);
 		var entityPosRange = new Box(this.size.clone().half(), this.size.clone().subtract(this.marginSize) );
-		var entityRing = this.entityBuildFromDefn(entityDefns.get("Ring"), entityPosRange, this.randomizer);
+		var entityRing = this.entityBuildFromDefn
+		(
+			entityDefns.get("Ring"), entityPosRange, this.randomizer
+		);
 		var ringLoc = entityRing.locatable().loc;
 		ringLoc.pos.overwriteWith(goalEntity.locatable().loc.pos);
 		ringLoc.spin.angleInTurnsRef.value = .001;
@@ -1311,10 +1357,9 @@ class PlaceBuilderDemo // Main.
 		var goalVisual = new VisualGroup
 		([
 			new VisualRectangle(entitySize, goalColor, null, null),
-			new VisualText
+			VisualText.fromTextAndColor
 			(
-				new DataBinding("" + numberOfKeysToUnlockGoal, null, null),
-				null, itemKeyColor, null
+				"" + numberOfKeysToUnlockGoal, itemKeyColor
 			)
 		]);
 		if (this.visualsHaveText)
@@ -1323,7 +1368,7 @@ class PlaceBuilderDemo // Main.
 			(
 				new VisualOffset
 				(
-					new VisualText(new DataBinding("Exit", null, null), null, goalColor, null),
+					VisualText.fromTextAndColor("Exit", goalColor),
 					new Coords(0, 0 - entityDimension * 2, 0)
 				)
 			);
@@ -1708,7 +1753,7 @@ class PlaceBuilderDemo // Main.
 			(
 				new VisualOffset
 				(
-					new VisualText(new DataBinding("Store", null, null), null, storeColor, null),
+					VisualText.fromTextAndColor("Store", storeColor),
 					new Coords(0, 0 - entityDimension * 2, 0)
 				)
 			);
@@ -2221,7 +2266,7 @@ class PlaceBuilderDemo // Main.
 			(
 				new VisualOffset
 				(
-					new VisualText(new DataBinding(defnName, null, null), null, Color.byName("Blue"), null),
+					VisualText.fromTextAndColor(defnName, Color.byName("Blue")),
 					new Coords(0, 0 - entityDimension * 2.5, 0)
 				)
 			);
@@ -2691,7 +2736,7 @@ class PlaceBuilderDemo // Main.
 			(
 				new VisualOffset
 				(
-					new VisualText(new DataBinding(itemDefnPotionName, null, null), null, itemPotionColor, null),
+					VisualText.fromTextAndColor(itemDefnPotionName, itemPotionColor),
 					new Coords(0, 0 - entityDimension, 0)
 				)
 			);
@@ -2896,7 +2941,7 @@ class PlaceBuilderDemo // Main.
 				{
 					throw "Unrecognized damage type: " + damageTypeName;
 				}
-				var effectAndChance = [ effect, 1 ];
+				var effectAndChance= [ effect, 1 ];
 				effectsAndChances = [ effectAndChance ];
 			}
 
@@ -2993,12 +3038,12 @@ class PlaceBuilderDemo // Main.
 		(
 			itemDefnName,
 			[
-				new Animatable(),
+				new Animatable(null, null, null),
+				new Item(itemDefnName, 1),
+				new Locatable(null),
 				new Collidable(0, itemTorchCollider, null, null),
 				new Drawable(itemTorchVisual, null),
-				new DrawableCamera(),
-				new Item(itemDefnName, 1),
-				new Locatable(null)
+				new DrawableCamera()
 			]
 		);
 

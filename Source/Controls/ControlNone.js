@@ -1,4 +1,5 @@
 
+
 class ControlNone extends ControlBase
 {
 	constructor()

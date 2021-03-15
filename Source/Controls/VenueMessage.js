@@ -1,4 +1,5 @@
 
+
 class VenueMessage
 {
 	messageToShow;
@@ -32,7 +33,7 @@ class VenueMessage
 	draw(universe)
 	{
 		this.venueInner(universe).draw(universe);
-	};
+	}
 
 	finalize(universe) {}
 
@@ -41,12 +42,12 @@ class VenueMessage
 	updateForTimerTick(universe)
 	{
 		this.venueInner(universe).updateForTimerTick(universe);
-	};
+	}
 
 	sizeInPixels(universe)
 	{
 		return (this._sizeInPixels == null ? universe.display.sizeInPixels : this._sizeInPixels);
-	};
+	}
 
 	venueInner(universe)
 	{
@@ -76,5 +77,5 @@ class VenueMessage
 		}
 
 		return this._venueInner;
-	};
+	}
 }

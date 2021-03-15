@@ -1,4 +1,5 @@
 
+
 class VisualBuilder
 {
 	static _instance;
@@ -9,7 +10,7 @@ class VisualBuilder
 			VisualBuilder._instance = new VisualBuilder();
 		}
 		return VisualBuilder._instance;
-	};
+	}
 
 	circleWithEyes
 	(
@@ -418,7 +419,7 @@ class VisualBuilder
 					(
 						itemDrawable == null
 						? entityWieldableEquipped.item().defn(w).visual
-						: itemDrawable.visual.child
+						: (itemDrawable.visual ).child
 					);
 				return itemVisual;
 			}

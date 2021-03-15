@@ -1,4 +1,5 @@
 
+
 class ShapeInverse
 {
 	shape;
@@ -8,3 +9,4 @@ class ShapeInverse
 		this.shape = shape;
 	}
 }
+

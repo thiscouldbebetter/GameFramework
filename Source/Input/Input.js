@@ -1,4 +1,5 @@
 
+
 class Input
 {
 	name;
@@ -33,6 +34,7 @@ class Input_Names
 	ArrowRight;
 	ArrowUp;
 	Backspace;
+	Backtick;
 	Control;
 	Enter;
 	Escape;
@@ -99,4 +101,3 @@ class Input_Names
 		this._AllByName = ArrayHelper.addLookups(this._All, (x) => x);
 	}
 }
-

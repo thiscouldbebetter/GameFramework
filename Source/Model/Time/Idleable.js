@@ -1,4 +1,5 @@
 
+
 class Idleable extends EntityProperty
 {
 	ticksUntilIdle;
@@ -44,5 +45,5 @@ class Idleable extends EntityProperty
 		{
 			this.idle(universe, world, place, entity);
 		}
-	};
+	}
 }

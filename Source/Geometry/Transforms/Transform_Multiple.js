@@ -1,4 +1,5 @@
 
+
 class Transform_Multiple
 {
 	transforms;
@@ -22,7 +23,7 @@ class Transform_Multiple
 			transformable.transform(transform);
 		}
 		return transformable;
-	};
+	}
 
 	transformCoords(coordsToTransform)
 	{
@@ -32,5 +33,5 @@ class Transform_Multiple
 			transform.transformCoords(coordsToTransform);
 		}
 		return coordsToTransform;
-	};
+	}
 }

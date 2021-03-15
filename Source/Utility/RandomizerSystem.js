@@ -1,4 +1,5 @@
 
+
 class RandomizerSystem
 {
 	// Uses the built-in JavaScript randomizer.
@@ -6,5 +7,5 @@ class RandomizerSystem
 	getNextRandom()
 	{
 		return Math.random();
-	};
+	}
 }

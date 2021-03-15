@@ -1,4 +1,5 @@
 
+
 class Transform_OrientForCamera
 {
 	orientation;
@@ -27,5 +28,5 @@ class Transform_OrientForCamera
 			this.orientation.forward.dotProduct(coordsToTransform)
 		);
 		return coordsToTransform;
-	};
+	}
 }

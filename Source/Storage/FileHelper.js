@@ -1,4 +1,5 @@
 
+
 class FileHelper
 {
 	loadFileAsBinaryString(systemFileToLoad, callback, contextForCallback)
@@ -9,7 +10,7 @@ class FileHelper
 			this.loadFile_FileLoaded(event, callback, contextForCallback, systemFileToLoad.name);
 		}
 		fileReader.readAsBinaryString(systemFileToLoad);
-	};
+	}
 
 	loadFileAsText(systemFileToLoad, callback, contextForCallback)
 	{
@@ -19,7 +20,7 @@ class FileHelper
 			this.loadFile_FileLoaded(event, callback, contextForCallback, systemFileToLoad.name);
 		}
 		fileReader.readAsText(systemFileToLoad);
-	};
+	}
 
 	loadFile_FileLoaded(fileLoadedEvent, callback, contextForCallback, fileName)
 	{
@@ -27,7 +28,7 @@ class FileHelper
 		var contentsOfFileLoaded = fileReader.result;
 
 		callback.call(contextForCallback, contentsOfFileLoaded);
-	};
+	}
 
 	saveBinaryStringToFileWithName(fileAsBinaryString, fileName)
 	{
@@ -46,7 +47,7 @@ class FileHelper
 		link.href = window.URL.createObjectURL(fileAsBlob);
 		link.download = fileName;
 		link.click();
-	};
+	}
 
 	saveBytesToFileWithName(fileAsBytes, fileName)
 	{
@@ -65,7 +66,7 @@ class FileHelper
 		link.href = window.URL.createObjectURL(fileAsBlob);
 		link.download = fileName;
 		link.click();
-	};
+	}
 
 	saveTextStringToFileWithName(textToSave, fileNameToSaveAs)
 	{
@@ -76,5 +77,5 @@ class FileHelper
 		link.href = window.URL.createObjectURL(textToSaveAsBlob);
 		link.download = fileNameToSaveAs;
 		link.click();
-	};
+	}
 }

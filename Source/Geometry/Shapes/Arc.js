@@ -1,4 +1,5 @@
 
+
 class Arc
 {
 	shell;
@@ -21,21 +22,21 @@ class Arc
 	collider()
 	{
 		return this._collider;
-	};
+	}
 
 	// cloneable
 
 	clone()
 	{
 		return new Arc(this.shell.clone(), this.wedge.clone());
-	};
+	}
 
 	overwriteWith(other)
 	{
 		this.shell.overwriteWith(other.shell);
 		this.wedge.overwriteWith(other.wedge);
 		return this;
-	};
+	}
 
 	// transformable
 
@@ -46,6 +47,13 @@ class Arc
 
 	// ShapeBase.
 
+	locate(loc)
+	{
+		var directionMin = this.wedge.directionMin;
+		directionMin.overwriteWith(loc.orientation.forward);
+		return ShapeHelper.Instance().applyLocationToShapeDefault(loc, this);
+	}
+
 	normalAtPos(posToCheck, normalOut)
 	{
 		return this.shell.normalAtPos(posToCheck, normalOut);
@@ -55,5 +63,4 @@ class Arc
 	{
 		return surfacePointOut.overwriteWith(posToCheck); // todo
 	}
-
 }

@@ -1,4 +1,5 @@
 
+
 class Device extends EntityProperty
 {
 	name;
@@ -51,5 +52,5 @@ class Device extends EntityProperty
 	clone()
 	{
 		return new Device(this.name, this.ticksToCharge, this._initialize, this.update, this.use);
-	};
+	}
 }

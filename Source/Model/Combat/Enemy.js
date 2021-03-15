@@ -1,4 +1,5 @@
 
+
 class Enemy extends EntityProperty
 {
 	weapon;

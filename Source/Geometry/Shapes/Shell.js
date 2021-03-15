@@ -1,4 +1,5 @@
 
+
 class Shell
 {
 	sphereOuter;
@@ -47,6 +48,11 @@ class Shell
 
 	// ShapeBase.
 
+	locate(loc)
+	{
+		return ShapeHelper.Instance().applyLocationToShapeDefault(loc, this);
+	}
+
 	normalAtPos(posToCheck, normalOut)
 	{
 		var displacementFromCenter =
@@ -70,3 +76,4 @@ class Shell
 		return surfacePointOut.overwriteWith(posToCheck); // todo
 	}
 }
+

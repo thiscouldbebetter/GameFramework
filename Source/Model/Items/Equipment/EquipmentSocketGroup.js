@@ -1,4 +1,5 @@
 
+
 class EquipmentSocketGroup
 {
 	defnGroup;
@@ -21,6 +22,9 @@ class EquipmentSocketGroup
 			this.sockets.push(socket);
 		};
 
-		this.socketsByDefnName = ArrayHelper.addLookups(this.sockets, (x) => x.defnName);
+		this.socketsByDefnName = ArrayHelper.addLookups
+		(
+			this.sockets, (x) => x.defnName
+		);
 	}
 }

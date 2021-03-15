@@ -1,4 +1,5 @@
 
+
 class Portal extends EntityProperty
 {
 	destinationPlaceName;

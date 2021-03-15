@@ -1,4 +1,5 @@
 
+
 class VisualRectangle
 {
 	size;
@@ -41,7 +42,7 @@ class VisualRectangle
 			Color.systemColorGet(this.colorBorder),
 			null
 		);
-	};
+	}
 
 	// Clonable.
 

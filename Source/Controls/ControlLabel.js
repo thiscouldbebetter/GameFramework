@@ -1,4 +1,5 @@
 
+
 class ControlLabel extends ControlBase
 {
 	isTextCentered;

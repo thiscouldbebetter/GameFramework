@@ -1,4 +1,5 @@
 
+
 class Obstacle extends EntityProperty
 {
 	constructor()

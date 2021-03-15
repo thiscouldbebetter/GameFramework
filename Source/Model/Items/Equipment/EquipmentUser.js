@@ -1,4 +1,5 @@
 
+
 class EquipmentUser extends EntityProperty
 {
 	socketGroup;

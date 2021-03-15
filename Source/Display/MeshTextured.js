@@ -1,4 +1,5 @@
 
+
 class MeshTextured
 {
 	geometry;
@@ -37,7 +38,7 @@ class MeshTextured
 		}
 
 		return this._faces;
-	};
+	}
 
 	faceTexturesBuild()
 	{
@@ -64,7 +65,7 @@ class MeshTextured
 		this.faceTextures = faceTextures;
 
 		return this;
-	};
+	}
 
 	faceIndicesByMaterialName()
 	{
@@ -93,14 +94,14 @@ class MeshTextured
 		}
 
 		return this._faceIndicesByMaterialName;
-	};
+	}
 
 	transform(transformToApply)
 	{
 		this.geometry.transform(transformToApply);
 
 		return this;
-	};
+	}
 
 	transformFaceTextures(transformToApply)
 	{
@@ -111,7 +112,7 @@ class MeshTextured
 		}
 
 		return this;
-	};
+	}
 
 	// cloneable
 
@@ -124,14 +125,14 @@ class MeshTextured
 			ArrayHelper.clone(this.faceTextures),
 			ArrayHelper.clone(this.vertexGroups)
 		);
-	};
+	}
 
 	overwriteWith(other)
 	{
 		this.geometry.overwriteWith(other.geometry);
 		// todo
 		return this;
-	};
+	}
 }
 
 class MeshTexturedFaceTexture
@@ -151,7 +152,7 @@ class MeshTexturedFaceTexture
 		(
 			this.materialName, ArrayHelper.clone(this.textureUVs)
 		);
-	};
+	}
 
 	// Transformable.
 
@@ -163,5 +164,5 @@ class MeshTexturedFaceTexture
 			transformToApply.transformCoords(textureUV);
 		}
 		return this;
-	};
+	}
 }

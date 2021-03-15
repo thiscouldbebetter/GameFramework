@@ -1,4 +1,5 @@
 
+
 class Constrainable extends EntityProperty
 {
 	constraints;
@@ -18,15 +19,15 @@ class Constrainable extends EntityProperty
 			var constraint = constraints[i];
 			constraint.constrain(universe, world, place, entity);
 		}
-	};
+	}
 
 	initialize(universe, world, place, entity)
 	{
 		this.updateForTimerTick(universe, world, place, entity);
-	};
+	}
 
 	updateForTimerTick(universe, world, place, entity)
 	{
 		Constrainable.constrain(universe, world, place, entity);
-	};
+	}
 }

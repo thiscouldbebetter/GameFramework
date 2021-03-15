@@ -1,4 +1,5 @@
 
+
 class BitStream
 {
 	static BitsPerByte = 8;
@@ -110,3 +111,4 @@ class BitStream
 		}
 	}
 }
+

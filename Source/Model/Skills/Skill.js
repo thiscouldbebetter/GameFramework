@@ -1,4 +1,5 @@
 
+
 class Skill
 {
 	name;
@@ -83,6 +84,5 @@ class Skill
 		];
 
 		return returnValues;
-	};
-
+	}
 }

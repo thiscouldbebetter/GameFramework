@@ -1,3 +1,5 @@
+
+
 function main()
 {
 	// It may be necessary to clear local storage to prevent errors on
@@ -17,7 +19,6 @@ function main()
 		// Wrap.
 		new Coords(200, 150, 1),
 	];
-
 
 	var display = new Display2D
 	(
@@ -40,7 +41,7 @@ function main()
 		display,
 		mediaLibrary,
 		controlStyle,
-		null
+		null // worldCreate
 	);
 	universe.initialize
 	(

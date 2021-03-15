@@ -1,4 +1,5 @@
 
+
 class Transform_Translate
 {
 	displacement;
@@ -12,7 +13,7 @@ class Transform_Translate
 	{
 		this.displacement.overwriteWith(value);
 		return this;
-	};
+	}
 
 	// transform
 
@@ -24,10 +25,10 @@ class Transform_Translate
 	transform(transformable)
 	{
 		return transformable.transform(this);
-	};
+	}
 
 	transformCoords(coordsToTransform)
 	{
 		return coordsToTransform.add(this.displacement);
-	};
+	}
 }

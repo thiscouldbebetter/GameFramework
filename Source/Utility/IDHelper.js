@@ -1,3 +1,5 @@
+
+
 class IDHelper
 {
 	_idNext;
@@ -16,12 +18,12 @@ class IDHelper
 			IDHelper._instance = new IDHelper();
 		}
 		return IDHelper._instance;
-	};
+	}
 
 	idNext()
 	{
 		var returnValue = "_" + this._idNext;
 		this._idNext++;
 		return returnValue;
-	};
+	}
 }

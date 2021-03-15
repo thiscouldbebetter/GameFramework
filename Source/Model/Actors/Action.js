@@ -1,4 +1,5 @@
 
+
 class Action
 {
 	name;
@@ -57,4 +58,3 @@ class Action_Instances
 		);
 	}
 }
-

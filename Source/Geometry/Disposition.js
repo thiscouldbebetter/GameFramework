@@ -1,4 +1,5 @@
 
+
 class Disposition
 {
 	pos;
@@ -35,13 +36,13 @@ class Disposition
 	place(world)
 	{
 		return world.placesByName.get(this.placeName);
-	};
+	}
 
 	velSet(value)
 	{
 		this.vel.overwriteWith(value);
 		return this;
-	};
+	}
 
 	// cloneable
 
@@ -60,7 +61,7 @@ class Disposition
 		returnValue.timeOffsetInTicks = this.timeOffsetInTicks;
 
 		return returnValue;
-	};
+	}
 
 	overwriteWith(other)
 	{
@@ -71,12 +72,12 @@ class Disposition
 		this.accel.overwriteWith(other.accel);
 		this.force.overwriteWith(other.force);
 		return this;
-	};
+	}
 
 	// strings
 
 	toString()
 	{
 		return this.pos.clone().round().toString();
-	};
+	}
 }

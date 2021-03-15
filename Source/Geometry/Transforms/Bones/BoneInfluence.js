@@ -1,4 +1,5 @@
 
+
 class BoneInfluence
 {
 	boneName;
@@ -38,5 +39,5 @@ class BoneInfluence
 		}
 
 		return boneInfluences;
-	};
+	}
 }

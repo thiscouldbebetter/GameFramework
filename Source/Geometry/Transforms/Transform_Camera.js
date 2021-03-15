@@ -1,4 +1,5 @@
 
+
 class Transform_Camera
 {
 	camera;
@@ -47,5 +48,5 @@ class Transform_Camera
 		this.transformPerspective.transformCoords(coordsToTransform);
 		this.transformViewCenter.transformCoords(coordsToTransform);
 		return coordsToTransform;
-	};
+	}
 }

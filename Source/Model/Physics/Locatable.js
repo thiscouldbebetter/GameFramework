@@ -1,4 +1,5 @@
 
+
 class Locatable extends EntityProperty
 {
 	loc;
@@ -9,12 +10,16 @@ class Locatable extends EntityProperty
 		this.loc = loc || new Disposition(null, null, null);
 	}
 
+	static fromPos(pos)
+	{
+		return new Locatable(new Disposition(pos, null, null));
+	}
+
 	approachOtherWithAccelerationAndSpeedMax
 	(
 		locatableToApproach,
 		accelerationPerTick,
-		speedMax,
-		distanceMin
+		speedMax,distanceMin
 	)
 	{
 		accelerationPerTick = accelerationPerTick || .1;
@@ -112,11 +117,4 @@ class Locatable extends EntityProperty
 	{
 		return new Locatable(this.loc.clone());
 	}
-
-	overwriteWith(other)
-	{
-		this.loc.overwriteWith(other.loc);
-		return this;
-	}
-
 }

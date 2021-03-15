@@ -1,4 +1,5 @@
 
+
 class Serializer
 {
 	deserialize(stringToDeserialize)
@@ -10,7 +11,7 @@ class Serializer
 		var returnValue = nodeRoot.unwrap(typeNames, []);
 
 		return returnValue;
-	};
+	}
 
 	serialize(objectToSerialize, prettyPrint)
 	{
@@ -29,7 +30,7 @@ class Serializer
 		);
 
 		return nodeRootSerialized;
-	};
+	}
 }
 
 class SerializerNode
@@ -166,7 +167,7 @@ class SerializerNode
 
 		return this;
 
-	}; // end method
+	}
 
 	prototypesAssign()
 	{
@@ -187,7 +188,7 @@ class SerializerNode
 				}
 			}
 		}
-	};
+	}
 
 	unwrap(typeNames, nodesAlreadyProcessed)
 	{
@@ -266,5 +267,5 @@ class SerializerNode
 		}
 
 		return this.o; // objectWrapped
-	};
+	}
 }

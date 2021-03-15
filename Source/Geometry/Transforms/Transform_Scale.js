@@ -1,4 +1,5 @@
 
+
 class Transform_Scale
 {
 	scaleFactors;
@@ -11,7 +12,7 @@ class Transform_Scale
 	static fromScalar(scalar)
 	{
 		return new Transform_Scale(new Coords(1, 1, 1).multiplyScalar(scalar));
-	};
+	}
 
 	overwriteWith(other)
 	{
@@ -28,5 +29,5 @@ class Transform_Scale
 	transformCoords(coordsToTransform)
 	{
 		return coordsToTransform.multiply(this.scaleFactors);
-	};
+	}
 }

@@ -1,4 +1,5 @@
 
+
 class SoundHelper
 {
 	sounds;
@@ -38,7 +39,7 @@ class SoundHelper
 		];
 
 		return returnValue;
-	};
+	}
 
 	// instance methods
 

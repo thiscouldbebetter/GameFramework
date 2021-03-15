@@ -1,4 +1,5 @@
 
+
 class Ephemeral extends EntityProperty
 {
 	ticksToLive;
@@ -22,12 +23,12 @@ class Ephemeral extends EntityProperty
 				this.expire(universe, world, place, entityEphemeral);
 			}
 		}
-	};
+	}
 
 	// cloneable
 
 	clone()
 	{
 		return new Ephemeral(this.ticksToLive, this.expire);
-	};
+	}
 }

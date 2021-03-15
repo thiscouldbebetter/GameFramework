@@ -1,4 +1,5 @@
 
+
 class VisualCircleGradient
 {
 	radius;

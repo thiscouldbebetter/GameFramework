@@ -1,4 +1,5 @@
 
+
 class ControlVisual extends ControlBase
 {
 	visual;

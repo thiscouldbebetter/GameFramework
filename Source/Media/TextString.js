@@ -1,4 +1,5 @@
 
+
 class TextString
 {
 	name;
@@ -27,7 +28,7 @@ class TextString
 		returnValue.value = value;
 
 		return returnValue;
-	};
+	}
 
 	// instance methods
 
@@ -43,5 +44,5 @@ class TextString
 			text.isLoaded = true;
 		};
 		xmlHttpRequest.send();
-	};
+	}
 }

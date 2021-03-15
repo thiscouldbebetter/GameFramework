@@ -1,4 +1,5 @@
 
+
 class ImageBuilder
 {
 	colors;
@@ -19,7 +20,7 @@ class ImageBuilder
 		(
 			name, Coords.Instances().Ones, stringsForPixels
 		);
-	};
+	}
 
 	buildImagesFromStringArrays(name, stringArraysForImagePixels)
 	{
@@ -33,7 +34,7 @@ class ImageBuilder
 		}
 
 		return returnValue;
-	};
+	}
 
 	buildImageFromStringsScaled(name, scaleFactor, stringsForPixels)
 	{
@@ -88,7 +89,7 @@ class ImageBuilder
 		);
 
 		return returnValue;
-	};
+	}
 
 	copyRegionFromImage(imageToCopyFrom, regionPos, regionSize)
 	{
@@ -124,7 +125,7 @@ class ImageBuilder
 		);
 
 		return returnValue;
-	};
+	}
 
 	sliceImageIntoTiles(imageToSlice, sizeInTiles)
 	{
@@ -190,5 +191,5 @@ class ImageBuilder
 		}
 
 		return returnImages;
-	};
+	}
 }

@@ -1,4 +1,5 @@
 
+
 class Image2
 {
 	name;

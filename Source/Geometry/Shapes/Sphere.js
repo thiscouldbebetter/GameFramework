@@ -1,4 +1,5 @@
 
+
 class Sphere
 {
 	center;
@@ -51,6 +52,11 @@ class Sphere
 	}
 
 	// ShapeBase.
+
+	locate(loc)
+	{
+		return ShapeHelper.Instance().applyLocationToShapeDefault(loc, this);
+	}
 
 	normalAtPos(posToCheck, normalOut)
 	{

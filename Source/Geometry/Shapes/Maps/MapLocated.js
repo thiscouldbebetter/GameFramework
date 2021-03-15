@@ -1,4 +1,5 @@
 
+
 class MapLocated
 {
 	map;
@@ -36,6 +37,11 @@ class MapLocated
 
 	// Shape.
 
+	locate(loc)
+	{
+		return ShapeHelper.Instance().applyLocationToShapeDefault(loc, this);
+	}
+
 	normalAtPos(posToCheck, normalOut)
 	{
 		return normalOut.overwriteWith(posToCheck).subtract(this.loc.pos).normalize();
@@ -46,3 +52,4 @@ class MapLocated
 		return surfacePointOut.overwriteWith(posToCheck); // todo
 	}
 }
+

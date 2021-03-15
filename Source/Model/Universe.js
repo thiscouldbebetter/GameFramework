@@ -1,4 +1,5 @@
 
+
 class Universe
 {
 	name;
@@ -7,10 +8,13 @@ class Universe
 	display;
 	mediaLibrary;
 	controlStyle;
+	_worldCreate;
+
 	world;
 
 	collisionHelper;
 	controlBuilder;
+	displayRecorder;
 	entityBuilder;
 	idHelper;
 	inputHelper;
@@ -34,7 +38,7 @@ class Universe
 		display,
 		mediaLibrary,
 		controlStyle,
-		world
+		worldCreate
 	)
 	{
 		this.name = name;
@@ -43,10 +47,17 @@ class Universe
 		this.display = display;
 		this.mediaLibrary = mediaLibrary;
 		this.controlStyle = controlStyle;
-		this.world = world;
+		this._worldCreate =
+			worldCreate || ( (u) => World.create(u) );
 
 		this.collisionHelper = new CollisionHelper();
 		this.controlBuilder = new ControlBuilder([ControlStyle.Instances().Default]);
+		this.displayRecorder = new DisplayRecorder 
+		(
+			1, // ticksPerFrame
+			100, // bufferSizeInFrames - 5 seconds at 20 fps.
+			true // isCircular
+		);
 		this.entityBuilder = new EntityBuilder();
 		this.idHelper = IDHelper.Instance();
 		this.platformHelper = new PlatformHelper();
@@ -66,7 +77,7 @@ class Universe
 		display,
 		mediaLibrary,
 		controlStyle,
-		world
+		worldCreate,
 	)
 	{
 		var returnValue = new Universe
@@ -77,7 +88,7 @@ class Universe
 			display,
 			mediaLibrary,
 			controlStyle,
-			world
+			worldCreate
 		);
 
 		var debuggingMode =
@@ -85,7 +96,7 @@ class Universe
 		returnValue.debuggingMode = debuggingMode;
 
 		return returnValue;
-	};
+	}
 
 	// instance methods
 
@@ -95,7 +106,7 @@ class Universe
 		(
 			this.initialize_MediaLibraryLoaded.bind(this, callback)
 		);
-	};
+	}
 
 	initialize_MediaLibraryLoaded(callback)
 	{
@@ -136,12 +147,12 @@ class Universe
 	{
 		// hack
 		this.soundHelper.reset();
-	};
+	}
 
 	start()
 	{
 		this.timerHelper.initialize(this.updateForTimerTick.bind(this));
-	};
+	}
 
 	updateForTimerTick()
 	{
@@ -167,5 +178,12 @@ class Universe
 			}
 		}
 		this.venueCurrent.updateForTimerTick(this);
-	};
+
+		this.displayRecorder.updateForTimerTick(this);
+	}
+
+	worldCreate()
+	{
+		return this._worldCreate(this);
+	}
 }

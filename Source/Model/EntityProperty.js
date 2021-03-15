@@ -1,4 +1,5 @@
 
+
 class EntityProperty
 {
 	finalize(u, w, p, e) {}

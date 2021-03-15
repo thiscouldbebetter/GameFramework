@@ -1,4 +1,5 @@
 
+
 class SkillLearner extends EntityProperty
 {
 	skillBeingLearnedName;

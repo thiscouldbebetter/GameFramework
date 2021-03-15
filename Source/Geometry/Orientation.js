@@ -1,4 +1,5 @@
 
+
 class Orientation
 {
 	forward;
@@ -36,7 +37,7 @@ class Orientation
 			Orientation._instances = new Orientation_Instances();
 		}
 		return Orientation._instances;
-	};
+	}
 
 
 	// methods
@@ -44,7 +45,7 @@ class Orientation
 	clone()
 	{
 		return new Orientation(this.forward.clone(), this.down.clone());
-	};
+	}
 
 	equals(other)
 	{

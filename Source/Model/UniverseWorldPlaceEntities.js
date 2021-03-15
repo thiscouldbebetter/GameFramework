@@ -1,4 +1,5 @@
 
+
 class UniverseWorldPlaceEntities
 {
 	universe;
@@ -7,7 +8,11 @@ class UniverseWorldPlaceEntities
 	entity;
 	entity2;
 
-	constructor(universe, world, place, entity, entity2)
+	constructor
+	(
+		universe, world, place,
+		entity, entity2
+	)
 	{
 		this.universe = universe;
 		this.world = world;
@@ -21,7 +26,11 @@ class UniverseWorldPlaceEntities
 		return new UniverseWorldPlaceEntities(null, null, null, null, null);
 	}
 
-	fieldsSet(universe, world, place, entity, entity2)
+	fieldsSet
+	(
+		universe, world, place,
+		entity, entity2
+	)
 	{
 		this.universe = universe;
 		this.world = world;

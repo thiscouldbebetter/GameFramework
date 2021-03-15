@@ -1,4 +1,5 @@
 
+
 class ItemCrafter extends EntityProperty
 {
 	recipesAvailable;
@@ -438,12 +439,12 @@ class ItemCrafter extends EntityProperty
 		returnValue.scalePosAndSize(scaleMultiplier);
 
 		return returnValue;
-	};
+	}
 
 	// cloneable
 
 	clone()
 	{
 		return new ItemCrafter(ArrayHelper.clone(this.recipesAvailable) );
-	};
+	}
 }

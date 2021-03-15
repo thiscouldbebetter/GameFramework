@@ -1,4 +1,5 @@
 
+
 class Armor extends EntityProperty
 {
 	damageMultiplier;

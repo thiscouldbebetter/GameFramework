@@ -1,4 +1,5 @@
 
+
 class Direction
 {
 	static _instances;

@@ -1,4 +1,5 @@
 
+
 class Drawable extends EntityProperty
 {
 	visual;
@@ -26,3 +27,4 @@ class Drawable extends EntityProperty
 		return new Drawable(this.visual, this.isVisible);
 	}
 }
+

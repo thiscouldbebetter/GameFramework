@@ -1,4 +1,5 @@
 
+
 class Starvable extends EntityProperty
 {
 	satietyMax;

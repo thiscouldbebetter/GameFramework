@@ -1,4 +1,5 @@
 
+
 class PathBuilder
 {
 	star(numberOfPoints, ratioOfInnerRadiusToOuter)
@@ -18,5 +19,5 @@ class PathBuilder
 
 		var returnValue = new Path(vertices);
 		return returnValue;
-	};
+	}
 }

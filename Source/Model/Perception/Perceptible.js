@@ -1,4 +1,5 @@
 
+
 class Perceptible extends EntityProperty
 {
 	isHiding;

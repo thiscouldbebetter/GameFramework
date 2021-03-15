@@ -1,4 +1,5 @@
 
+
 class VisualImageImmediate
 {
 	_image;
@@ -21,7 +22,7 @@ class VisualImageImmediate
 	image(universe)
 	{
 		return this._image;
-	}
+	};
 
 	// visual
 
@@ -41,7 +42,7 @@ class VisualImageImmediate
 		{
 			display.drawImage(image, drawPos);
 		}
-	}
+	};
 
 	// Clonable.
 

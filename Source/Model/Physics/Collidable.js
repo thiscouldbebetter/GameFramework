@@ -1,4 +1,5 @@
 
+
 class Collidable extends EntityProperty
 {
 	ticksToWaitBetweenCollisions;
@@ -50,13 +51,7 @@ class Collidable extends EntityProperty
 	colliderLocateForEntity(entity)
 	{
 		this.collider.overwriteWith(this.colliderAtRest);
-		this._transformLocate.loc = entity.locatable().loc;
-
-		Transforms.applyTransformToCoordsMany
-		(
-			this._transformLocate,
-			this.collider.coordsGroupToTranslate()
-		);
+		this.collider.locate(entity.locatable().loc);
 	}
 
 	initialize(universe, world, place, entity)
@@ -71,7 +66,8 @@ class Collidable extends EntityProperty
 			return;
 		}
 
-		this.locPrev.overwriteWith(entity.locatable().loc);
+		var entityLoc = entity.locatable().loc;
+		this.locPrev.overwriteWith(entityLoc);
 
 		if (this.ticksUntilCanCollide > 0)
 		{

@@ -1,4 +1,5 @@
 
+
 class Vehicle extends EntityProperty
 {
 	accelerationPerTick;

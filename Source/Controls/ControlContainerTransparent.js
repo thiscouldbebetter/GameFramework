@@ -1,4 +1,5 @@
 
+
 class ControlContainerTransparent extends ControlBase
 {
 	containerInner;

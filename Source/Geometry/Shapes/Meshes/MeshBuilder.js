@@ -1,4 +1,5 @@
 
+
 class MeshBuilder
 {
 	biped(material, heightInPixels)
@@ -159,7 +160,7 @@ class MeshBuilder
 		//this.meshVerticesMergeIfWithinDistance(returnValue, 3);
 
 		return returnValue;
-	};
+	}
 
 	box(material, size, pos)
 	{
@@ -176,7 +177,7 @@ class MeshBuilder
 		);
 
 		return returnMesh;
-	};
+	}
 
 	grid(sizeInCells, cellSize, material)
 	{
@@ -267,7 +268,7 @@ class MeshBuilder
 		}
 
 		return returnMeshTextured;
-	};
+	}
 
 	room
 	(
@@ -375,7 +376,7 @@ class MeshBuilder
 		);
 
 		return returnMesh;
-	};
+	}
 
 	room_Ceiling(material)
 	{
@@ -400,7 +401,7 @@ class MeshBuilder
 		);
 
 		return returnMesh;
-	};
+	}
 
 	room_Floor(material)
 	{
@@ -419,7 +420,7 @@ class MeshBuilder
 		);
 
 		return returnMesh;
-	};
+	}
 
 	room_Wall(material)
 	{
@@ -461,7 +462,7 @@ class MeshBuilder
 		);
 
 		return returnMeshTextured;
-	};
+	}
 
 	room_WallWithDoorway(material, doorwayWidthScaleFactor, wallThickness)
 	{
@@ -620,7 +621,7 @@ class MeshBuilder
 		var returnMesh = this.unitCube_Geometry();
 		var returnMeshTextured = new MeshTextured(returnMesh, [ material ], null, null);
 		return returnMeshTextured;
-	};
+	}
 
 	unitCube_Geometry()
 	{
@@ -655,7 +656,7 @@ class MeshBuilder
 		);
 
 		return returnMesh;
-	};
+	}
 
 	unitRing(material, numberOfVertices)
 	{
@@ -684,7 +685,7 @@ class MeshBuilder
 		var returnMeshTextured = new MeshTextured(returnMesh, [ material ], null, null);
 
 		return returnMeshTextured;
-	};
+	}
 
 	unitSquare(material)
 	{
@@ -745,7 +746,7 @@ class MeshBuilder
 		}
 
 		return faceToClip;
-	};
+	}
 
 	mergeMeshes(meshesToMerge, vertexGroupNames)
 	{
@@ -840,7 +841,7 @@ class MeshBuilder
 		);
 
 		return returnMeshTextured;
-	};
+	}
 
 	splitFaceByPlaneFrontAndBack(faceToDivide, planeToDivideOn)
 	{
@@ -949,5 +950,5 @@ class MeshBuilder
 		}
 
 		return returnValues;
-	};
+	}
 }

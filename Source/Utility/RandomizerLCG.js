@@ -1,4 +1,5 @@
 
+
 class RandomizerLCG
 {
 	// "LCG" = "Linear Congruential Generator"
@@ -25,7 +26,7 @@ class RandomizerLCG
 			12345, // addend
 			Math.pow(2.0, 31) // modulus
 		);
-	};
+	}
 
 	getNextRandom()
 	{
@@ -41,5 +42,5 @@ class RandomizerLCG
 		/ this.modulus;
 
 		return this.currentRandom;
-	};
+	}
 }

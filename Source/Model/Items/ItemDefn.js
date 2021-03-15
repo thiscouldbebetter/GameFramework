@@ -1,4 +1,5 @@
 
+
 class ItemDefn extends EntityProperty
 {
 	name;
@@ -13,8 +14,13 @@ class ItemDefn extends EntityProperty
 
 	constructor
 	(
-		name, appearance, description, mass,
-		tradeValue, stackSizeMax, categoryNames,
+		name,
+		appearance,
+		description,
+		mass,
+		tradeValue,
+		stackSizeMax,
+		categoryNames,
 		use,
 		visual
 	)
@@ -57,7 +63,7 @@ class ItemDefn extends EntityProperty
 		var returnValue;
 		if (this._use == null)
 		{
-			returnValue = "Can't use " + this.name + ".";
+			returnValue = "Can't use " + this.appearance + ".";
 		}
 		else
 		{

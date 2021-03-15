@@ -1,4 +1,5 @@
 
+
 class Perceptor extends EntityProperty
 {
 	sightThreshold;

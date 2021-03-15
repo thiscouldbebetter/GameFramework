@@ -1,4 +1,5 @@
 
+
 class Wedge
 {
 	vertex;
@@ -39,7 +40,7 @@ class Wedge
 		);
 
 		return returnValue;
-	};
+	}
 
 	angleInTurnsMin()
 	{
@@ -47,7 +48,7 @@ class Wedge
 		(
 			this.directionMin
 		).azimuthInTurns;
-	};
+	}
 
 	collider()
 	{
@@ -130,19 +131,20 @@ class Wedge
 		}
 
 		return this._collider;
-	};
+	}
 
 	// cloneable
 
 	clone()
 	{
 		return new Wedge(this.vertex.clone(), this.directionMin.clone(), this.angleSpannedInTurns);
-	};
+	}
 
 	overwriteWith(other)
 	{
 		this.vertex.overwriteWith(other.vertex);
 		this.directionMin.overwriteWith(other.directionMin);
 		this.angleSpannedInTurns = other.angleSpannedInTurns;
-	};
+	}
 }
+

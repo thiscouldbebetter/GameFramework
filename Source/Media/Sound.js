@@ -1,4 +1,5 @@
 
+
 class Sound
 {
 	name;
@@ -37,14 +38,14 @@ class Sound
 		);
 
 		return this.domElement;
-	};
+	}
 
 	pause(universe)
 	{
 		var offsetInSeconds = this.domElement.currentTime;
 		this.stop(universe);
 		this.offsetInSeconds = offsetInSeconds;
-	};
+	}
 
 	play(universe, volume)
 	{
@@ -57,12 +58,12 @@ class Sound
 
 			universe.platformHelper.platformableAdd(this);
 		}
-	};
+	}
 
 	reset()
 	{
 		this.offsetInSeconds = 0;
-	};
+	}
 
 	stop(universe)
 	{
@@ -72,7 +73,7 @@ class Sound
 			universe.platformHelper.platformableRemove(this);
 			this.offsetInSeconds = 0;
 		}
-	};
+	}
 
 	stopOrRepeat(universe)
 	{
@@ -80,12 +81,12 @@ class Sound
 		{
 			this.stop(universe);
 		}
-	};
+	}
 
 	// platformable
 
 	toDomElement()
 	{
 		return this.domElement;
-	};
+	}
 }

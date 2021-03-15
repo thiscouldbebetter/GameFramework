@@ -1,14 +1,12 @@
 
+
 class EntityBuilder
 {
 	messageFloater(text, pos, color)
 	{
 		var ticksToLive = 32;
 		var riseSpeed = -1;
-		var visual = new VisualText
-		(
-			DataBinding.fromContext(text), false, null, color, null
-		);
+		var visual = VisualText.fromTextAndColor(text, color);
 		pos = pos.clone();
 		pos.z--;
 
@@ -30,5 +28,5 @@ class EntityBuilder
 		);
 
 		return messageEntity;
-	};
+	}
 }

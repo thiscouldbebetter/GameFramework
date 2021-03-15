@@ -1,4 +1,5 @@
 
+
 class ControlButton extends ControlBase
 {
 	text;

@@ -1,4 +1,5 @@
 
+
 class ControlTextBox extends ControlBase
 {
 	_text;

@@ -1,4 +1,5 @@
 
+
 class ItemContainer extends EntityProperty
 {
 	statusMessage;

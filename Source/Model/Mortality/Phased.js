@@ -1,4 +1,5 @@
 
+
 class Phased extends EntityProperty
 {
 	tickBorn;

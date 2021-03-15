@@ -1,4 +1,5 @@
 
+
 class Maze
 {
 	cellSizeInPixels;
@@ -72,7 +73,7 @@ class Maze
 		}
 
 		return this;
-	};
+	}
 
 	generateRandom_ConnectCellToRandomNeighbor
 	(
@@ -133,7 +134,7 @@ class Maze
 		}
 
 		return numberOfCellsInNetworkMerged;
-	};
+	}
 
 	// instance methods
 
@@ -141,12 +142,12 @@ class Maze
 	{
 		var cellIndex = this.indexOfCellAtPos(cellPos);
 		return this.cells[cellIndex];
-	};
+	}
 
 	indexOfCellAtPos(cellPos)
 	{
 		var cellIndex = cellPos.y * this.sizeInCells.x + cellPos.x;
 
 		return cellIndex;
-	};
+	}
 }

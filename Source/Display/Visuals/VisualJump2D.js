@@ -1,4 +1,5 @@
 
+
 class VisualJump2D
 {
 	visualJumper;
@@ -22,7 +23,7 @@ class VisualJump2D
 		transformToApply.transform(this.visualJumper);
 		transformToApply.transform(this.visualShadow);
 		return this;
-	};
+	}
 
 	// Visual.
 
@@ -45,7 +46,7 @@ class VisualJump2D
 			this.visualJumper.draw(universe, world, place, entity, display);
 			entityPos.overwriteWith(this._posSaved);
 		}
-	};
+	}
 
 	// Cloneable.
 
@@ -55,12 +56,12 @@ class VisualJump2D
 		(
 			this.visualJumper.clone(), this.visualShadow.clone(), this.cameraFactory
 		);
-	};
+	}
 
 	overwriteWith(other)
 	{
 		this.visualJumper.overwriteWith(other.visualJumper);
 		this.visualShadow.overwriteWith(other.visualShadow);
 		return this;
-	};
+	}
 }

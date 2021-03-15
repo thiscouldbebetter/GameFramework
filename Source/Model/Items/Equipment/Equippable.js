@@ -1,4 +1,5 @@
 
+
 class Equippable extends EntityProperty
 {
 	_equip;

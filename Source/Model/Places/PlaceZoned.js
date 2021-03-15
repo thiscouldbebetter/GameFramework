@@ -1,4 +1,5 @@
 
+
 class PlaceZoned extends Place
 {
 	entityToFollowName;

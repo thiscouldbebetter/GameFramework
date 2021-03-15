@@ -1,4 +1,5 @@
 
+
 class VenueInputCapture
 {
 	venueToReturnTo;
@@ -17,7 +18,7 @@ class VenueInputCapture
 	draw(universe)
 	{
 		// Do nothing.
-	};
+	}
 
 	finalize(universe) {}
 
@@ -48,5 +49,5 @@ class VenueInputCapture
 				}
 			}
 		}
-	};
+	}
 }

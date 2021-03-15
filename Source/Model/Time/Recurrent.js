@@ -1,4 +1,5 @@
 
+
 class Recurrent extends EntityProperty
 {
 	ticksPerRecurrence;
@@ -31,12 +32,12 @@ class Recurrent extends EntityProperty
 				this.recur(universe, world, place, entity);
 			}
 		}
-	};
+	}
 
 	// cloneable
 
 	clone()
 	{
 		return new Recurrent(this.ticksPerRecurrence, this.timesToRecur, this.recur);
-	};
+	}
 }

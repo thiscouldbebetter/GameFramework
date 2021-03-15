@@ -1,4 +1,5 @@
 
+
 class Mesh
 {
 	center;
@@ -38,7 +39,7 @@ class Mesh
 
 	static fromBox(box)
 	{
-		var sizeHalf = box.sizeHalf();
+		var sizeHalf = box.sizeHalf;
 		var min = new Coords(-sizeHalf.x, -sizeHalf.y, -sizeHalf.z);
 		var max = new Coords(sizeHalf.x, sizeHalf.y, sizeHalf.z);
 
@@ -251,6 +252,11 @@ class Mesh
 	}
 
 	// ShapeBase.
+
+	locate(loc)
+	{
+		return ShapeHelper.Instance().applyLocationToShapeDefault(loc, this);
+	}
 
 	normalAtPos(posToCheck, normalOut)
 	{

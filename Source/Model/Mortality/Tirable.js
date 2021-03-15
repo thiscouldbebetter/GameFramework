@@ -1,4 +1,5 @@
 
+
 class Tirable extends EntityProperty
 {
 	staminaMaxAfterSleep;

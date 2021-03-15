@@ -1,4 +1,5 @@
 
+
 class Actor extends EntityProperty
 {
 	activity;
@@ -17,3 +18,4 @@ class Actor extends EntityProperty
 		this.activity.perform(universe, world, place, entity);
 	}
 }
+

@@ -1,4 +1,5 @@
 
+
 class VertexGroup
 {
 	name;
@@ -15,5 +16,5 @@ class VertexGroup
 	clone()
 	{
 		return new VertexGroup(this.name, this.vertexIndices.slice());
-	};
+	}
 }

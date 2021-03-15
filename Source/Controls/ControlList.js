@@ -1,4 +1,5 @@
 
+
 class ControlList extends ControlBase
 {
 	_items;
@@ -45,11 +46,11 @@ class ControlList extends ControlBase
 
 		this.scrollbar = new ControlScrollbar
 		(
-			new Coords(size.x - scrollbarWidth, 0, 0), // pos
-			new Coords(scrollbarWidth, size.y, 0), // size
+			new Coords(this.size.x - scrollbarWidth, 0, 0), // pos
+			new Coords(scrollbarWidth, this.size.y, 0), // size
 			this.fontHeightInPixels,
 			itemSpacingY, // itemHeight
-			items,
+			this._items,
 			0 // value
 		);
 

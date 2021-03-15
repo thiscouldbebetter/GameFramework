@@ -1,4 +1,5 @@
 
+
 class EquipmentSocket
 {
 	defnName;
@@ -13,7 +14,7 @@ class EquipmentSocket
 	defn(defnGroup)
 	{
 		return defnGroup.socketDefnsByName.get(this.defnName);
-	};
+	}
 
 	toString(world)
 	{
@@ -25,5 +26,5 @@ class EquipmentSocket
 		);
 		var returnValue = this.defnName + ": " + itemEntityEquippedAsString;
 		return returnValue;
-	};
+	}
 }

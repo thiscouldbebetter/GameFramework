@@ -1,4 +1,5 @@
 
+
 class AnimationKeyframe
 {
 	frameIndex;
@@ -42,5 +43,5 @@ class AnimationKeyframe
 		);
 
 		return returnValue;
-	};
+	}
 }

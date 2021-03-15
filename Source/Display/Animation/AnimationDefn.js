@@ -1,4 +1,5 @@
 
+
 class AnimationDefn
 {
 	name;
@@ -95,5 +96,5 @@ class AnimationDefn
 				}
 			}
 		}
-	};
+	}
 }

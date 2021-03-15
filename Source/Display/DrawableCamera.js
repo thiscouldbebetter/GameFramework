@@ -1,4 +1,5 @@
 
+
 class DrawableCamera extends EntityProperty
 {
 	initialize(universe, world, place, entity)
@@ -22,3 +23,4 @@ class DrawableCamera extends EntityProperty
 		return this;
 	}
 }
+

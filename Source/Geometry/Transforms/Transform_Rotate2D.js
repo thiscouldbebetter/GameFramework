@@ -1,4 +1,5 @@
 
+
 class Transform_Rotate2D
 {
 	turnsToRotate;
@@ -36,5 +37,5 @@ class Transform_Rotate2D
 		);
 
 		return coordsToTransform;
-	};
+	}
 }

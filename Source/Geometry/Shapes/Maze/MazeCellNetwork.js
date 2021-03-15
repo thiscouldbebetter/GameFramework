@@ -1,4 +1,5 @@
 
+
 class MazeCellNetwork
 {
 	networkID;
@@ -33,5 +34,5 @@ class MazeCellNetwork
 		}
 
 		return networkMerged;
-	};
+	}
 }

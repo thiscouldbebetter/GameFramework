@@ -1,4 +1,5 @@
 
+
 class VisualText
 {
 	_text;
@@ -39,7 +40,11 @@ class VisualText
 		);
 	}
 
-	draw(universe, world, place, entity, display)
+	draw
+	(
+		universe, world, place,
+		entity, display
+	)
 	{
 		var text = this.text(universe, world, place, entity, display);
 		display.drawText
@@ -55,7 +60,11 @@ class VisualText
 		);
 	}
 
-	text(universe, world, place, entity, display)
+	text
+	(
+		universe, world, place,
+		entity, display
+	)
 	{
 		if (this.shouldTextContextBeReset)
 		{

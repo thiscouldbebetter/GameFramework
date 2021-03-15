@@ -1,4 +1,5 @@
 
+
 class PlaceBuilderDemo_Actions
 {
 	parent;
@@ -18,6 +19,7 @@ class PlaceBuilderDemo_Actions
 		[
 			actionsAll.DoNothing,
 			actionsAll.ShowMenu,
+
 			new Action
 			(
 				"MoveDown",
@@ -29,6 +31,7 @@ class PlaceBuilderDemo_Actions
 					);
 				}
 			),
+
 			new Action
 			(
 				"MoveLeft",
@@ -40,6 +43,7 @@ class PlaceBuilderDemo_Actions
 					);
 				}
 			),
+
 			new Action
 			(
 				"MoveRight",
@@ -51,6 +55,7 @@ class PlaceBuilderDemo_Actions
 					);
 				}
 			),
+
 			new Action
 			(
 				"MoveUp",
@@ -62,6 +67,7 @@ class PlaceBuilderDemo_Actions
 					);
 				}
 			),
+
 			new Action
 			(
 				"Fire",
@@ -78,6 +84,7 @@ class PlaceBuilderDemo_Actions
 					}
 				}
 			),
+
 			new Action
 			(
 				"Hide",
@@ -100,6 +107,7 @@ class PlaceBuilderDemo_Actions
 					}
 				}
 			),
+
 			new Action
 			(
 				"Jump",
@@ -121,6 +129,7 @@ class PlaceBuilderDemo_Actions
 					}
 				}
 			),
+
 			new Action
 			(
 				"Pick Up",
@@ -177,6 +186,25 @@ class PlaceBuilderDemo_Actions
 					}
 				}
 			),
+
+			new Action
+			(
+				"Recording Start/Stop",
+				(universe, world, place, actor) => // perform
+				{
+					var recorder = universe.displayRecorder;
+					if (recorder.isRecording)
+					{
+						recorder.stop();
+						recorder.framesRecordedDownload(universe);
+					}
+					else
+					{
+						recorder.start();
+					}
+				}
+			),
+
 			new Action
 			(
 				"Run",
@@ -202,6 +230,7 @@ class PlaceBuilderDemo_Actions
 					}
 				}
 			),
+
 			new Action
 			(
 				"Sneak",
@@ -223,6 +252,7 @@ class PlaceBuilderDemo_Actions
 					}
 				}
 			),
+
 			new Action
 			(
 				"Use",
@@ -242,6 +272,7 @@ class PlaceBuilderDemo_Actions
 					}
 				}
 			),
+
 			new Action
 			(
 				"Wait",
@@ -300,6 +331,8 @@ class PlaceBuilderDemo_Actions
 			new ActionToInputsMapping("Item7", 	[ "_7" ], inactivateTrue),
 			new ActionToInputsMapping("Item8", 	[ "_8" ], inactivateTrue),
 			new ActionToInputsMapping("Item9", 	[ "_9" ], inactivateTrue),
+
+			new ActionToInputsMapping("Recording Start/Stop", [ "`" ], inactivateTrue),
 		];
 
 		return actionToInputsMappings;

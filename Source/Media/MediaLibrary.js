@@ -1,4 +1,5 @@
 
+
 class MediaLibrary
 {
 	images;
@@ -153,7 +154,7 @@ class MediaLibrary
 		);
 
 		return returnValue;
-	};
+	}
 
 	// Instance methods.
 
@@ -181,7 +182,7 @@ class MediaLibrary
 		}
 
 		return areAllItemsLoadedSoFar;
-	};
+	}
 
 	waitForItemToLoad(collectionName, itemName, callback)
 	{
@@ -191,7 +192,7 @@ class MediaLibrary
 			this.waitForItemToLoad_TimerTick.bind(this, itemToLoad, callback),
 			100 // milliseconds
 		);
-	};
+	}
 
 	waitForItemToLoad_TimerTick(itemToLoad, callback)
 	{
@@ -200,7 +201,7 @@ class MediaLibrary
 			clearInterval(this.timer);
 			callback.call();
 		}
-	};
+	}
 
 	waitForItemsAllToLoad(callback)
 	{
@@ -209,7 +210,7 @@ class MediaLibrary
 			this.waitForItemsAllToLoad_TimerTick.bind(this, callback),
 			100 // milliseconds
 		);
-	};
+	}
 
 	waitForItemsAllToLoad_TimerTick(callback)
 	{
@@ -218,7 +219,7 @@ class MediaLibrary
 			clearInterval(this.timer);
 			callback.call();
 		}
-	};
+	}
 
 	// accessors
 
@@ -233,30 +234,30 @@ class MediaLibrary
 				this.imagesByName.set(image.name, image);
 			}
 		}
-	};
+	}
 
 	fontGetByName(name)
 	{
 		return this.fontsByName.get(name);
-	};
+	}
 
 	imageGetByName(name)
 	{
 		return this.imagesByName.get(name);
-	};
+	}
 
 	soundGetByName(name)
 	{
 		return this.soundsByName.get(name);
-	};
+	}
 
 	textStringGetByName(name)
 	{
 		return this.textStringsByName.get(name);
-	};
+	}
 
 	videoGetByName(name)
 	{
 		return this.videosByName.get(name);
-	};
+	}
 }

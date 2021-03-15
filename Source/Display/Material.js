@@ -1,4 +1,5 @@
 
+
 class Material
 {
 	name;
@@ -23,7 +24,7 @@ class Material
 		}
 
 		return Material._instances;
-	};
+	}
 }
 
 class Material_Instances
@@ -41,4 +42,3 @@ class Material_Instances
 		);
 	}
 }
-

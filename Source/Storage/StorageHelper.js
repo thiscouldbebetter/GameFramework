@@ -1,4 +1,5 @@
 
+
 class StorageHelper
 {
 	propertyNamePrefix;
@@ -34,7 +35,7 @@ class StorageHelper
 			var itemToDelete = localStorage.getItem(key);
 			localStorage.removeItem(itemToDelete);
 		}
-	};
+	}
 
 	load(propertyName)
 	{
@@ -65,7 +66,7 @@ class StorageHelper
 		}
 
 		return returnValue;
-	};
+	}
 
 	save(propertyName, valueToSave)
 	{
@@ -87,5 +88,5 @@ class StorageHelper
 			propertyNamePrefixed,
 			valueToSaveCompressed
 		);
-	};
+	}
 }

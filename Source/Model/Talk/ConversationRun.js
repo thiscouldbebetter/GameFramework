@@ -1,4 +1,5 @@
 
+
 class ConversationRun
 {
 	defn;
@@ -14,7 +15,13 @@ class ConversationRun
 	t;
 	vars;
 
-	constructor(defn, quit, entityPlayer, entityTalker)
+	constructor
+	(
+		defn,
+		quit,
+		entityPlayer,
+		entityTalker
+	)
 	{
 		this.defn = defn;
 		this.quit = quit;
@@ -56,12 +63,12 @@ class ConversationRun
 			this.scopeCurrent.talkNodeForOptionSelected = null;
 		}
 		this.update(universe);
-	};
+	}
 
 	update(universe)
 	{
 		this.scopeCurrent.update(universe, this);
-	};
+	}
 
 	// controls
 
@@ -273,7 +280,7 @@ class ConversationRun
 		returnValue.focusGain();
 
 		return returnValue;
-	};
+	}
 
 	toControlTranscript(size, universe, venueToReturnTo)
 	{
@@ -363,5 +370,5 @@ class ConversationRun
 		);
 
 		return returnValue;
-	};
+	}
 }

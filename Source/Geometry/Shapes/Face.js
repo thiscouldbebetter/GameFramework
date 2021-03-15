@@ -1,4 +1,5 @@
 
+
 class Face
 {
 	vertices;
@@ -20,7 +21,7 @@ class Face
 		}
 		this._box.ofPoints(this.vertices);
 		return this._box;
-	};
+	}
 
 	containsPoint(pointToCheck)
 	{
@@ -62,7 +63,7 @@ class Face
 		}
 
 		return isPosWithinAllEdgesOfFaceSoFar;
-	};
+	}
 
 	edges()
 	{
@@ -86,12 +87,12 @@ class Face
 		}
 
 		return this._edges;
-	};
+	}
 
 	equals(other)
 	{
 		return ArrayHelper.equals(this.vertices, other.vertices);
-	};
+	}
 
 	plane()
 	{
@@ -108,20 +109,20 @@ class Face
 		);
 
 		return this._plane;
-	};
+	}
 
 	// Cloneable.
 
 	clone()
 	{
 		return new Face(ArrayHelper.clone(this.vertices));
-	};
+	}
 
 	overwriteWith(other)
 	{
 		ArrayHelper.overwriteWith(this.vertices, other.vertices);
 		return this;
-	};
+	}
 
 	// Transformable.
 
@@ -129,5 +130,5 @@ class Face
 	{
 		Transforms.applyTransformToCoordsMany(transformToApply, this.vertices);
 		return this;
-	};
+	}
 }

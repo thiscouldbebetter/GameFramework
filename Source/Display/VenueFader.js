@@ -1,4 +1,5 @@
 
+
 class VenueFader
 {
 	venuesToFadeFromAndTo;
@@ -37,7 +38,7 @@ class VenueFader
 	{
 		var venueToFadeTo = this.venueToFadeTo();
 		venueToFadeTo.initialize(universe);
-	};
+	}
 
 	updateForTimerTick(universe)
 	{
@@ -102,17 +103,17 @@ class VenueFader
 			fadeColor.systemColor(),
 			null, null
 		);
-	};
+	}
 
 	venueToFadeTo()
 	{
 		return this.venuesToFadeFromAndTo[1];
-	};
+	}
 
 	venueCurrent()
 	{
 		return this.venuesToFadeFromAndTo[this.venueIndexCurrent];
-	};
+	}
 
 	draw(universe)
 	{
@@ -121,5 +122,5 @@ class VenueFader
 		{
 			venueCurrent.draw(universe);
 		}
-	};
+	}
 }

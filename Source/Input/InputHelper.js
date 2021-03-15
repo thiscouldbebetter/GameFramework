@@ -1,4 +1,5 @@
 
+
 class InputHelper
 {
 	mouseClickPos;
@@ -29,7 +30,7 @@ class InputHelper
 		this.keysToPreventDefaultsFor =
 		[
 			inputNames.ArrowDown, inputNames.ArrowLeft, inputNames.ArrowRight,
-			inputNames.ArrowUp, inputNames.Tab
+			inputNames.ArrowUp, inputNames.Tab,
 		];
 
 		this.inputsPressed = [];
@@ -65,7 +66,7 @@ class InputHelper
 		}
 
 		return returnValues;
-	};
+	}
 
 	initialize(universe)
 	{
@@ -86,7 +87,7 @@ class InputHelper
 		}
 
 		this.gamepadsCheck();
-	};
+	}
 
 	inputAdd(inputPressedName)
 	{
@@ -96,7 +97,7 @@ class InputHelper
 			this.inputsPressedByName.set(inputPressedName, inputPressed);
 			this.inputsPressed.push(inputPressed);
 		}
-	};
+	}
 
 	inputRemove(inputReleasedName)
 	{
@@ -106,12 +107,12 @@ class InputHelper
 			this.inputsPressedByName.delete(inputReleasedName);
 			ArrayHelper.remove(this.inputsPressed, inputReleased);
 		}
-	};
+	}
 
 	inputsActive()
 	{
 		return this.inputsPressed.filter( (x) => x.isActive );
-	};
+	}
 
 	inputsRemoveAll()
 	{
@@ -120,7 +121,7 @@ class InputHelper
 			var input = this.inputsPressed[i];
 			this.inputRemove(input.name);
 		}
-	};
+	}
 
 	isMouseClicked(value)
 	{
@@ -146,12 +147,12 @@ class InputHelper
 		}
 
 		return returnValue;
-	};
+	}
 
 	updateForTimerTick(universe)
 	{
 		this.updateForTimerTick_Gamepads(universe);
-	};
+	}
 
 	updateForTimerTick_Gamepads(universe)
 	{
@@ -215,7 +216,7 @@ class InputHelper
 				}
 			}
 		}
-	};
+	}
 
 	// events
 
@@ -244,7 +245,7 @@ class InputHelper
 		}
 
 		this.inputAdd(inputPressed);
-	};
+	}
 
 	handleEventKeyUp(event)
 	{
@@ -263,7 +264,7 @@ class InputHelper
 		}
 
 		this.inputRemove(inputReleased);
-	};
+	}
 
 	// events - mouse
 
@@ -278,7 +279,7 @@ class InputHelper
 			0
 		);
 		this.inputAdd(Input.Names().MouseClick);
-	};
+	}
 
 	handleEventMouseMove(event)
 	{
@@ -297,12 +298,12 @@ class InputHelper
 			this.mouseMovePos.overwriteWith(this.mouseMovePosNext);
 			this.inputAdd(Input.Names().MouseMove);
 		}
-	};
+	}
 
 	handleEventMouseUp(event)
 	{
 		this.inputRemove(Input.Names().MouseClick);
-	};
+	}
 
 	// gamepads
 
@@ -318,12 +319,12 @@ class InputHelper
 				this.gamepadsConnected.push(gamepad);
 			}
 		}
-	};
+	}
 
 	systemGamepads()
 	{
 		return navigator.getGamepads();
-	};
+	}
 
 	// Platformable.
 
@@ -336,6 +337,5 @@ class InputHelper
 		divMain.onmouseup = this.handleEventMouseUp.bind(this);
 		divMain.onmousemove = (this.isMouseMovementTracked ? this.handleEventMouseMove.bind(this) : null);
 		return null;
-	};
-
+	}
 }

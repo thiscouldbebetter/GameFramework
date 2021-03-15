@@ -1,4 +1,5 @@
 
+
 class PlaceRoom extends Place
 {
 	randomizerSeed;

@@ -1,4 +1,5 @@
 
+
 class Transform_Perspective
 {
 	focalLength;
@@ -35,5 +36,5 @@ class Transform_Perspective
 			);
 		}
 		return coordsToTransform;
-	};
+	}
 }

@@ -1,4 +1,5 @@
 
+
 class CollisionHelper
 {
 	throwErrorIfCollidersCannotBeCollided;
@@ -41,7 +42,7 @@ class CollisionHelper
 		var lookupOfLookups = new Map();
 		var lookup;
 
-		var notDefined = null; // todo
+		var notDefined = "undefined"; // todo
 
 		var boxName = ( typeof Box == notDefined ? null : Box.name );
 		var boxRotatedName = ( typeof BoxRotated == notDefined ? null : BoxRotated.name );
@@ -259,7 +260,7 @@ class CollisionHelper
 			{
 				collisionMethod.call
 				(
-					this, collider0, collider1, collisionOut
+					this, collider0, collider1, collisionOut, true // shouldCalculatePos
 				);
 			}
 		}
@@ -541,134 +542,6 @@ class CollisionHelper
 		}
 	}
 
-	/*
-
-	todo - Move or remove these.
-
-	collideEntitiesBoxAndSphere(entityBox, entitySphere)
-	{
-		var sphereLoc = entitySphere.locatable().loc;
-
-		var box = entityBox.collidable().collider;
-		var sphere = entitySphere.collidable().collider;
-		var collision = this.collisionOfBoxAndSphere
-		(
-			box, sphere, this._collision, true // shouldCalculatePos
-		);
-
-		var collisionRelativeToBox = this._pos.overwriteWith(collision.pos).subtract
-		(
-			box.center
-		).divide
-		(
-			box.sizeHalf
-		);
-
-		var sphereVel = sphereLoc.vel;
-		var sphereOrientation = sphereLoc.orientation;
-
-		if (Math.abs(collisionRelativeToBox.x) >= Math.abs(collisionRelativeToBox.y))
-		{
-			sphereVel.x *= -1;
-			sphereOrientation.forward.x *= -1;
-		}
-		else
-		{
-			sphereVel.y *= -1;
-			sphereOrientation.forward.y *= -1;
-		}
-		sphereOrientation.orthogonalize();
-	}
-
-	collideEntitiesBoxRotatedAndSphere(entityBoxRotated, entitySphere)
-	{
-		var rectangle = entityBoxRotated.collidable().collider;
-		var sphere = entitySphere.collidable().collider;
-		var collision = this.collisionOfBoxRotatedAndSphere
-		(
-			rectangle, sphere, this._collision, true //shouldCalculatePos
-		);
-
-		var normal = collision.normals[0];
-
-		var sphereVel = entitySphere.locatable().loc.vel;
-		sphereVel.add
-		(
-			normal.clone().multiplyScalar
-			(
-				sphereVel.dotProduct(normal) * -2
-			)
-		);
-
-		var rectangleVel = entityBoxRotated.locatable().loc.vel;
-		rectangleVel.add
-		(
-			normal.clone().multiplyScalar
-			(
-				rectangleVel.dotProduct(normal) * -2
-			)
-		);
-	}
-
-	collideEntitiesSphereAndBox(entitySphere, entityBox)
-	{
-		this.collideEntitiesBoxAndSphere(entityBox, entitySphere);
-	}
-
-	collideEntitiesSphereAndBoxRotated(entitySphere, entityBoxRotated)
-	{
-		this.collideEntitiesBoxRotatedAndSphere(entityBoxRotated, entitySphere);
-	}
-
-	collideEntitiesSphereAndShapeGroupAll(entitySphere, entityShapeGroupAll)
-	{
-		// todo
-		this.collideEntitiesBounce(entitySphere, entityShapeGroupAll);
-	}
-
-	collideEntitiesSphereAndSphere(entityColliding, entityCollidedWith)
-	{
-		var entityCollidingLoc = entityColliding.locatable().loc;
-		var entityCollidedWithLoc = entityCollidedWith.locatable().loc;
-
-		var entityCollidingPos = entityCollidingLoc.pos;
-		var entityCollidedWithPos = entityCollidedWithLoc.pos;
-
-		var displacement = this._displacement.overwriteWith
-		(
-			entityCollidedWithPos
-		).subtract
-		(
-			entityCollidingPos
-		);
-
-		var distance = displacement.magnitude();
-
-		var direction = displacement.divideScalar(distance);
-
-		var sumOfRadii =
-			entityColliding.collidable().collider.radius
-			+ entityCollidedWith.collidable().collider.radius;
-
-		entityCollidedWithPos.overwriteWith
-		(
-			direction
-		).multiplyScalar
-		(
-			sumOfRadii
-		).add
-		(
-			entityCollidingPos
-		);
-
-		var speedAlongRadius = entityCollidedWithLoc.vel.dotProduct(direction);
-
-		var accelOfReflection = direction.multiplyScalar(speedAlongRadius * 2);
-
-		entityCollidedWithLoc.accel.subtract(accelOfReflection);
-	}
-	*/
-
 	// collisionOfXAndY
 
 	collisionOfBoxAndBox(box1, box2, collision)
@@ -757,7 +630,10 @@ class CollisionHelper
 		return collision;
 	}
 
-	collisionOfBoxAndSphere(box, sphere, collision, shouldCalculatePos)
+	collisionOfBoxAndSphere
+	(
+		box, sphere, collision, shouldCalculatePos
+	)
 	{
 		var doCollide = false;
 
@@ -772,7 +648,7 @@ class CollisionHelper
 		var displacementBetweenCentersAbsolute =
 			displacementBetweenCenters.absolute();
 
-		var boxSizeHalf = box.sizeHalf();
+		var boxSizeHalf = box.sizeHalf;
 		var sphereRadius = sphere.radius;
 
 		var doExtentsCollide =
@@ -1299,7 +1175,7 @@ class CollisionHelper
 			cylinder.center
 		);
 
-		if (displacementBetweenCenters.z < box.sizeHalf().z + cylinder.lengthHalf)
+		if (displacementBetweenCenters.z < box.sizeHalf.z + cylinder.lengthHalf)
 		{
 			displacementBetweenCenters.clearZ();
 

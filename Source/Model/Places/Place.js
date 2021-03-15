@@ -1,4 +1,5 @@
 
+
 class Place
 {
 	name;
@@ -29,22 +30,19 @@ class Place
 	defn(world)
 	{
 		return world.defn.placeDefnsByName().get(this.defnName);
-	};
+	}
 
 	draw(universe, world, display)
 	{
-		var entitiesDrawable = this.drawables();
+		var entitiesDrawable = this.entitiesByPropertyName(Drawable.name);
 		for (var i = 0; i < entitiesDrawable.length; i++)
 		{
 			var entity = entitiesDrawable[i];
 			var drawable = entity.drawable();
 			drawable.updateForTimerTick(universe, world, this, entity);
 		}
-		this.camera().drawEntitiesInViewThenClear
-		(
-			universe, world, this, display, true // shouldDrawBackground
-		);
-	};
+		this.camera().drawEntitiesInViewThenClear(universe, world, this, display);
+	}
 
 	entitiesByPropertyName(propertyName)
 	{
@@ -66,7 +64,7 @@ class Place
 			this.entityRemove(entity);
 		}
 		this.entitiesToRemove.length = 0;
-	};
+	}
 
 	entitiesSpawn(universe, world)
 	{
@@ -77,7 +75,7 @@ class Place
 		}
 
 		this.entitiesToSpawn.length = 0;
-	};
+	}
 
 	entityRemove(entity)
 	{
@@ -92,7 +90,7 @@ class Place
 		}
 		ArrayHelper.remove(this.entities, entity);
 		this.entitiesByName.delete(entity.name);
-	};
+	}
 
 	entitySpawn(universe, world, entity)
 	{
@@ -209,11 +207,29 @@ class Place
 		return (cameraEntity == null ? null : cameraEntity.camera());
 	}
 
-	drawables() { return this.entitiesByPropertyName(Drawable.name); }
-	items() { return this.entitiesByPropertyName(Item.name); }
-	loadables() { return this.entitiesByPropertyName(Loadable.name); }
-	movables() { return this.entitiesByPropertyName(Movable.name); }
-	player() { return this.entitiesByPropertyName(Playable.name)[0]; }
-	usables() { return this.entitiesByPropertyName(Usable.name); }
+	items()
+	{
+		return this.entitiesByPropertyName(Item.name);
+	}
+
+	loadables()
+	{
+		return this.entitiesByPropertyName(Loadable.name);
+	}
+
+	movables()
+	{
+		return this.entitiesByPropertyName(Movable.name);
+	}
+
+	player()
+	{
+		return this.entitiesByPropertyName(Playable.name)[0];
+	}
+
+	usables()
+	{
+		return this.entitiesByPropertyName(Usable.name);
+	}
 
 }

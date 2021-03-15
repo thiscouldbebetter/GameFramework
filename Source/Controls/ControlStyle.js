@@ -1,4 +1,5 @@
 
+
 class ControlStyle
 {
 	name;
@@ -25,7 +26,7 @@ class ControlStyle
 		}
 		return ControlStyle._instances;
 	}
-	
+
 	static byName(styleName)
 	{
 		return ControlStyle.Instances()._AllByName.get(styleName);
@@ -65,3 +66,4 @@ class ControlStyle_Instances
 		this._AllByName = ArrayHelper.addLookupsByName(this._All);
 	}
 }
+

@@ -1,4 +1,5 @@
 
+
 class VenueFileUpload
 {
 	venueNextIfFileSpecified;
@@ -39,7 +40,7 @@ class VenueFileUpload
 		var display = universe.display;
 		display.drawBackground("Black", null);
 		platformHelper.platformableShow(display);
-	};
+	}
 
 	initialize(universe)
 	{
@@ -87,7 +88,7 @@ class VenueFileUpload
 		universe.platformHelper.platformableAdd(this);
 
 		inputFileUpload.focus();
-	};
+	}
 
 	updateForTimerTick(universe)
 	{
@@ -111,14 +112,14 @@ class VenueFileUpload
 				}
 			}
 		}
-	};
+	}
 
 	// events
 
 	buttonCancel_Clicked(universe, event)
 	{
 		universe.venueNext = this.venueNextIfCancelled;
-	};
+	}
 
 	buttonLoad_Clicked(universe, event)
 	{
@@ -128,12 +129,12 @@ class VenueFileUpload
 		{
 			universe.venueNext = this.venueNextIfFileSpecified;
 		}
-	};
+	}
 
 	// platformable
 
 	toDomElement()
 	{
 		return this.domElement;
-	};
+	}
 }

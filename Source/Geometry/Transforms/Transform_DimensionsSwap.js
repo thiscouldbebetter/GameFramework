@@ -1,4 +1,5 @@
 
+
 class Transform_DimensionsSwap
 {
 	dimensionIndices;
@@ -29,5 +30,5 @@ class Transform_DimensionsSwap
 		coordsToTransform.dimensionSet(dimensionIndex0, dimension1);
 		coordsToTransform.dimensionSet(dimensionIndex1, dimension0);
 		return coordsToTransform;
-	};
+	}
 }

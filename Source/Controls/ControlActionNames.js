@@ -1,4 +1,5 @@
 
+
 class ControlActionNames_Instances
 {
 	ControlCancel;

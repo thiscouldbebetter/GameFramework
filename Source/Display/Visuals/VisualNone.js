@@ -1,4 +1,5 @@
 
+
 class VisualNone
 {
 	static Instance= new VisualNone();

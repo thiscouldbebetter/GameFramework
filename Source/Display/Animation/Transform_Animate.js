@@ -1,7 +1,9 @@
 
+
 class Transform_Animate
 {
 	animationDefn;
+	ticksSinceStarted;
 
 	constructor(animationDefn, ticksSinceStarted)
 	{

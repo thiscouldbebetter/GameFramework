@@ -1,4 +1,5 @@
 
+
 class MapOfCells
 {
 	name;
@@ -42,7 +43,7 @@ class MapOfCells
 	{
 		this._posInCells.overwriteWith(pos).divide(this.cellSize).floor();
 		return this.cellAtPosInCells(this._posInCells);
-	};
+	}
 
 	cellAtPosInCells(cellPosInCells)
 	{
@@ -52,7 +53,7 @@ class MapOfCells
 	numberOfCells()
 	{
 		return this.sizeInCells.x * this.sizeInCells.y;
-	};
+	}
 
 	cellsAsEntities(mapAndCellPosToEntity)
 	{
@@ -92,10 +93,11 @@ class MapOfCells
 			this.name, this.sizeInCells, this.cellSize,
 			this.cellPrototype, this.cellAtPosInCells, this.cellSource
 		);
-	};
+	}
 
 	overwriteWith(other)
 	{
 		this.cellSource.overwriteWith(other.cellSource);
 	}
 }
+

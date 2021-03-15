@@ -1,4 +1,5 @@
 
+
 class Transforms
 {
 	static applyTransformToCoordsArrays
@@ -16,7 +17,7 @@ class Transforms
 			var coordsArray = coordsArraysToTransform[i];
 			Transforms.applyTransformToCoordsMany(transformToApply, coordsArray);
 		}
-	};
+	}
 
 	static applyTransformToCoordsMany(transformToApply, coordsSetToTransform)
 	{
@@ -24,5 +25,5 @@ class Transforms
 		{
 			transformToApply.transformCoords(coordsSetToTransform[i]);
 		}
-	};
+	}
 }

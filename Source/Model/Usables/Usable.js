@@ -1,4 +1,5 @@
 
+
 class Usable extends EntityProperty
 {
 	_use;
@@ -36,4 +37,3 @@ class Usable extends EntityProperty
 		return this;
 	}
 }
-

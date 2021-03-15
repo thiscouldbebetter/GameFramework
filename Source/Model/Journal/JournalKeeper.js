@@ -1,4 +1,5 @@
 
+
 class JournalKeeper extends EntityProperty
 {
 	journal;

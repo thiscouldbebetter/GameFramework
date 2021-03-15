@@ -1,4 +1,5 @@
 
+
 class Traversable extends EntityProperty
 {
 	isBlocking

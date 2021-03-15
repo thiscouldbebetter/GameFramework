@@ -1,4 +1,5 @@
 
+
 class Item extends EntityProperty
 {
 	defnName;

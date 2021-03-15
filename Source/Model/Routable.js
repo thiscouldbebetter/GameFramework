@@ -1,4 +1,5 @@
 
+
 class Routable extends EntityProperty
 {
 	route;

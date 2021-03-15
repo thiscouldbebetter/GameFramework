@@ -1,4 +1,5 @@
 
+
 class Selector extends EntityProperty
 {
 	entitiesSelected;

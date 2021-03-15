@@ -1,4 +1,5 @@
 
+
 class Rotation
 {
 	axis;
@@ -13,7 +14,7 @@ class Rotation
 	angleInTurns()
 	{
 		return this.angleInTurnsRef.value;
-	};
+	}
 
 	transformCoords(coordsToTransform)
 	{
@@ -26,10 +27,10 @@ class Rotation
 		);
 
 		return polar.toCoords(coordsToTransform);
-	};
+	}
 
 	transformOrientation(orientation)
 	{
 		orientation.forwardSet(this.transformCoords(orientation.forward));
-	};
+	}
 }

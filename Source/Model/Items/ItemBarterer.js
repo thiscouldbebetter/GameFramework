@@ -1,4 +1,5 @@
 
+
 class ItemBarterer extends EntityProperty
 {
 	itemHolderCustomerOffer;
@@ -28,7 +29,7 @@ class ItemBarterer extends EntityProperty
 			|| this.itemHolderStoreOffer.itemEntities.length > 0
 		);
 		return returnValue;
-	};
+	}
 
 	isOfferProfitableEnough(world)
 	{
@@ -37,7 +38,7 @@ class ItemBarterer extends EntityProperty
 		var isOfferProfitableToStore = (profitMarginForStore > 1);
 
 		return isOfferProfitableToStore;
-	};
+	}
 
 	profitMarginOfOfferForStore(world)
 	{
@@ -52,13 +53,13 @@ class ItemBarterer extends EntityProperty
 	patienceAdd(patienceToAdd)
 	{
 		this.patience = NumberHelper.trimToRangeMax(this.patience + patienceToAdd, this.patienceMax);
-	};
+	}
 
 	reset(entityCustomer, entityStore)
 	{
 		this.itemHolderCustomerOffer.itemEntitiesAllTransferTo(entityCustomer.itemHolder() );
 		this.itemHolderStoreOffer.itemEntitiesAllTransferTo(entityStore.itemHolder() );
-	};
+	}
 
 	trade(entityCustomer, entityStore)
 	{
@@ -75,7 +76,7 @@ class ItemBarterer extends EntityProperty
 				entityEquipmentUser.unequipItemsNoLongerHeld(entity);
 			}
 		}
-	};
+	}
 
 	// Controls.
 
@@ -552,5 +553,5 @@ class ItemBarterer extends EntityProperty
 		);
 
 		return returnValue;
-	};
+	}
 }

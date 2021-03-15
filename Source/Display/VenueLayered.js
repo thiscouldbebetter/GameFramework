@@ -1,4 +1,5 @@
 
+
 class VenueLayered
 {
 	children;
@@ -22,12 +23,12 @@ class VenueLayered
 				child.initialize(universe);
 			}
 		}
-	};
+	}
 
 	updateForTimerTick(universe)
 	{
 		this.children[this.children.length - 1].updateForTimerTick(universe);
-	};
+	}
 
 	draw(universe)
 	{
@@ -45,5 +46,5 @@ class VenueLayered
 				);
 			}
 		}
-	};
+	}
 }

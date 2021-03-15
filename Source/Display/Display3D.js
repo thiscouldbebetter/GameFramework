@@ -1,4 +1,5 @@
 
+
 class Display3D
 {
 	sizeInPixels;
@@ -579,7 +580,7 @@ class Display3D
 		return this._scaleFactor;
 	}
 
-	show() {}
+	show(){}
 
 	sizeDefault()
 	{
@@ -615,5 +616,5 @@ class Display3D
 		var overlayAsDomElement = this._display2DOverlay.toDomElement();
 		returnValue.appendChild(overlayAsDomElement);
 		return returnValue;
-	};
+	}
 }

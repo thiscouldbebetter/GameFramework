@@ -1,4 +1,5 @@
 
+
 class Transform_TranslateInvert
 {
 	displacement;
@@ -21,5 +22,5 @@ class Transform_TranslateInvert
 	transformCoords(coordsToTransform)
 	{
 		return coordsToTransform.subtract(this.displacement);
-	};
+	}
 }

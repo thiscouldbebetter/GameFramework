@@ -1,4 +1,5 @@
 
+
 class Damager extends EntityProperty
 {
 	damagePerHit;

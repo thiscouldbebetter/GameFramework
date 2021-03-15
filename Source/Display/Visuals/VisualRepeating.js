@@ -1,4 +1,5 @@
 
+
 class VisualRepeating
 {
 	cellSize;
@@ -82,7 +83,7 @@ class VisualRepeating
 		}
 
 		drawPos.overwriteWith(this._drawablePosToRestore);
-	};
+	}
 
 	// Clonable.
 
