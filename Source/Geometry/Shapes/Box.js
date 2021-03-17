@@ -4,11 +4,11 @@ class Box
 {
 	center;
 	size;
-	sizeHalf;
 
 	_min;
 	_max;
 	_range;
+	_sizeHalf;
 	_vertices;
 
 	constructor(center, size)
@@ -16,9 +16,9 @@ class Box
 		this.center = center || new Coords(0, 0, 0);
 		this.size = size || new Coords(0, 0, 0);
 
-		this.sizeHalf = this.size.clone().half();
 		this._min = new Coords(0, 0, 0);
 		this._max = new Coords(0, 0, 0);
+		this._sizeHalf = new Coords(0, 0, 0);
 
 		this._range = new RangeExtent(0, 0);
 	}
@@ -127,12 +127,12 @@ class Box
 
 	max()
 	{
-		return this._max.overwriteWith(this.center).add(this.sizeHalf);
+		return this._max.overwriteWith(this.center).add(this.sizeHalf());
 	}
 
 	min()
 	{
-		return this._min.overwriteWith(this.center).subtract(this.sizeHalf);
+		return this._min.overwriteWith(this.center).subtract(this.sizeHalf());
 	}
 
 	ofPoints(points)
@@ -175,7 +175,6 @@ class Box
 
 		this.center.overwriteWith(minSoFar).add(maxSoFar).half();
 		this.size.overwriteWith(maxSoFar).subtract(minSoFar);
-		this.sizeHalf.overwriteWith(this.size).half();
 
 		return this;
 	}
@@ -216,10 +215,14 @@ class Box
 		return rangeOut;
 	}
 
+	sizeHalf()
+	{
+		return this._sizeHalf.overwriteWith(this.size).half();
+	}
+
 	sizeOverwriteWith(sizeOther)
 	{
 		this.size.overwriteWith(sizeOther);
-		this.sizeHalf.overwriteWith(this.size).half();
 		return this;
 	}
 
@@ -278,7 +281,6 @@ class Box
 	{
 		this.center.overwriteWith(other.center);
 		this.size.overwriteWith(other.size);
-		this.sizeHalf.overwriteWith(other.size).half();
 		return this;
 	};
 
@@ -346,7 +348,7 @@ class Box
 			this.center
 		).divide
 		(
-			this.sizeHalf
+			this.sizeHalf()
 		);
 
 		var dimensionIndex =

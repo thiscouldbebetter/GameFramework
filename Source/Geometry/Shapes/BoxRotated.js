@@ -13,7 +13,7 @@ class BoxRotated
 
 	sphereSwept()
 	{
-		return new Sphere(this.box.center, this.box.sizeHalf.magnitude());
+		return new Sphere(this.box.center, this.box.sizeHalf().magnitude());
 	}
 
 	// ShapeBase.
@@ -31,7 +31,7 @@ class BoxRotated
 		var polar = new Polar(0, 1, 0);
 		var box = this.box;
 		var center = box.center;
-		var sizeHalf = box.sizeHalf;
+		var sizeHalf = box.sizeHalf();
 		var displacementToSurface = new Coords(0, 0, 0);
 		var distanceMinSoFar = Number.POSITIVE_INFINITY;
 
