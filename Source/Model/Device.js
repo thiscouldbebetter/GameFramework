@@ -75,7 +75,7 @@ class Device
 						),
 						new VisualOffset
 						(
-							new VisualText(new DataBinding("Projectile", null, null), projectileColor, null),
+							VisualText.fromTextAndColor("Projectile", projectileColor),
 							new Coords(0, 0 - projectileDimension * 3, 0)
 						)
 					)

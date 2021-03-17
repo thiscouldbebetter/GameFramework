@@ -194,7 +194,7 @@ class Display2D
 		for (var i = 0; i < gradientStops.length; i++)
 		{
 			var stop = gradientStops[i];
-			var stopColor = stop.value ;
+			var stopColor = stop.color ;
 			systemGradient.addColorStop(stop.position, stopColor.systemColor());
 		}
 
