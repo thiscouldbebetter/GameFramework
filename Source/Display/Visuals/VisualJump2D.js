@@ -13,7 +13,7 @@ class VisualJump2D
 		this.visualJumper = visualJumper;
 		this.visualShadow = visualShadow;
 
-		this._posSaved = new Coords(0, 0, 0);
+		this._posSaved = Coords.create();
 	}
 
 	// Transformable.

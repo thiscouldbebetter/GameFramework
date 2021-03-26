@@ -29,8 +29,8 @@ class Transform_MeshPoseWithSkeleton
 		);
 
 		// Helper variables.
-		this._orientation = new Orientation(new Coords(0, 0, 0), new Coords(0, 0, 0));
-		this._vertex = new Coords(0, 0, 0);
+		this._orientation = new Orientation(Coords.create(), Coords.create());
+		this._vertex = Coords.create();
 	}
 
 	overwriteWith(other)

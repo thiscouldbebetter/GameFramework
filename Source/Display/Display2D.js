@@ -36,8 +36,8 @@ class Display2D
 
 		// Helper variables.
 
-		this._drawPos = new Coords(0, 0, 0);
-		this._sizeHalf = new Coords(0, 0, 0);
+		this._drawPos = Coords.create();
+		this._sizeHalf = Coords.create();
 		this._zeroes = Coords.Instances().Zeroes;
 	}
 
@@ -87,7 +87,7 @@ class Display2D
 			);
 			drawPos.overwriteWith(center).add
 			(
-				new Polar(angleStopInTurns, radiusOuter, 0).toCoords( new Coords(0, 0, 0) )
+				new Polar(angleStopInTurns, radiusOuter, 0).toCoords( Coords.create() )
 			);
 			this.graphics.lineTo(drawPos.x, drawPos.y);
 			this.graphics.arc
@@ -113,7 +113,7 @@ class Display2D
 			);
 			drawPos.overwriteWith(center).add
 			(
-				new Polar(angleStopInTurns, radiusOuter, 0).toCoords( new Coords(0, 0, 0) )
+				new Polar(angleStopInTurns, radiusOuter, 0).toCoords( Coords.create() )
 			);
 			this.graphics.lineTo(drawPos.x, drawPos.y);
 			this.graphics.arc
@@ -218,7 +218,7 @@ class Display2D
 		this.graphics.moveTo(drawPos.x, drawPos.y - radius);
 		this.graphics.lineTo(drawPos.x, drawPos.y + radius);
 		this.graphics.stroke();
-	};
+	}
 
 	drawEllipse
 	(
@@ -358,7 +358,7 @@ class Display2D
 		this.graphics.stroke();
 
 		this.graphics.lineWidth = lineWidthSaved;
-	};
+	}
 
 	drawPixel(pos, color)
 	{
@@ -544,7 +544,7 @@ class Display2D
 			this.graphics.moveTo(center.x, center.y);
 			drawPos.overwriteWith(center).add
 			(
-				new Polar(angleStopInTurns, radius, 0).toCoords( new Coords(0, 0, 0) )
+				new Polar(angleStopInTurns, radius, 0).toCoords( Coords.create() )
 			);
 			this.graphics.lineTo(drawPos.x, drawPos.y);
 			this.graphics.arc
@@ -565,7 +565,7 @@ class Display2D
 			this.graphics.moveTo(center.x, center.y);
 			drawPos.overwriteWith(center).add
 			(
-				new Polar(angleStopInTurns, radius, 0).toCoords( new Coords(0, 0, 0) )
+				new Polar(angleStopInTurns, radius, 0).toCoords( Coords.create() )
 			);
 			this.graphics.lineTo(drawPos.x, drawPos.y);
 			this.graphics.arc

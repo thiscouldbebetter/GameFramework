@@ -32,12 +32,12 @@ class VisualRepeating
 			this.cellSize
 		);
 
-		this._cellPos = new Coords(0, 0, 0);
-		this._drawOffset = new Coords(0, 0, 0);
-		this._drawPosWrapped = new Coords(0, 0, 0);
-		this._drawablePosToRestore = new Coords(0, 0, 0);
+		this._cellPos = Coords.create();
+		this._drawOffset = Coords.create();
+		this._drawPosWrapped = Coords.create();
+		this._drawablePosToRestore = Coords.create();
 		this._endPosInCells = this.viewSizeInCells.clone();
-		this._startPosInCells = new Coords(0, 0, 0);
+		this._startPosInCells = Coords.create();
 
 		if (expandViewStartAndEndByCell)
 		{

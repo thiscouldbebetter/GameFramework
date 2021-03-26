@@ -10,7 +10,7 @@ class Transform_Orient
 	{
 		this.orientation = orientation;
 
-		this._components = [ new Coords(0, 0, 0), new Coords(0, 0, 0), new Coords(0, 0, 0) ];
+		this._components = [ Coords.create(), Coords.create(), Coords.create() ];
 	}
 
 	overwriteWith(other)

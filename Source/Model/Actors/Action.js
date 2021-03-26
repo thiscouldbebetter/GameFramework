@@ -15,6 +15,11 @@ class Action
 		this.perform = perform;
 	}
 
+	performForUniverse(universe)
+	{
+		this.perform(universe, null, null, null);
+	}
+
 	static _instances;
 	static Instances()
 	{
@@ -23,7 +28,7 @@ class Action
 			Action._instances = new Action_Instances();
 		}
 		return Action._instances;
-	};
+	}
 }
 
 class Action_Instances
@@ -51,8 +56,8 @@ class Action_Instances
 				(
 					universe, universe.display.sizeInPixels, actor, universe.venueCurrent, true
 				);
-				var venueNext= new VenueControls(control, false);
-				venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
+				var venueNext= control.toVenue();
+				venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
 				universe.venueNext = venueNext;
 			}
 		);

@@ -68,10 +68,10 @@ class ItemContainer extends EntityProperty
 
 		var world = universe.world;
 
-		var back = function()
+		var back = () =>
 		{
-			var venueNext = venuePrev;
-			venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null) ;
+			var venueNext= venuePrev;
+			venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
 			universe.venueNext = venueNext;
 		};
 
@@ -88,7 +88,7 @@ class ItemContainer extends EntityProperty
 		var returnValue = new ControlContainer
 		(
 			"containerTransfer",
-			new Coords(0, 0, 0), // pos
+			Coords.create(), // pos
 			size.clone(),
 			// children
 			[

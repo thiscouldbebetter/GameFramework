@@ -20,8 +20,8 @@ class VisualLine
 
 		// Helper variables.
 
-		this._drawPosFrom = new Coords(0, 0, 0);
-		this._drawPosTo = new Coords(0, 0, 0);
+		this._drawPosFrom = Coords.create();
+		this._drawPosTo = Coords.create();
 		this._transformLocate = new Transform_Locate(null);
 	}
 

@@ -64,7 +64,7 @@ class VisualDirectional
 		}
 
 		visualForHeading.draw(universe, world, place, entity, display);
-	};
+	}
 
 	// Clonable.
 

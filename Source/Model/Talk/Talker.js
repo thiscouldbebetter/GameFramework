@@ -30,7 +30,7 @@ class Talker extends EntityProperty
 		var conversationAsControl =
 			conversation.toControl(conversationSize, universe);
 
-		var venueNext = new VenueControls(conversationAsControl, false);
+		var venueNext = conversationAsControl.toVenue();
 
 		universe.venueNext = venueNext;
 	}

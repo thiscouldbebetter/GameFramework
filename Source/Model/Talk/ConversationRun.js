@@ -9,7 +9,7 @@ class ConversationRun
  
 	scopeCurrent;
 	talkNodesForTranscript;
-	variableLookup;
+	variablesByName;
 
 	p;
 	t;
@@ -40,14 +40,14 @@ class ConversationRun
 
 		this.talkNodesForTranscript = [];
 
-		this.variableLookup = new Map();
+		this.variablesByName = new Map();
 
 		this.next(null);
 
 		// Abbreviate for scripts.
 		this.p = this.entityPlayer;
 		this.t = this.entityTalker;
-		this.vars = this.variableLookup;
+		this.vars = this.variablesByName;
 	}
 
 	// instance methods
@@ -68,6 +68,16 @@ class ConversationRun
 	update(universe)
 	{
 		this.scopeCurrent.update(universe, this);
+	}
+
+	variableByName(variableName)
+	{
+		return this.variablesByName.get(variableName);
+	}
+
+	variableSet(variableName, variableValue)
+	{
+		this.variablesByName.set(variableName, variableValue);
 	}
 
 	// controls
@@ -102,7 +112,7 @@ class ConversationRun
 		var back = () =>
 		{
 			var venueNext = venueToReturnTo;
-			venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
+			venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
 			universe.venueNext = venueNext;
 		};
 
@@ -113,15 +123,15 @@ class ConversationRun
 			(
 				size, universe, venueCurrent
 			);
-			var venueNext= new VenueControls(transcriptAsControl, false);
-			venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
+			var venueNext= transcriptAsControl.toVenue();
+			venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
 			universe.venueNext = venueNext;
 		};
 
 		var returnValue = new ControlContainer
 		(
 			"containerConversation",
-			new Coords(0, 0, 0), // pos
+			Coords.create(), // pos
 			size,
 			// children
 			[
@@ -304,7 +314,7 @@ class ConversationRun
 		var returnValue = new ControlContainer
 		(
 			"containerConversation",
-			new Coords(0, 0, 0), // pos
+			Coords.create(), // pos
 			size,
 			// children
 			[
@@ -320,7 +330,10 @@ class ConversationRun
 					(universe) => // click
 					{
 						var venueNext = venueToReturnTo;
-						venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
+						venueNext = VenueFader.fromVenuesToAndFrom
+						(
+							venueNext, universe.venueCurrent
+						);
 						universe.venueNext = venueNext;
 					},
 					null, null

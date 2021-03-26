@@ -17,7 +17,7 @@ class Face
 	{
 		if (this._box == null)
 		{
-			this._box = new Box(new Coords(0, 0, 0), new Coords(0, 0, 0));
+			this._box = new Box(Coords.create(), Coords.create());
 		}
 		this._box.ofPoints(this.vertices);
 		return this._box;
@@ -29,7 +29,7 @@ class Face
 
 		var faceNormal = face.plane().normal;
 
-		var displacementFromVertex0ToCollision = new Coords(0, 0, 0);
+		var displacementFromVertex0ToCollision = Coords.create();
 
 		var isPosWithinAllEdgesOfFaceSoFar = true;
 
@@ -98,7 +98,7 @@ class Face
 	{
 		if (this._plane == null)
 		{
-			this._plane = new Plane(new Coords(0, 0, 0), 0);
+			this._plane = new Plane(Coords.create(), 0);
 		}
 
 		this._plane.fromPoints

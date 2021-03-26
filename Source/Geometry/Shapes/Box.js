@@ -13,14 +13,19 @@ class Box
 
 	constructor(center, size)
 	{
-		this.center = center || new Coords(0, 0, 0);
-		this.size = size || new Coords(0, 0, 0);
+		this.center = center || Coords.create();
+		this.size = size || Coords.create();
 
-		this._min = new Coords(0, 0, 0);
-		this._max = new Coords(0, 0, 0);
-		this._sizeHalf = new Coords(0, 0, 0);
+		this._sizeHalf = Coords.create();
+		this._min = Coords.create();
+		this._max = Coords.create();
 
 		this._range = new RangeExtent(0, 0);
+	}
+
+	static create()
+	{
+		return new Box(null, null);
 	}
 
 	static fromMinAndMax(min, max)
@@ -117,8 +122,8 @@ class Box
 
 		if (doAllDimensionsOverlapSoFar)
 		{
-			var center = new Coords(0, 0, 0);
-			var size = new Coords(0, 0, 0);
+			var center = Coords.create();
+			var size = Coords.create();
 			for (var d = 0; d < rangesForDimensions.length; d++)
 			{
 				var rangeForDimension = rangesForDimensions[d];
@@ -130,6 +135,12 @@ class Box
 		}
 
 		return returnValue;
+	}
+
+	locate(loc)
+	{
+		this.center.overwriteWith(loc.pos);
+		return this;
 	}
 
 	max()
@@ -265,7 +276,7 @@ class Box
 	trimCoords(coordsToTrim)
 	{
 		return coordsToTrim.trimToRangeMinMax(this.min(), this.max());
-	};
+	}
 
 	vertices()
 	{
@@ -289,7 +300,7 @@ class Box
 		this.center.overwriteWith(other.center);
 		this.size.overwriteWith(other.size);
 		return this;
-	};
+	}
 
 	// string
 
@@ -338,11 +349,6 @@ class Box
 		}
 
 		return dimensionIndex;
-	}
-
-	locate(loc)
-	{
-		return ShapeHelper.Instance().applyLocationToShapeDefault(loc, this);
 	}
 
 	normalAtPos(posToCheck, normalOut)

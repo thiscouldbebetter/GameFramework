@@ -41,6 +41,13 @@ class ControlBase
 	scalePosAndSize(x){}
 	style(universe)
 	{
-		return (this.styleName == null ? universe.controlStyle : ControlStyle.byName(this.styleName));
+		var returnValue =
+		(
+			this.styleName == null
+			? universe.controlBuilder.styleDefault()
+			: universe.controlBuilder.styleByName(this.styleName)
+		);
+		return returnValue;
 	}
+	toVenue(){ return VenueControls.fromControl(this); }
 }

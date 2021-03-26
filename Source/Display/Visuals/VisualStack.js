@@ -12,7 +12,7 @@ class VisualStack
 		this.childSpacing = childSpacing;
 		this.children = children;
 
-		this._posSaved = new Coords(0, 0, 0);
+		this._posSaved = Coords.create();
 	}
 
 	draw(universe, world, place, entity, display)
@@ -32,7 +32,7 @@ class VisualStack
 		}
 
 		drawPos.overwriteWith(this._posSaved);
-	};
+	}
 
 	// Clonable.
 

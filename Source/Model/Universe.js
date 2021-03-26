@@ -37,7 +37,7 @@ class Universe
 		timerHelper,
 		display,
 		mediaLibrary,
-		controlStyle,
+		controlBuilder,
 		worldCreate
 	)
 	{
@@ -46,12 +46,11 @@ class Universe
 		this.timerHelper = timerHelper;
 		this.display = display;
 		this.mediaLibrary = mediaLibrary;
-		this.controlStyle = controlStyle;
+		this.controlBuilder = controlBuilder;
 		this._worldCreate =
 			worldCreate || ( (u) => World.create(u) );
 
 		this.collisionHelper = new CollisionHelper();
-		this.controlBuilder = new ControlBuilder([ControlStyle.Instances().Default]);
 		this.displayRecorder = new DisplayRecorder 
 		(
 			1, // ticksPerFrame
@@ -76,8 +75,8 @@ class Universe
 		timerHelper,
 		display,
 		mediaLibrary,
-		controlStyle,
-		worldCreate,
+		controlBuilder,
+		worldCreate
 	)
 	{
 		var returnValue = new Universe
@@ -87,7 +86,7 @@ class Universe
 			timerHelper,
 			display,
 			mediaLibrary,
-			controlStyle,
+			controlBuilder,
 			worldCreate
 		);
 
@@ -124,15 +123,14 @@ class Universe
 		this.soundHelper = new SoundHelper(this.mediaLibrary.sounds);
 		this.videoHelper = new VideoHelper(this.mediaLibrary.videos);
 
-		var venueControlsOpening= new VenueControls
+		var venueControlsOpening= this.controlBuilder.opening
 		(
-			this.controlBuilder.opening(this, this.display.sizeInPixels),
-			false
-		);
+			this, this.display.sizeInPixels,
+		).toVenue();
 
-		venueControlsOpening = new VenueFader
+		venueControlsOpening = VenueFader.fromVenuesToAndFrom
 		(
-			venueControlsOpening, venueControlsOpening, null, null
+			venueControlsOpening, venueControlsOpening
 		);
 
 		this.venueNext = venueControlsOpening;

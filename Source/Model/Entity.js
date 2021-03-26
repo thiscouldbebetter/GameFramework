@@ -46,6 +46,11 @@ class Entity
 		}
 	}
 
+	propertyAdd(propertyToAdd)
+	{
+		this.propertyAddForPlace(propertyToAdd, null);
+	}
+
 	propertyAddForPlace(propertyToAdd, place)
 	{
 		this.properties.push(propertyToAdd);
@@ -73,6 +78,7 @@ class Entity
 			var entitiesWithProperty = place.entitiesByPropertyName(propertyName);
 			ArrayHelper.remove(entitiesWithProperty, this);
 		}
+		return this;
 	}
 
 	// Cloneable.
@@ -107,7 +113,6 @@ class Entity
 	damager(){ return this.propertyByName(Damager.name) ; }
 	device(){ return this.propertyByName(Device.name) ; }
 	drawable(){ return this.propertyByName(Drawable.name) ; }
-	drawableCamera(){ return this.propertyByName(DrawableCamera.name) ; }
 	effectable() { return this.propertyByName(Effectable.name) ; }
 	ephemeral(){ return this.propertyByName(Ephemeral.name) ; }
 	equipmentUser(){ return this.propertyByName(EquipmentUser.name) ; }

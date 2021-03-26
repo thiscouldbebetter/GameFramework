@@ -393,7 +393,7 @@ class Display3D
 		this.matrixOrient = Matrix.buildZeroes();
 		this.matrixPerspective = Matrix.buildZeroes();
 		this.matrixTranslate = Matrix.buildZeroes();
-		this.tempCoords = new Coords(0, 0, 0);
+		this.tempCoords = Coords.create();
 		this.tempMatrix0 = Matrix.buildZeroes();
 		this.tempMatrix1 = Matrix.buildZeroes();
 
@@ -437,7 +437,7 @@ class Display3D
 	)
 	{
 		this._display2DOverlay.drawArc(center, radiusInner, radiusOuter, angleStartInTurns, angleStopInTurns, colorFill, colorBorder);
-	};
+	}
 
 	drawBackground(colorBack, colorBorder)
 	{

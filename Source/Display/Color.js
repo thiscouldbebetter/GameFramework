@@ -53,7 +53,7 @@ class Color
 		}
 
 		return Color._instances;
-	};
+	}
 
 	// methods
 
@@ -65,7 +65,7 @@ class Color
 			this._systemColor = null;
 		}
 		return this.componentsRGBA[3];
-	};
+	}
 
 	multiplyRGBScalar(scalar)
 	{
@@ -74,7 +74,7 @@ class Color
 			this.componentsRGBA[i] *= scalar;
 		}
 		return this;
-	};
+	}
 
 	systemColor()
 	{
@@ -90,7 +90,7 @@ class Color
 		}
 
 		return this._systemColor;
-	};
+	}
 
 	// Clonable.
 

@@ -13,7 +13,7 @@ class VisualOffset
 		this.offset = offset;
 
 		// Helper variables.
-		this._posSaved = new Coords(0, 0, 0);
+		this._posSaved = Coords.create();
 	}
 
 	draw(universe, world, place, entity, display)
@@ -23,7 +23,7 @@ class VisualOffset
 		drawablePos.add(this.offset);
 		this.child.draw(universe, world, place, entity, display);
 		drawablePos.overwriteWith(this._posSaved);
-	};
+	}
 
 	// Clonable.
 

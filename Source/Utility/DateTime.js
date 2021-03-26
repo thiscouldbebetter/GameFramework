@@ -34,12 +34,12 @@ class DateTime
 		);
 
 		return returnValue;
-	};
+	}
 
 	static now()
 	{
 		return DateTime.fromSystemDate(new Date());
-	};
+	}
 
 	// instance methods
 
@@ -56,7 +56,7 @@ class DateTime
 		);
 
 		return returnValue;
-	};
+	}
 
 	toStringMMDD_HHMM_SS()
 	{

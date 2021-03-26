@@ -48,7 +48,7 @@ class ItemBarterer extends EntityProperty
 		var profitMarginForStore = valueOfferedByCustomer / valueOfferedByStore;
 
 		return profitMarginForStore;
-	};
+	}
 
 	patienceAdd(patienceToAdd)
 	{
@@ -99,11 +99,11 @@ class ItemBarterer extends EntityProperty
 
 		var world = universe.world;
 
-		var back = function()
+		var back = () =>
 		{
 			itemBarterer.reset(entityCustomer, entityStore);
-			var venueNext = venuePrev;
-			venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null) ;
+			var venueNext= venuePrev;
+			venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
 			universe.venueNext = venueNext;
 		};
 
@@ -188,7 +188,7 @@ class ItemBarterer extends EntityProperty
 		var returnValue = new ControlContainer
 		(
 			"containerTransfer",
-			new Coords(0, 0, 0), // pos
+			Coords.create(), // pos
 			size.clone(),
 			// children
 			[

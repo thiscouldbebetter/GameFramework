@@ -22,8 +22,12 @@ class ControlContainer extends ControlBase
 
 	constructor
 	(
-		name, pos, size, children,
-		actions, actionToInputsMappings
+		name,
+		pos,
+		size,
+		children,
+		actions,
+		actionToInputsMappings
 	)
 	{
 		super(name, pos, size, null);
@@ -49,12 +53,26 @@ class ControlContainer extends ControlBase
 		this.childrenContainingPosPrev = [];
 
 		// Helper variables.
-		this._childMax = new Coords(0, 0, 0);
-		this._drawPos = new Coords(0, 0, 0);
-		this._drawLoc = new Disposition(this._drawPos, null, null);
-		this._mouseClickPos = new Coords(0, 0, 0);
-		this._mouseMovePos = new Coords(0, 0, 0);
-		this._posToCheck = new Coords(0, 0, 0);
+		this._childMax = Coords.create();
+		this._drawPos = Coords.create();
+		this._drawLoc = Disposition.fromPos(this._drawPos);
+		this._mouseClickPos = Coords.create();
+		this._mouseMovePos = Coords.create();
+		this._posToCheck = Coords.create();
+	}
+
+	static from4
+	(
+		name,
+		pos,
+		size,
+		children
+	)
+	{
+		return new ControlContainer
+		(
+			name, pos, size, children, null, null
+		);
 	}
 
 	// instance methods
@@ -114,13 +132,13 @@ class ControlContainer extends ControlBase
 			var mapping = this._actionToInputsMappingsByInputName.get(inputName);
 			var actionName = mapping.actionName;
 			var action = this.actionsByName.get(actionName);
-			action.perform(universe, null, null, null);
+			action.performForUniverse(universe);
 			wasActionHandled = true;
 		}
 		else if (this.actionsByName.has(actionNameToHandle))
 		{
 			var action = this.actionsByName.get(actionNameToHandle);
-			action.perform(universe, null, null, null);
+			action.performForUniverse(universe);
 			wasActionHandled = true;
 		}
 		else if (childWithFocus != null)
@@ -132,11 +150,22 @@ class ControlContainer extends ControlBase
 		}
 
 		return wasActionHandled;
-	};
+	}
 
 	actionToInputsMappings()
 	{
 		return this._actionToInputsMappings;
+	}
+
+	childAdd(childToAdd)
+	{
+		this.children.push(childToAdd);
+		this.childrenByName.set(childToAdd.name, childToAdd);
+	}
+
+	childByName(childName)
+	{
+		return this.childrenByName.get(childName);
 	}
 
 	childWithFocus()
@@ -365,11 +394,6 @@ class ControlContainer extends ControlBase
 			var child = this.children[i];
 			child.pos.add(displacement);
 		}
-	}
-
-	toVenue()
-	{
-		return new VenueFader(new VenueControls(this, false), null, null, null);
 	}
 
 	// drawable

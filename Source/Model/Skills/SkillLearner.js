@@ -93,7 +93,7 @@ class SkillLearner extends EntityProperty
 			: skillBeingLearned.learningRequired
 		);
 		return returnValue;
-	};
+	}
 
 	skillSelected(skillsAllByName)
 	{
@@ -207,7 +207,7 @@ class SkillLearner extends EntityProperty
 		var returnValue = new ControlContainer
 		(
 			"Skills", // name,
-			new Coords(0, 0, 0), // pos,
+			Coords.create(), // pos,
 			size.clone(),
 			// children
 			[

@@ -34,7 +34,7 @@ class VisualEllipse
 			Color.systemColorGet(this.colorFill),
 			Color.systemColorGet(this.colorBorder)
 		);
-	};
+	}
 
 	// Clonable.
 

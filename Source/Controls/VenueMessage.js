@@ -23,9 +23,22 @@ class VenueMessage
 		this.showMessageOnly = showMessageOnly || false;
 	}
 
+	static fromMessage(message)
+	{
+		return VenueMessage.fromMessageAndAcknowledge(message, null);
+	}
+
+	static fromMessageAndAcknowledge
+	(
+		messageToShow, acknowledge
+	)
+	{
+		return new VenueMessage(messageToShow, acknowledge, null, null, null);
+	}
+
 	static fromText(message)
 	{
-		return new VenueMessage(new DataBinding(message, null, null), null, null, null, null);
+		return VenueMessage.fromMessage(DataBinding.fromContext(message));
 	}
 
 	// instance methods
@@ -71,7 +84,7 @@ class VenueMessage
 				venuesToLayer.push(this.venuePrev);
 			}
 
-			venuesToLayer.push(new VenueControls(controlMessage, false));
+			venuesToLayer.push(controlMessage.toVenue());
 
 			this._venueInner = new VenueLayered(venuesToLayer, null);
 		}

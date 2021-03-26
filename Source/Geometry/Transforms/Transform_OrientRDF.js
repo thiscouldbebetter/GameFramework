@@ -11,7 +11,7 @@ class Transform_OrientRDF
 		this.orientation = orientation;
 
 		// Helper variables.
-		this._components = [ new Coords(0, 0, 0), new Coords(0, 0, 0), new Coords(0, 0, 0) ];
+		this._components = [ Coords.create(), Coords.create(), Coords.create() ];
 	}
 
 	overwriteWith(other)

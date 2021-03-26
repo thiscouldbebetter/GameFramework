@@ -41,8 +41,8 @@ class PlaceBuilderDemo_Emplacements
 				universe.venueCurrent,
 				true // includeTitleAndDoneButton
 			);
-			var venueNext= new VenueControls(itemCrafterAsControls, false);
-			universe.venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
+			var venueNext= itemCrafterAsControls.toVenue();
+			universe.venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
 			return "";
 		};
 		var anvilItemCrafter = new ItemCrafter
@@ -80,9 +80,9 @@ class PlaceBuilderDemo_Emplacements
 		(
 			anvilName,
 			[
-				new Locatable(new Disposition(new Coords(0, 0, 0), null, null) ),
+				new Locatable(new Disposition(Coords.create(), null, null) ),
 				new Drawable(anvilVisual, null),
-				new DrawableCamera(),
+				// new DrawableCamera(),
 				anvilItemCrafter,
 				new ItemHolder([], null, null),
 				new Usable(anvilUse)
@@ -124,7 +124,7 @@ class PlaceBuilderDemo_Emplacements
 
 		var collider = new Box
 		(
-			new Coords(0, 0, 0),
+			Coords.create(),
 			new Coords(1, .1, 1).multiplyScalar(entityDimension)
 		);
 		var collidable = new Collidable
@@ -157,10 +157,10 @@ class PlaceBuilderDemo_Emplacements
 		(
 			itemDefnName,
 			[
-				new Locatable( new Disposition(new Coords(0, 0, 0), null, null) ),
+				new Locatable( new Disposition(Coords.create(), null, null) ),
 				collidable,
 				new Drawable(itemBoulderVisual, null),
-				new DrawableCamera(),
+				// new DrawableCamera(),
 				killable
 			]
 		);
@@ -227,7 +227,7 @@ class PlaceBuilderDemo_Emplacements
 			);
 		}
 
-		var campfireCollider = new Sphere(new Coords(0, 0, 0), entityDimensionHalf);
+		var campfireCollider = new Sphere(Coords.create(), entityDimensionHalf);
 		var campfireCollide = (u, w, p, entityCampfire, entityOther) =>
 		{
 			var entityOtherEffectable = entityOther.effectable();
@@ -252,13 +252,13 @@ class PlaceBuilderDemo_Emplacements
 				new Animatable(null, null, null),
 				campfireCollidable,
 				new Drawable(campfireVisual, null),
-				new DrawableCamera(),
+				// new DrawableCamera(),
 				new Locatable(null)
 			]
 		);
 
 		return campfireEntityDefn;
-	};
+	}
 
 	entityDefnBuildContainer(entityDimension)
 	{
@@ -299,10 +299,10 @@ class PlaceBuilderDemo_Emplacements
 			[
 				new Collidable(
 					0, // ticksToWaitBetweenCollisions
-					new Box(new Coords(0, 0, 0), entitySize), null, null
+					new Box(Coords.create(), entitySize), null, null
 				),
 				new Drawable(visual, null),
-				new DrawableCamera(),
+				// new DrawableCamera(),
 				new ItemContainer(),
 				new ItemHolder([], null, null),
 				new Locatable(null),
@@ -317,8 +317,8 @@ class PlaceBuilderDemo_Emplacements
 							entityUsing, entityOther,
 							universe.venueCurrent
 						);
-						var venueNext= new VenueControls(itemContainerAsControl, false);
-						venueNext = new VenueFader(venueNext, null, null, null);
+						var venueNext= itemContainerAsControl.toVenue();
+						venueNext = VenueFader.fromVenueTo(venueNext);
 						universe.venueNext = venueNext;
 						return null;
 					}
@@ -327,7 +327,7 @@ class PlaceBuilderDemo_Emplacements
 		);
 
 		return containerEntityDefn;
-	};
+	}
 
 	entityDefnBuildExit(entityDimension)
 	{
@@ -373,7 +373,7 @@ class PlaceBuilderDemo_Emplacements
 		var collidable = new Collidable
 		(
 			0, // ticksToWaitBetweenCollisions
-			new Box(new Coords(0, 0, 0), entitySize),
+			new Box(Coords.create(), entitySize),
 			null, null
 		);
 
@@ -383,9 +383,9 @@ class PlaceBuilderDemo_Emplacements
 			[
 				collidable,
 				new Drawable(visual, null),
-				new DrawableCamera(),
-				new Locatable(new Disposition(new Coords(0, 0, 0), null, null) ),
-				new Portal(null, null, new Coords(0, 0, 0)), // Destination must be set ouside this method.
+				// new DrawableCamera(),
+				new Locatable(new Disposition(Coords.create(), null, null) ),
+				new Portal(null, null, Coords.create()), // Destination must be set ouside this method.
 				new Usable
 				(
 					(u, w, p, eUsing, eUsed) => 
@@ -398,7 +398,7 @@ class PlaceBuilderDemo_Emplacements
 		);
 
 		return exitEntityDefn;
-	};
+	}
 
 	entityDefnBuildHole(entityDimension)
 	{
@@ -442,8 +442,8 @@ class PlaceBuilderDemo_Emplacements
 			(
 				u, u.display.sizeInPixels, eUsing, eUsed, u.venueCurrent
 			);
-			var venueNext= new VenueControls(itemContainerAsControl, false);
-			venueNext = new VenueFader(venueNext, null, null, null);
+			var venueNext= itemContainerAsControl.toVenue();
+			venueNext = VenueFader.fromVenuesToAndFrom(venueNext, null);
 			u.venueNext = venueNext;
 			return null;
 		}
@@ -454,9 +454,9 @@ class PlaceBuilderDemo_Emplacements
 			[
 				new ItemContainer(),
 				new ItemHolder([], null, null),
-				new Locatable( new Disposition(new Coords(0, 0, 0), null, null) ),
+				new Locatable( new Disposition(Coords.create(), null, null) ),
 				new Drawable(itemHoleVisual, null),
-				new DrawableCamera(),
+				// new DrawableCamera(),
 				new Perceptible(false, () => 0, () => 0),
 				new Usable(use)
 			]
@@ -473,7 +473,7 @@ class PlaceBuilderDemo_Emplacements
 		var obstacleRotationInTurns = .0625;
 		var obstacleCollider = new BoxRotated
 		(
-			new Box(new Coords(0, 0, 0), obstacleBarSize), obstacleRotationInTurns
+			new Box(Coords.create(), obstacleBarSize), obstacleRotationInTurns
 		);
 		var obstacleCollidable = new Collidable(0, obstacleCollider, null, null);
 		var obstacleBounds = obstacleCollidable.collider.sphereSwept();
@@ -509,8 +509,8 @@ class PlaceBuilderDemo_Emplacements
 				obstacleCollidable,
 				new Damager(new Damage(10, null, null)),
 				new Drawable(visual, null),
-				new DrawableCamera(),
-				new Locatable(new Disposition(new Coords(0, 0, 0), null, null) )
+				// new DrawableCamera(),
+				new Locatable(new Disposition(Coords.create(), null, null) )
 			]
 		);
 
@@ -591,7 +591,7 @@ class PlaceBuilderDemo_Emplacements
 			new MapLocated
 			(
 				obstacleMappedMap,
-				new Disposition(new Coords(0, 0, 0), null, null)
+				new Disposition(Coords.create(), null, null)
 			),
 			null, null
 		);
@@ -606,8 +606,8 @@ class PlaceBuilderDemo_Emplacements
 				obstacleCollidable,
 				new Damager(new Damage(10, null, null)),
 				new Drawable(obstacleMappedVisual, null),
-				new DrawableCamera(),
-				new Locatable(new Disposition(new Coords(0, 0, 0), null, null) )
+				// new DrawableCamera(),
+				new Locatable(new Disposition(Coords.create(), null, null) )
 			]
 		);
 
@@ -620,17 +620,17 @@ class PlaceBuilderDemo_Emplacements
 		var obstacleRadiusOuter = entityDimension * 3.5;
 		var obstacleRadiusInner = obstacleRadiusOuter - entityDimension;
 		var obstacleAngleSpannedInTurns = .85;
-		var obstacleLoc = new Disposition(new Coords(0, 0, 0), null, null);
+		var obstacleLoc = new Disposition(Coords.create(), null, null);
 		var obstacleCollider = new Arc
 		(
 			new Shell
 			(
-				new Sphere(new Coords(0, 0, 0), obstacleRadiusOuter), // sphereOuter
+				new Sphere(Coords.create(), obstacleRadiusOuter), // sphereOuter
 				obstacleRadiusInner
 			),
 			new Wedge
 			(
-				new Coords(0, 0, 0), // vertex
+				Coords.create(), // vertex
 				new Coords(1, 0, 0), // directionMin
 				//obstacleLoc.orientation.forward, // directionMin
 				obstacleAngleSpannedInTurns
@@ -661,7 +661,7 @@ class PlaceBuilderDemo_Emplacements
 				obstacleCollidable,
 				//new Damager(new Damage(10, null, null)),
 				new Drawable(obstacleRingVisual, null),
-				new DrawableCamera()
+				// new DrawableCamera()
 			]
 		);
 
@@ -693,7 +693,7 @@ class PlaceBuilderDemo_Emplacements
 			var tirable = entityUsing.tirable();
 			tirable.fallAsleep(universe, w, p, entityUsing);
 			var venueNext = universe.venueCurrent;
-			venueNext = new VenueFader(venueNext, venueNext, null, null);
+			venueNext = VenueFader.fromVenuesToAndFrom(venueNext, venueNext);
 			universe.venueNext = venueNext;
 			return ""; // todo
 		};
@@ -702,9 +702,9 @@ class PlaceBuilderDemo_Emplacements
 		(
 			pillowName,
 			[
-				new Locatable(new Disposition(new Coords(0, 0, 0), null, null) ),
+				new Locatable(new Disposition(Coords.create(), null, null) ),
 				new Drawable(pillowVisual, null),
-				new DrawableCamera(),
+				// new DrawableCamera(),
 				new ItemHolder([], null, null),
 				new Usable(pillowUse)
 			]
@@ -765,11 +765,11 @@ class PlaceBuilderDemo_Emplacements
 		(
 			"Portal",
 			[
-				new Collidable(0, new Box(new Coords(0, 0, 0), entitySize), null, null),
+				new Collidable(0, new Box(Coords.create(), entitySize), null, null),
 				new Drawable(visual, null),
-				new DrawableCamera(),
-				new Locatable(new Disposition(new Coords(0, 0, 0), null, null) ),
-				new Portal(null, "Exit", new Coords(0, 0, 0)),
+				// new DrawableCamera(),
+				new Locatable(new Disposition(Coords.create(), null, null) ),
+				new Portal(null, "Exit", Coords.create()),
 				new Usable(portalUse)
 			]
 		);
@@ -816,7 +816,7 @@ class PlaceBuilderDemo_Emplacements
 			);
 		}
 
-		var collider = new Sphere(new Coords(0, 0, 0), entityDimension * .25);
+		var collider = new Sphere(Coords.create(), entityDimension * .25);
 		var collidable = new Collidable
 		(
 			0, // ticksToWaitBetweenCollisions
@@ -833,10 +833,10 @@ class PlaceBuilderDemo_Emplacements
 		(
 			entityName,
 			[
-				new Locatable( new Disposition(new Coords(0, 0, 0), null, null) ),
+				new Locatable( new Disposition(Coords.create(), null, null) ),
 				collidable,
 				new Drawable(visual, null),
-				new DrawableCamera()
+				// new DrawableCamera()
 			]
 		);
 
@@ -883,7 +883,7 @@ class PlaceBuilderDemo_Emplacements
 		var visual = new VisualOffset(visualTree, new Coords(0, 0 - entityDimension, 0));
 		var collider = new Box
 		(
-			new Coords(0, 0, 0),
+			Coords.create(),
 			new Coords(1, .1, 1).multiplyScalar(entityDimension * .25)
 		);
 		var collidable = new Collidable
@@ -902,10 +902,10 @@ class PlaceBuilderDemo_Emplacements
 		(
 			entityName,
 			[
-				new Locatable( new Disposition(new Coords(0, 0, 0), null, null) ),
+				new Locatable( new Disposition(Coords.create(), null, null) ),
 				collidable,
 				new Drawable(visual, null),
-				new DrawableCamera()
+				// new DrawableCamera()
 			]
 		);
 

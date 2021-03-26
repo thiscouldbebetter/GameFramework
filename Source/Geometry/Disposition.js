@@ -14,7 +14,7 @@ class Disposition
 
 	constructor(pos, orientation, placeName)
 	{
-		this.pos = pos || new Coords(0, 0, 0);
+		this.pos = pos || Coords.create();
 
 		if (orientation == null)
 		{
@@ -24,13 +24,23 @@ class Disposition
 
 		this.placeName = placeName;
 
-		this.vel = new Coords(0, 0, 0);
-		this.accel = new Coords(0, 0, 0);
-		this.force = new Coords(0, 0, 0);
+		this.vel = Coords.create();
+		this.accel = Coords.create();
+		this.force = Coords.create();
 
 		this.spin = new Rotation(this.orientation.down, new Reference(0));
 
 		this.timeOffsetInTicks = 0;
+	}
+
+	static create()
+	{
+		return new Disposition(null, null, null);
+	}
+
+	static fromPos(pos)
+	{
+		return new Disposition(pos, null, null);
 	}
 
 	place(world)

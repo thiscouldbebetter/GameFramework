@@ -24,7 +24,7 @@ class StorageHelper
 			this.propertyNamePrefix + propertyName;
 
 		localStorage.removeItem(propertyNamePrefixed);
-	};
+	}
 
 	deleteAll()
 	{

@@ -19,8 +19,8 @@ class VisualPolars
 		// temps
 
 		this._polar = new Polar(0, 0, 0);
-		this._fromPos = new Coords(0, 0, 0);
-		this._toPos = new Coords(0, 0, 0);
+		this._fromPos = Coords.create();
+		this._toPos = Coords.create();
 	}
 
 	draw(universe, world, place, entity, display)
@@ -47,7 +47,7 @@ class VisualPolars
 
 			fromPos.overwriteWith(toPos);
 		}
-	};
+	}
 
 	// Clonable.
 

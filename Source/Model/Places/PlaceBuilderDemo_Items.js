@@ -175,7 +175,7 @@ class PlaceBuilderDemo_Items
 
 		var pathTail = new Path
 		([
-			new Coords(0, 0, 0),
+			Coords.create(),
 			new Coords(-.5, .25, 0),
 			new Coords(-.75, .25, 0),
 			new Coords(-.5, 0, 0),
@@ -312,10 +312,10 @@ class PlaceBuilderDemo_Items
 			(universe, world, place, entityUser, entityItem) => // use
 			{
 				var venuePrev = universe.venueCurrent;
-				var back = function()
+				var back = () =>
 				{
-					var venueNext = venuePrev;
-					venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
+					var venueNext= venuePrev;
+					venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
 					universe.venueNext = venueNext;
 				};
 
@@ -349,7 +349,7 @@ class PlaceBuilderDemo_Items
 				var container = new ControlContainer
 				(
 					"containerBook",
-					new Coords(0, 0, 0),
+					Coords.create(),
 					size.clone(),
 					[ textarea, button ], // children
 					[
@@ -359,8 +359,8 @@ class PlaceBuilderDemo_Items
 					null
 				);
 
-				var venueNext= new VenueControls(container, false);
-				venueNext = new VenueFader(venueNext, null, null, null);
+				var venueNext= container.toVenue();
+				venueNext = VenueFader.fromVenueTo(venueNext);
 				universe.venueNext = venueNext;
 
 				return "";
@@ -1185,7 +1185,7 @@ class PlaceBuilderDemo_Items
 					new Coords(this.entityDimensionHalf / 2, this.entityDimensionHalf, 0),
 					colorStem, null, null
 				),
-				new Coords(0, 0, 0)
+				Coords.create()
 			)
 		]);
 
@@ -1608,7 +1608,7 @@ class PlaceBuilderDemo_Items
 			new VisualOffset
 			(
 				itemTorchVisualBody,
-				new Coords(0, 0, 0)
+				Coords.create()
 			),
 
 			new VisualOffset

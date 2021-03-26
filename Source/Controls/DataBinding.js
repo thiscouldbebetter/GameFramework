@@ -18,6 +18,11 @@ class DataBinding
 		return new DataBinding(context, null, null);
 	}
 
+	static fromContextAndGet(context, get)
+	{
+		return new DataBinding(context, get, null);
+	}
+
 	static fromGet(get)
 	{
 		return new DataBinding(null, get, null);
@@ -27,12 +32,12 @@ class DataBinding
 	{
 		this.context = value;
 		return this;
-	};
+	}
 
 	get()
 	{
 		return (this._get == null ? this.context : this._get(this.context) );
-	};
+	}
 
 	set(value)
 	{
@@ -44,5 +49,5 @@ class DataBinding
 		{
 			this._set(this.context, value);
 		}
-	};
+	}
 }

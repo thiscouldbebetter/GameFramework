@@ -17,7 +17,7 @@ class VisualImageScaledPartial
 		this.sizeToDraw = sizeToDraw;
 
 		this.sizeToDrawHalf = this.sizeToDraw.clone().half();
-		this._posSaved = new Coords(0, 0, 0);
+		this._posSaved = Coords.create();
 	}
 
 	draw(universe, world, place, entity, display)

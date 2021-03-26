@@ -28,7 +28,7 @@ class Portal extends EntityProperty
 		var messageBoxSize = universe.display.sizeDefault();
 		var venueMessage = new VenueMessage
 		(
-			new DataBinding("Portal to: " + portal.destinationPlaceName, null, null),
+			DataBinding.fromContext("Portal to: " + portal.destinationPlaceName),
 			(universe) => // acknowledge
 			{
 				portal.transport
@@ -36,7 +36,7 @@ class Portal extends EntityProperty
 					universe, universe.world, universe.world.placeCurrent,
 					entityToTransport, entityPortal
 				);
-				universe.venueNext = new VenueFader(venueCurrent, null, null, null);
+				universe.venueNext = VenueFader.fromVenueTo(venueCurrent);
 			},
 			venueCurrent, // venuePrev
 			messageBoxSize,

@@ -31,7 +31,7 @@ class ControlScrollbar extends ControlBase
 		this.buttonScrollUp = new ControlButton
 		(
 			null, // name
-			new Coords(0, 0, 0), // pos
+			Coords.create(), // pos
 			this.handleSize.clone(), // size
 			"-", // text
 			this.fontHeightInPixels,
@@ -55,7 +55,7 @@ class ControlScrollbar extends ControlBase
 		);
 
 		// Helper variables.
-		this._drawPos = new Coords(0, 0, 0);
+		this._drawPos = Coords.create();
 	}
 
 	actionHandle(actionNameToHandle, universe)
@@ -86,7 +86,7 @@ class ControlScrollbar extends ControlBase
 		this.fontHeightInPixels *= scaleFactor.y;
 		this.buttonScrollUp.scalePosAndSize(scaleFactor);
 		this.buttonScrollDown.scalePosAndSize(scaleFactor);
-	};
+	}
 
 	scrollDown()
 	{

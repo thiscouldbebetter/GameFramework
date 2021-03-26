@@ -20,6 +20,11 @@ class MeshTextured
 		this.vertexGroups = vertexGroups;
 	}
 
+	static fromMeshAndMaterials(geometry, materials)
+	{
+		return new MeshTextured(geometry, materials, null, null);
+	}
+
 	faces()
 	{
 		if (this._faces == null)
@@ -53,7 +58,7 @@ class MeshTextured
 			(
 				materialName,
 				[
-					new Coords(0, 0, 0),
+					Coords.create(),
 					new Coords(1, 0, 0),
 					new Coords(1, 1, 0),
 					new Coords(1, 0, 0)

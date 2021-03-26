@@ -22,7 +22,7 @@ class VisualArc
 		this.colorBorder = colorBorder;
 
 		// helper variables
-		this._drawPos = new Coords(0, 0, 0);
+		this._drawPos = Coords.create();
 		this._polar = new Polar(0, 0, 0);
 	}
 
@@ -48,7 +48,7 @@ class VisualArc
 			Color.systemColorGet(this.colorFill),
 			Color.systemColorGet(this.colorBorder)
 		);
-	};
+	}
 
 	// Clonable.
 

@@ -23,7 +23,7 @@ class Enemy extends EntityProperty
 				x => x.name.startsWith(entityToTargetPrefix)
 			);
 
-			var displacement = new Coords(0, 0, 0);
+			var displacement = Coords.create();
 			var sortClosest = (a, b) =>
 				displacement.overwriteWith
 				(
@@ -67,7 +67,7 @@ class Enemy extends EntityProperty
 					if (targetPosExisting == null)
 					{
 						targetPosToApproach =
-							new Coords(0, 0, 0).randomize(universe.randomizer).multiply(place.size);
+							Coords.create().randomize(universe.randomizer).multiply(place.size);
 					}
 					else
 					{

@@ -16,7 +16,7 @@ class VisualAnchor
 		this.orientationToAnchorAt = orientationToAnchorAt;
 
 		// Helper variables.
-		this._posSaved = new Coords(0, 0, 0);
+		this._posSaved = Coords.create();
 		this._orientationSaved = new Orientation(null, null);
 	}
 
@@ -42,7 +42,7 @@ class VisualAnchor
 
 		drawablePos.overwriteWith(this._posSaved);
 		drawableOrientation.overwriteWith(this._orientationSaved);
-	};
+	}
 
 	// Clonable.
 

@@ -104,7 +104,7 @@ class TarFileEntryHeader
 		);
 
 		return returnValue;
-	};
+	}
 
 	static directoryNew(directoryName)
 	{
@@ -126,7 +126,7 @@ class TarFileEntryHeader
 		header.checksumCalculate();
 
 		return header;
-	};
+	}
 
 	static fromBytes(bytes)
 	{
@@ -255,7 +255,7 @@ class TarFileEntryHeader
 		); // reserved
 
 		return headerAsBytes;
-	};
+	}
 
 	// strings
 
@@ -272,6 +272,6 @@ class TarFileEntryHeader
 			+ newline;
 
 		return returnValue;
-	};
+	}
 }
 

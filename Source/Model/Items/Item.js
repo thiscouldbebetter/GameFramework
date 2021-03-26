@@ -14,7 +14,7 @@ class Item extends EntityProperty
 
 	defn(world)
 	{
-		return world.defn.itemDefnsByName().get(this.defnName);
+		return world.defn.itemDefnByName(this.defnName);
 	}
 
 	isUsable(world)

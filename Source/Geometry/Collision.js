@@ -13,19 +13,19 @@ class Collision
 
 	constructor(pos, distanceToCollision, colliders)
 	{
-		this.pos = pos || new Coords(0, 0, 0);
+		this.pos = pos || Coords.create();
 		this.distanceToCollision = distanceToCollision;
 		this.collidables = [];
 		this.colliders = colliders || [];
 		this.collidersByName = new Map();
-		this.normals = [ new Coords(0, 0, 0), new Coords(0, 0, 0) ];
+		this.normals = [ Coords.create(), Coords.create() ];
 
 		this.isActive = false;
 	}
 
 	static create()
 	{
-		return new Collision(new Coords(0, 0, 0), null, []);
+		return new Collision(null, null, null);
 	}
 
 	clear()

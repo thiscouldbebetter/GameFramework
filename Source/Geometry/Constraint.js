@@ -75,7 +75,7 @@ class Constraint_ContainInHemispace
 	{
 		this.hemispaceToContainWithin = hemispaceToContainWithin;
 
-		this._coordsTemp = new Coords(0, 0, 0);
+		this._coordsTemp = Coords.create();
 	}
 
 	constrain(universe, world, place, entity)

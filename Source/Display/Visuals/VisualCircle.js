@@ -25,7 +25,7 @@ class VisualCircle
 			Color.systemColorGet(this.colorBorder),
 			this.borderThickness
 		);
-	};
+	}
 
 	// Clonable.
 

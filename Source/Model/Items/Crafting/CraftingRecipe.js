@@ -46,7 +46,7 @@ class CraftingRecipe
 		(
 			x => x.defnName + " (" + itemHolder.itemQuantityByDefnName(x.defnName) + "/" + x.quantity + ")"
 		);
-	};
+	}
 
 	nameAndSecondsToCompleteAsString(universe)
 	{

@@ -7,12 +7,12 @@ class Locatable extends EntityProperty
 	constructor(loc)
 	{
 		super();
-		this.loc = loc || new Disposition(null, null, null);
+		this.loc = loc || Disposition.create();
 	}
 
 	static fromPos(pos)
 	{
-		return new Locatable(new Disposition(pos, null, null));
+		return new Locatable(Disposition.fromPos(pos));
 	}
 
 	approachOtherWithAccelerationAndSpeedMax
@@ -83,8 +83,7 @@ class Locatable extends EntityProperty
 
 	entitySpawnWithDefnName(universe, world, place, entitySpawning, entityToSpawnDefnName)
 	{
-		var entityDefns = world.defn.entityDefnsByName();
-		var entityDefnToSpawn = entityDefns.get(entityToSpawnDefnName);
+		var entityDefnToSpawn = world.defn.entityDefnByName(entityToSpawnDefnName);
 		var entityToSpawn = entityDefnToSpawn.clone();
 		var loc = entityToSpawn.locatable().loc;
 		loc.overwriteWith(entitySpawning.locatable().loc);

@@ -9,7 +9,13 @@ class VenueFader
 	timeFadeStarted;
 	venueIndexCurrent;
 
-	constructor(venueToFadeTo, venueToFadeFrom, backgroundColor, millisecondsPerFade)
+	constructor
+	(
+		venueToFadeTo,
+		venueToFadeFrom,
+		backgroundColor,
+		millisecondsPerFade
+	)
 	{
 		this.venuesToFadeFromAndTo =
 		[
@@ -30,6 +36,16 @@ class VenueFader
 
 		this.backgroundColor =
 			(backgroundColor == null ? Color.Instances().Black : backgroundColor);
+	}
+
+	static fromVenueTo(venueToFadeTo)
+	{
+		return new VenueFader(venueToFadeTo, null, null, null);
+	}
+
+	static fromVenuesToAndFrom(venueToFadeTo, venueToFadeFrom)
+	{
+		return new VenueFader(venueToFadeTo, venueToFadeFrom, null, null)
 	}
 
 	finalize(universe) {}
@@ -98,7 +114,7 @@ class VenueFader
 		var display = universe.display;
 		display.drawRectangle
 		(
-			new Coords(0, 0, 0),
+			Coords.create(),
 			display.sizeDefault(), // Scaled automatically.
 			fadeColor.systemColor(),
 			null, null

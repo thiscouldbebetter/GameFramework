@@ -20,7 +20,7 @@ class VisualRectangle
 
 		this.sizeHalf = this.size.clone().half();
 
-		this._drawPos = new Coords(0, 0, 0);
+		this._drawPos = Coords.create();
 	}
 
 	draw(universe, world, place, entity, display)

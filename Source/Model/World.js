@@ -104,10 +104,10 @@ class World
 		var places = [];
 
 		var worldSizeInRooms = new Coords(2, 2, 1);
-		var roomPos = new Coords(0, 0, 0);
+		var roomPos = Coords.create();
 		var roomSize = displaySize.clone().double();
-		var startPos = new Coords(0, 0, 0);
-		var goalPos = new Coords(0, 0, 0).randomize(null).multiply(worldSizeInRooms).floor();
+		var startPos = Coords.create();
+		var goalPos = Coords.create().randomize(null).multiply(worldSizeInRooms).floor();
 
 		for (var y = 0; y < worldSizeInRooms.y; y++)
 		{
@@ -238,6 +238,11 @@ class World
 	timePlayingAsStringLong(universe)
 	{
 		return universe.timerHelper.ticksToStringHours_Minutes_Seconds(this.timerTicksSoFar);
+	}
+
+	toVenue()
+	{
+		return new VenueWorld(this);
 	}
 
 	updateForTimerTick(universe)

@@ -11,6 +11,11 @@ class RangeExtent
 		this.max = max;
 	}
 
+	static create()
+	{
+		return new RangeExtent(0, 0);
+	}
+
 	clone()
 	{
 		return new RangeExtent(this.min, this.max);
@@ -61,7 +66,7 @@ class RangeExtent
 	random(randomizer)
 	{
 		return this.min + (this.max - this.min) * randomizer.getNextRandom();
-	};
+	}
 
 	size()
 	{

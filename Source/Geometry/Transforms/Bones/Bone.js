@@ -29,7 +29,7 @@ class Bone
 
 	pos(bonesByName)
 	{
-		var returnValue = new Coords(0, 0, 0);
+		var returnValue = Coords.create();
 
 		var bone = bonesByName.get(this.parentName);
 

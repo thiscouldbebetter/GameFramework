@@ -18,7 +18,7 @@ class VisualPath
 		this.isClosed = isClosed;
 
 		this.verticesAsPathTransformed = this.verticesAsPath.clone();
-		this.transformTranslate = new Transform_Translate(new Coords(0, 0, 0));
+		this.transformTranslate = new Transform_Translate(Coords.create());
 	}
 
 	draw(universe, world, place, entity, display)

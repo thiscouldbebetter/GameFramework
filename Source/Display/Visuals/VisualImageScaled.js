@@ -14,7 +14,7 @@ class VisualImageScaled
 		this.sizeToDraw = sizeToDraw;
 
 		this.sizeToDrawHalf = this.sizeToDraw.clone().half();
-		this._posSaved = new Coords(0, 0, 0);
+		this._posSaved = Coords.create();
 	}
 
 	static manyFromSizeAndVisuals(sizeToDraw, visualsToScale)
@@ -27,7 +27,7 @@ class VisualImageScaled
 			returnValues.push(visualScaled);
 		}
 		return returnValues;
-	};
+	}
 
 	draw(universe, world, place, entity, display)
 	{

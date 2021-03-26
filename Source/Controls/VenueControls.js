@@ -16,7 +16,7 @@ class VenueControls
 		this.controlRoot = controlRoot;
 		ignoreKeyboardAndGamepadInputs = ignoreKeyboardAndGamepadInputs || false;
 
-		function buildGamepadInputs(inputName)
+		var buildGamepadInputs = (inputName) =>
 		{
 			var numberOfGamepads = 1; // todo
 
@@ -99,10 +99,15 @@ class VenueControls
 
 		// Helper variables.
 
-		this._drawLoc = new Disposition(new Coords(0, 0, 0), null, null);
-		this._mouseClickPos = new Coords(0, 0, 0);
-		this._mouseMovePos = new Coords(0, 0, 0);
-		this._mouseMovePosPrev = new Coords(0, 0, 0);
+		this._drawLoc = Disposition.create();
+		this._mouseClickPos = Coords.create();
+		this._mouseMovePos = Coords.create();
+		this._mouseMovePosPrev = Coords.create();
+	}
+
+	static fromControl(controlRoot)
+	{
+		return new VenueControls(controlRoot, null);
 	}
 
 	draw(universe)

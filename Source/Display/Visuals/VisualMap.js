@@ -27,13 +27,13 @@ class VisualMap
 			(shouldConvertToImage == null ? true : shouldConvertToImage);
 
 		// Helper variables.
-		this._cameraPos = new Coords(0, 0, 0);
+		this._cameraPos = Coords.create();
 		this._cell = this.map.cellPrototype.clone();
-		this._cellPosEnd = new Coords(0, 0, 0);
-		this._cellPosInCells = new Coords(0, 0, 0);
-		this._cellPosStart = new Coords(0, 0, 0);
-		this._drawPos = new Coords(0, 0, 0);
-		this._posSaved = new Coords(0, 0, 0);
+		this._cellPosEnd = Coords.create();
+		this._cellPosInCells = Coords.create();
+		this._cellPosStart = Coords.create();
+		this._drawPos = Coords.create();
+		this._posSaved = Coords.create();
 	}
 
 	draw(universe, world, place, entity, display)

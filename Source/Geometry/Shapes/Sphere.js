@@ -13,7 +13,7 @@ class Sphere
 		this.radius = radius;
 
 		// Helper variables.
-		this._displacement = new Coords(0, 0, 0);
+		this._displacement = Coords.create();
 	}
 
 	containsOther(other)
@@ -27,7 +27,7 @@ class Sphere
 
 	pointRandom()
 	{
-		return new Polar(0, this.radius, 0).random(null).toCoords(new Coords(0, 0, 0)).add(this.center);
+		return new Polar(0, this.radius, 0).random(null).toCoords(Coords.create()).add(this.center);
 	}
 
 	// cloneable
@@ -55,7 +55,8 @@ class Sphere
 
 	locate(loc)
 	{
-		return ShapeHelper.Instance().applyLocationToShapeDefault(loc, this);
+		this.center.overwriteWith(loc.pos);
+		return this;
 	}
 
 	normalAtPos(posToCheck, normalOut)

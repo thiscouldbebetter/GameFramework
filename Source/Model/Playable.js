@@ -132,7 +132,7 @@ class Playable extends EntityProperty
 		var statusAsControl = new ControlContainer
 		(
 			"Status",
-			new Coords(0, 0, 0), // pos
+			Coords.create(), // pos
 			size.clone().addDimensions(0, -32, 0), // size
 			// children
 			controlsForStatusFields,
@@ -143,14 +143,14 @@ class Playable extends EntityProperty
 		var back = () =>
 		{
 			var venueNext= venuePrev;
-			venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null);
+			venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
 			universe.venueNext = venueNext;
 		};
 
 		var returnValue = new ControlTabbed
 		(
 			"tabbedItems",
-			new Coords(0, 0, 0), // pos
+			Coords.create(), // pos
 			size,
 			tabButtonSize,
 			controlsForTabs,
@@ -172,7 +172,7 @@ class Playable extends EntityProperty
 		var fontHeightInPixels = 10;
 		var margin = 10;
 
-		var itemDefnsByName = world.defn.itemDefnsByName();
+		var worldDefn = world.defn;
 
 		var playerVisualBarSize = new Coords(entityDimension * 4, entityDimension, 0);
 
@@ -190,7 +190,7 @@ class Playable extends EntityProperty
 			null // text
 		);
 
-		var playerVisualHealthIcon = itemDefnsByName.get("Heart").visual;
+		var playerVisualHealthIcon = worldDefn.itemDefnByName("Heart").visual;
 
 		var playerVisualHealthBarPlusIcon = new VisualGroup
 		([
@@ -216,7 +216,7 @@ class Playable extends EntityProperty
 			null // text
 		);
 
-		var playerVisualSatietyIcon = itemDefnsByName.get("Bread").visual;
+		var playerVisualSatietyIcon = worldDefn.itemDefnByName("Bread").visual;
 
 		var playerVisualSatietyBarPlusIcon = new VisualGroup
 		([
@@ -344,7 +344,7 @@ class Playable extends EntityProperty
 		(
 			"visualPlayerStatusInfo",
 			new Coords(5, 2, 0).multiplyScalar(playerVisualBarSize.y), // pos
-			new Coords(0, 0, 0), // size
+			Coords.create(), // size
 			DataBinding.fromContext(playerVisualStatusInfo),
 			null, null
 		);
@@ -452,7 +452,7 @@ class Playable extends EntityProperty
 		var controlOverlayContainer = new ControlContainer
 		(
 			"containerPlayer",
-			new Coords(0, 0, 0), // pos,
+			Coords.create(), // pos,
 			universe.display.sizeInPixels.clone(),
 			childControls,
 			null, null

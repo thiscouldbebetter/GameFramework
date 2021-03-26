@@ -11,7 +11,7 @@ class VisualControl
 		this.controlRoot = controlRoot;
 
 		// Helper variables.
-		this._drawLoc = new Disposition(new Coords(0, 0, 0), null, null);
+		this._drawLoc = new Disposition(Coords.create(), null, null);
 	}
 
 	draw(universe, world, place, entity, display)

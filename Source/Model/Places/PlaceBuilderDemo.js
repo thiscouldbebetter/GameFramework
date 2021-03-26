@@ -216,7 +216,7 @@ class PlaceBuilderDemo // Main.
 			"Tunnels",
 			[
 				new Drawable(tunnelsVisual, null),
-				new DrawableCamera(),
+				// new DrawableCamera(),
 				new Locatable(null)
 			]
 		);
@@ -239,7 +239,7 @@ class PlaceBuilderDemo // Main.
 
 		var zones = [];
 		var placeSizeInZones = new Coords(3, 3, 1);
-		var zonePosInZones = new Coords(0, 0, 0);
+		var zonePosInZones = Coords.create();
 		var zoneSize = size;
 		var neighborOffsets =
 		[
@@ -252,8 +252,8 @@ class PlaceBuilderDemo // Main.
 			new Coords(0, -1, 0),
 			new Coords(1, -1, 0)
 		];
-		var neighborPos = new Coords(0, 0, 0);
-		var boxZeroes = new Box(new Coords(0, 0, 0), new Coords(0, 0, 0));
+		var neighborPos = Coords.create();
+		var boxZeroes = new Box(Coords.create(), Coords.create());
 		for (var y = 0; y < placeSizeInZones.y; y++)
 		{
 			zonePosInZones.y = y;
@@ -311,7 +311,7 @@ class PlaceBuilderDemo // Main.
 		zoneStart.entities.push(...this.entities);
 
 		var zonesByName = ArrayHelper.addLookupsByName(zones);
-		var posInZones = new Coords(0, 0, 0);
+		var posInZones = Coords.create();
 
 		var placeSize = placeSizeInZones.clone().multiply(zoneSize);
 		var place = new PlaceZoned
@@ -523,13 +523,13 @@ class PlaceBuilderDemo // Main.
 						new VisualOffset
 						(
 							new VisualRectangle(borderSizeHorizontalHalf, color, null, isCenteredFalse),
-							new Coords(0, 0, 0)
+							Coords.create()
 						),
 						// w
 						new VisualOffset
 						(
 							new VisualRectangle(borderSizeVerticalHalf, color, null, isCenteredFalse),
-							new Coords(0, 0, 0)
+							Coords.create()
 						)
 					])
 				],
@@ -556,7 +556,7 @@ class PlaceBuilderDemo // Main.
 					new VisualOffset
 					(
 						new VisualRectangle(borderSizeCorner, color, null, isCenteredFalse),
-						new Coords(0, 0, 0)
+						Coords.create()
 					)
 				],
 				[
@@ -629,7 +629,7 @@ class PlaceBuilderDemo // Main.
 					new VisualOffset
 					(
 						new VisualRectangle(borderSizeVerticalHalf, color, null, isCenteredFalse),
-						new Coords(0, 0, 0)
+						Coords.create()
 					)
 				],
 				[
@@ -637,7 +637,7 @@ class PlaceBuilderDemo // Main.
 					new VisualOffset
 					(
 						new VisualRectangle(borderSizeHorizontalHalf, color, null, isCenteredFalse),
-						new Coords(0, 0, 0)
+						Coords.create()
 					)
 				],
 				[
@@ -683,7 +683,7 @@ class PlaceBuilderDemo // Main.
 
 		var universe = this.universe;
 
-		var terrainNameToVisuals = function(terrainName)
+		var terrainNameToVisuals = (terrainName) =>
 		{
 			var imageName = "Terrain-" + terrainName;
 			var terrainVisualImageCombined = 
@@ -711,14 +711,14 @@ class PlaceBuilderDemo // Main.
 				terrainVisualCenter, mapCellSizeHalf
 			);
 
-			var tileOffsetInTilesHalf = new Coords(0, 0, 0);
-			var visualOffsetInMapCellsHalf = new Coords(0, 0, 0);
+			var tileOffsetInTilesHalf = Coords.create();
+			var visualOffsetInMapCellsHalf = Coords.create();
 
-			var offsetsToVisual = function
+			var offsetsToVisual =
 			(
 				tileOffsetInTilesHalf,
 				visualOffsetInMapCellsHalf
-			)
+			) =>
 			{
 				var terrainVisualBounds = Box.fromMinAndSize
 				(
@@ -919,7 +919,7 @@ class PlaceBuilderDemo // Main.
 			var cellPosInPixels = cellPosInCells.clone().multiply(map.cellSize);
 
 			var neighborTerrains = [];
-			var neighborPos = new Coords(0, 0, 0);
+			var neighborPos = Coords.create();
 			for (var n = 0; n < neighborOffsets.length; n++)
 			{
 				var neighborOffset = neighborOffsets[n];
@@ -1012,13 +1012,13 @@ class PlaceBuilderDemo // Main.
 					(
 						new Box
 						(
-							new Coords(0, 0, 0), //cellPosInPixels,
+							Coords.create(), //cellPosInPixels,
 							mapCellSize
 						)
 					),
 					cellCollidable.clone(),
 					new Drawable(cellVisual, null),
-					new DrawableCamera(),
+					// new DrawableCamera(),
 					new Locatable(new Disposition(cellPosInPixels, null, null)),
 					cellTerrain.traversable
 				]
@@ -1236,7 +1236,7 @@ class PlaceBuilderDemo // Main.
 			[
 				new Locatable(new Disposition(new Coords(0, 0, camera.focalLength), null, null)),
 				new Drawable(visualBackgroundBottom, null),
-				new DrawableCamera()
+				// new DrawableCamera()
 			]
 		);
 		returnValues.push(entityBackgroundBottom);
@@ -1260,7 +1260,7 @@ class PlaceBuilderDemo // Main.
 			[
 				new Locatable(null),
 				new Drawable(visualBackgroundTop, null),
-				new DrawableCamera()
+				// new DrawableCamera()
 			]
 		);
 		returnValues.push(entityBackgroundTop);
@@ -1342,7 +1342,7 @@ class PlaceBuilderDemo // Main.
 	)
 	{
 		var itemKeyColor = Color.byName("Yellow");
-		var goalPos = new Coords(0, 0, 0).randomize(this.randomizer).multiplyScalar
+		var goalPos = Coords.create().randomize(this.randomizer).multiplyScalar
 		(
 			.5
 		).addDimensions
@@ -1379,9 +1379,9 @@ class PlaceBuilderDemo // Main.
 			"Goal",
 			[
 				new Locatable(goalLoc),
-				new Collidable(0, new Box(new Coords(0, 0, 0), entitySize), null, null),
+				new Collidable(0, new Box(Coords.create(), entitySize), null, null),
 				new Drawable(goalVisual, null),
-				new DrawableCamera(),
+				// new DrawableCamera(),
 				new Goal(numberOfKeysToUnlockGoal),
 			]
 		);
@@ -1405,9 +1405,9 @@ class PlaceBuilderDemo // Main.
 		for (var i = 0; i < numberOfKeysToUnlockGoal; i++)
 		{
 			var itemKeyPos =
-				new Coords(0, 0, 0).randomize(this.randomizer).multiply(sizeMinusMargins).add(marginSize);
+				Coords.create().randomize(this.randomizer).multiply(sizeMinusMargins).add(marginSize);
 
-			var itemKeyCollider = new Sphere(new Coords(0, 0, 0), entityDimensionHalf);
+			var itemKeyCollider = new Sphere(Coords.create(), entityDimensionHalf);
 
 			var itemKeyEntity = new Entity
 			(
@@ -1417,7 +1417,7 @@ class PlaceBuilderDemo // Main.
 					new Locatable( new Disposition(itemKeyPos, null, null) ),
 					new Collidable(0, itemKeyCollider, null, null),
 					new Drawable(itemKeyVisual, null),
-					new DrawableCamera()
+					// new DrawableCamera()
 				]
 			);
 
@@ -1549,7 +1549,7 @@ class PlaceBuilderDemo // Main.
 				}
 			}
 
-			var wallCollider = new Box(new Coords(0, 0, 0), wallSize);
+			var wallCollider = new Box(Coords.create(), wallSize);
 			var wallObstacle = new Obstacle();
 			var wallCollidable = new Collidable
 			(
@@ -1592,7 +1592,7 @@ class PlaceBuilderDemo // Main.
 						new Locatable(wallPartLoc),
 						wallCollidable,
 						new Drawable(wallVisual, null),
-						new DrawableCamera(),
+						// new DrawableCamera(),
 						wallObstacle
 					]
 				);
@@ -1622,7 +1622,7 @@ class PlaceBuilderDemo // Main.
 					neighborOffset.clone().double()
 				);
 
-				var portalBox = new Box(new Coords(0, 0, 0), portalSize);
+				var portalBox = new Box(Coords.create(), portalSize);
 
 				var collidable = new Collidable
 				(
@@ -1710,7 +1710,7 @@ class PlaceBuilderDemo // Main.
 							var venuesForLayers=
 							[
 								u.venueCurrent,
-								new VenueControls(wordBubbleAsControl, false)
+								wordBubbleAsControl.toVenue()
 							];
 
 							u.venueNext = new VenueLayered
@@ -1763,9 +1763,9 @@ class PlaceBuilderDemo // Main.
 		(
 			"Store",
 			[
-				new Collidable(0, new Box(new Coords(0, 0, 0), entitySize), null, null),
+				new Collidable(0, new Box(Coords.create(), entitySize), null, null),
 				new Drawable(visual, null),
-				new DrawableCamera(),
+				// new DrawableCamera(),
 				new ItemStore("Coin"),
 				new ItemHolder
 				(
@@ -1801,7 +1801,7 @@ class PlaceBuilderDemo // Main.
 
 		var itemDefnAccessoryName = "Speed Boots";
 		var itemAccessoryVisual = this.itemDefnsByName.get(itemDefnAccessoryName).visual;
-		var itemAccessoryCollider = new Sphere(new Coords(0, 0, 0), entityDimensionHalf);
+		var itemAccessoryCollider = new Sphere(Coords.create(), entityDimensionHalf);
 
 		var itemAccessoryEntityDefn = new Entity
 		(
@@ -1811,7 +1811,7 @@ class PlaceBuilderDemo // Main.
 				new Locatable(null),
 				new Collidable(0, itemAccessoryCollider, null, null),
 				new Drawable(itemAccessoryVisual, null),
-				new DrawableCamera(),
+				// new DrawableCamera(),
 				new Equippable(null, null)
 			]
 		);
@@ -1825,9 +1825,9 @@ class PlaceBuilderDemo // Main.
 		var itemDefn = this.itemDefnsByName.get(itemDefnArmorName);
 		var itemArmorVisual = itemDefn.visual;
 		var path = ((itemArmorVisual ).children[0] ).verticesAsPath;
-		var itemArmorCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
+		var itemArmorCollider = new Sphere(Coords.create(), entityDimension / 2);
 		var collidable = new Collidable(0, itemArmorCollider, null, null);
-		var box = new Box(new Coords(0, 0, 0), new Coords(0, 0, 0) ).ofPoints(path.points);
+		var box = new Box(Coords.create(), Coords.create() ).ofPoints(path.points);
 		box.center = collidable.collider.center;
 		var boundable = new Boundable(box);
 
@@ -1842,7 +1842,7 @@ class PlaceBuilderDemo // Main.
 				new Item(itemDefnArmorName, 1),
 				new Locatable(null),
 				new Drawable(itemArmorVisual, null),
-				new DrawableCamera()
+				// new DrawableCamera()
 			]
 		);
 
@@ -1859,7 +1859,7 @@ class PlaceBuilderDemo // Main.
 
 		var arrowSize = new Coords(1, 1, 1);
 
-		var itemArrowCollider = new Sphere(new Coords(0, 0, 0), entityDimensionHalf);
+		var itemArrowCollider = new Sphere(Coords.create(), entityDimensionHalf);
 
 		var collidable = new Collidable(0, itemArrowCollider, null, null);
 		var bounds = new Box(collidable.collider.center, arrowSize);
@@ -1874,7 +1874,7 @@ class PlaceBuilderDemo // Main.
 				boundable,
 				collidable,
 				new Drawable(itemArrowVisual, null),
-				new DrawableCamera(),
+				// new DrawableCamera(),
 				new Item(itemDefnArrowName, roundsPerPile),
 				new Locatable(null),
 			]
@@ -1889,7 +1889,7 @@ class PlaceBuilderDemo // Main.
 
 		var itemDefnBombName = "Bomb";
 		var itemBombVisual = this.itemDefnsByName.get(itemDefnBombName).visual;
-		var itemBombCollider = new Sphere(new Coords(0, 0, 0), entityDimensionHalf);
+		var itemBombCollider = new Sphere(Coords.create(), entityDimensionHalf);
 
 		var itemBombDevice = new Device
 		(
@@ -1924,7 +1924,7 @@ class PlaceBuilderDemo // Main.
 				var projectileDimension = 1.5;
 				var projectileVisual = new VisualGroup
 				([
-					(entityDevice.drawable().visual ).child,
+					entityDevice.drawable().visual
 					// todo - Add sparks?
 				]);
 
@@ -1942,7 +1942,7 @@ class PlaceBuilderDemo // Main.
 				projectileLoc.vel.overwriteWith(userVel).clearZ().double();
 
 				var projectileCollider =
-					new Sphere(new Coords(0, 0, 0), projectileDimension);
+					new Sphere(Coords.create(), projectileDimension);
 
 				// todo
 				var projectileCollide = null;
@@ -1950,7 +1950,7 @@ class PlaceBuilderDemo // Main.
 				{
 					var explosionRadius = 32;
 					var explosionVisual = new VisualCircle(explosionRadius, Color.byName("Yellow"), null, null);
-					var explosionCollider = new Sphere(new Coords(0, 0, 0), explosionRadius);
+					var explosionCollider = new Sphere(Coords.create(), explosionRadius);
 					var explosionCollide = (universe, world, place, entityProjectile, entityOther) =>
 					{
 						var killable = entityOther.killable();
@@ -1970,7 +1970,7 @@ class PlaceBuilderDemo // Main.
 							new Collidable(0, explosionCollider, [ Killable.name ], explosionCollide),
 							new Damager(new Damage(20, null, null)),
 							new Drawable(explosionVisual, null),
-							new DrawableCamera(),
+							// new DrawableCamera(),
 							new Ephemeral(8, null),
 							entityDying.locatable()
 						]
@@ -1993,7 +1993,7 @@ class PlaceBuilderDemo // Main.
 						),
 						new Constrainable([new Constraint_FrictionXY(.03, .5)]),
 						new Drawable(projectileVisual, null),
-						new DrawableCamera(),
+						// new DrawableCamera(),
 						new Equippable(null, null)
 					]
 				);
@@ -2011,7 +2011,7 @@ class PlaceBuilderDemo // Main.
 				new Collidable(0, itemBombCollider, null, null),
 				itemBombDevice,
 				new Drawable(itemBombVisual, null),
-				new DrawableCamera(),
+				// new DrawableCamera(),
 				new Equippable(null, null)
 			]
 		);
@@ -2025,7 +2025,7 @@ class PlaceBuilderDemo // Main.
 
 		var itemDefnBookName = "Book";
 		var itemBookVisual = this.itemDefnsByName.get(itemDefnBookName).visual;
-		var itemBookCollider = new Sphere(new Coords(0, 0, 0), entityDimensionHalf);
+		var itemBookCollider = new Sphere(Coords.create(), entityDimensionHalf);
 
 		var itemBookEntityDefn = new Entity
 		(
@@ -2035,7 +2035,7 @@ class PlaceBuilderDemo // Main.
 				new Locatable(null),
 				new Collidable(0, itemBookCollider, null, null),
 				new Drawable(itemBookVisual, null),
-				new DrawableCamera()
+				// new DrawableCamera()
 			]
 		);
 
@@ -2049,7 +2049,7 @@ class PlaceBuilderDemo // Main.
 
 		var itemBowVisual = this.itemDefnsByName.get(itemDefnName).visual;
 
-		var itemBowCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
+		var itemBowCollider = new Sphere(Coords.create(), entityDimension / 2);
 
 		var itemBowUse = (u, world, p, entityUser, entityDevice) => // use
 		{
@@ -2100,7 +2100,7 @@ class PlaceBuilderDemo // Main.
 			projectileLoc.vel.overwriteWith(userVel).clearZ().double();
 
 			var projectileCollider =
-				new Sphere(new Coords(0, 0, 0), projectileDimension);
+				new Sphere(Coords.create(), projectileDimension);
 
 			var projectileCollide = (universe, world, place, entityProjectile, entityOther) =>
 			{
@@ -2128,7 +2128,7 @@ class PlaceBuilderDemo // Main.
 						[
 							new Ephemeral(8, null),
 							new Drawable(visualStrike, null),
-							new DrawableCamera(),
+							// new DrawableCamera(),
 							entityKillable.locatable()
 						]
 					);
@@ -2152,7 +2152,7 @@ class PlaceBuilderDemo // Main.
 						projectileCollide
 					),
 					new Drawable(projectileVisual, null),
-					new DrawableCamera()
+					// new DrawableCamera()
 				]
 			);
 
@@ -2182,7 +2182,7 @@ class PlaceBuilderDemo // Main.
 				new Locatable(null),
 				new Collidable(0, itemBowCollider, null, null),
 				new Drawable(itemBowVisual, null),
-				new DrawableCamera(),
+				// new DrawableCamera(),
 				new Equippable(null, null),
 				itemBowDevice
 			]
@@ -2197,7 +2197,7 @@ class PlaceBuilderDemo // Main.
 
 		var itemDefnBreadName = "Bread";
 		var itemBreadVisual = this.itemDefnsByName.get(itemDefnBreadName).visual;
-		var itemBreadCollider = new Sphere(new Coords(0, 0, 0), entityDimensionHalf);
+		var itemBreadCollider = new Sphere(Coords.create(), entityDimensionHalf);
 
 		var itemBreadEntityDefn = new Entity
 		(
@@ -2207,7 +2207,7 @@ class PlaceBuilderDemo // Main.
 				new Locatable(null),
 				new Collidable(0, itemBreadCollider, null, null),
 				new Drawable(itemBreadVisual, null),
-				new DrawableCamera()
+				// new DrawableCamera()
 			]
 		);
 
@@ -2225,7 +2225,7 @@ class PlaceBuilderDemo // Main.
 		var visualTileset = new VisualImageFromLibrary("Car");
 		var tileSizeInPixels = new Coords(64, 48, 0);
 		var tilesetSizeInTiles = new Coords(8, 4, 0);
-		var tilePosInTiles = new Coords(0, 0, 0);
+		var tilePosInTiles = Coords.create();
 
 		for (var y = 0; y < tilesetSizeInTiles.y; y++)
 		{
@@ -2272,7 +2272,7 @@ class PlaceBuilderDemo // Main.
 			);
 		}
 
-		var carCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
+		var carCollider = new Sphere(Coords.create(), entityDimension / 2);
 
 		var carCollide = (universe, world, place, entityVehicle, entityOther) =>
 		{
@@ -2298,7 +2298,7 @@ class PlaceBuilderDemo // Main.
 			new Constraint_FrictionXY(.03, .2)
 		]);
 
-		var carLoc = new Disposition(null, null, null);
+		var carLoc = Disposition.create();
 		//carLoc.spin = new Rotation(Coords.Instances().ZeroZeroOne, new Reference(.01));
 		var carUsable = new Usable
 		(
@@ -2326,7 +2326,7 @@ class PlaceBuilderDemo // Main.
 				carCollidable,
 				carConstrainable,
 				new Drawable(carVisual, null),
-				new DrawableCamera(),
+				// new DrawableCamera(),
 				carUsable,
 				vehicle
 			]
@@ -2341,7 +2341,7 @@ class PlaceBuilderDemo // Main.
 
 		var itemDefnCoinName = "Coin";
 		var itemCoinVisual = this.itemDefnsByName.get(itemDefnCoinName).visual;
-		var itemCoinCollider = new Sphere(new Coords(0, 0, 0), entityDimensionHalf);
+		var itemCoinCollider = new Sphere(Coords.create(), entityDimensionHalf);
 
 		var itemCoinEntityDefn = new Entity
 		(
@@ -2351,12 +2351,12 @@ class PlaceBuilderDemo // Main.
 				new Locatable(null),
 				new Collidable(0, itemCoinCollider, null, null),
 				new Drawable(itemCoinVisual, null),
-				new DrawableCamera()
+				// new DrawableCamera()
 			]
 		);
 
 		return itemCoinEntityDefn;
-	};
+	}
 
 	entityDefnBuildCrystal(entityDimension)
 	{
@@ -2364,7 +2364,7 @@ class PlaceBuilderDemo // Main.
 
 		var itemDefnCrystalName = "Crystal";
 		var itemCrystalVisual = this.itemDefnsByName.get(itemDefnCrystalName).visual;
-		var itemCrystalCollider = new Sphere(new Coords(0, 0, 0), entityDimensionHalf);
+		var itemCrystalCollider = new Sphere(Coords.create(), entityDimensionHalf);
 
 		var itemCrystalEntityDefn = new Entity
 		(
@@ -2372,7 +2372,7 @@ class PlaceBuilderDemo // Main.
 			[
 				new Collidable(0, itemCrystalCollider, null, null),
 				new Drawable(itemCrystalVisual, null),
-				new DrawableCamera(),
+				// new DrawableCamera(),
 				new Item(itemDefnCrystalName, 1),
 				new Locatable(null)
 			]
@@ -2387,7 +2387,7 @@ class PlaceBuilderDemo // Main.
 
 		var itemDefnDoughnutName = "Doughnut";
 		var itemDoughnutVisual = this.itemDefnsByName.get(itemDefnDoughnutName).visual;
-		var itemDoughnutCollider = new Sphere(new Coords(0, 0, 0), entityDimensionHalf);
+		var itemDoughnutCollider = new Sphere(Coords.create(), entityDimensionHalf);
 
 		var itemDoughnutEntityDefn = new Entity
 		(
@@ -2397,7 +2397,7 @@ class PlaceBuilderDemo // Main.
 				new Locatable(null),
 				new Collidable(0, itemDoughnutCollider, null, null),
 				new Drawable(itemDoughnutVisual, null),
-				new DrawableCamera()
+				// new DrawableCamera()
 			]
 		);
 
@@ -2409,7 +2409,7 @@ class PlaceBuilderDemo // Main.
 		entityDimension *= .5;
 		var itemDefnName = "Flower";
 		var visual = this.itemDefnsByName.get(itemDefnName).visual;
-		var collider = new Sphere(new Coords(0, 0, 0), entityDimension);
+		var collider = new Sphere(Coords.create(), entityDimension);
 
 		var entityDefn = new Entity
 		(
@@ -2419,7 +2419,7 @@ class PlaceBuilderDemo // Main.
 				new Locatable(null),
 				new Collidable(0, collider, null, null),
 				new Drawable(visual, null),
-				new DrawableCamera()
+				// new DrawableCamera()
 			]
 		);
 
@@ -2432,7 +2432,7 @@ class PlaceBuilderDemo // Main.
 
 		var itemDefnFruitName = "Fruit";
 		var itemFruitVisual = this.itemDefnsByName.get(itemDefnFruitName).visual;
-		var itemFruitCollider = new Sphere(new Coords(0, 0, 0), entityDimensionHalf);
+		var itemFruitCollider = new Sphere(Coords.create(), entityDimensionHalf);
 
 		var itemFruitEntityDefn = new Entity
 		(
@@ -2442,7 +2442,7 @@ class PlaceBuilderDemo // Main.
 				new Locatable(null),
 				new Collidable(0, itemFruitCollider, null, null),
 				new Drawable(itemFruitVisual, null),
-				new DrawableCamera(),
+				// new DrawableCamera(),
 			]
 		);
 
@@ -2477,7 +2477,7 @@ class PlaceBuilderDemo // Main.
 
 		var itemGrassVisual = this.itemDefnsByName.get(itemDefnName).visual;
 
-		var itemGrassCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
+		var itemGrassCollider = new Sphere(Coords.create(), entityDimension / 2);
 
 		var itemGrassEntityDefn = new Entity
 		(
@@ -2487,7 +2487,7 @@ class PlaceBuilderDemo // Main.
 				new Locatable(null),
 				new Collidable(0, itemGrassCollider, null, null),
 				new Drawable(itemGrassVisual, null),
-				new DrawableCamera()
+				// new DrawableCamera()
 			]
 		);
 
@@ -2500,7 +2500,7 @@ class PlaceBuilderDemo // Main.
 
 		var itemDefnHeartName = "Heart";
 		var itemHeartVisual = this.itemDefnsByName.get(itemDefnHeartName).visual;
-		var itemHeartCollider = new Sphere(new Coords(0, 0, 0), entityDimensionHalf);
+		var itemHeartCollider = new Sphere(Coords.create(), entityDimensionHalf);
 
 		var itemHeartEntityDefn = new Entity
 		(
@@ -2510,7 +2510,7 @@ class PlaceBuilderDemo // Main.
 				new Locatable(null),
 				new Collidable(0, itemHeartCollider, null, null),
 				new Drawable(itemHeartVisual, null),
-				new DrawableCamera()
+				// new DrawableCamera()
 			]
 		);
 
@@ -2523,7 +2523,7 @@ class PlaceBuilderDemo // Main.
 
 		var itemDefnIronName = "Iron";
 		var itemIronVisual = this.itemDefnsByName.get(itemDefnIronName).visual;
-		var itemIronCollider = new Sphere(new Coords(0, 0, 0), entityDimensionHalf);
+		var itemIronCollider = new Sphere(Coords.create(), entityDimensionHalf);
 
 		var itemIronEntityDefn = new Entity
 		(
@@ -2533,7 +2533,7 @@ class PlaceBuilderDemo // Main.
 				new Locatable(null),
 				new Collidable(0, itemIronCollider, null, null),
 				new Drawable(itemIronVisual, null),
-				new DrawableCamera()
+				// new DrawableCamera()
 			]
 		);
 
@@ -2546,7 +2546,7 @@ class PlaceBuilderDemo // Main.
 
 		var itemDefnOreName = "Iron Ore";
 		var itemOreVisual = this.itemDefnsByName.get(itemDefnOreName).visual;
-		var itemOreCollider = new Sphere(new Coords(0, 0, 0), entityDimensionHalf);
+		var itemOreCollider = new Sphere(Coords.create(), entityDimensionHalf);
 
 		var itemOreEntityDefn = new Entity
 		(
@@ -2556,7 +2556,7 @@ class PlaceBuilderDemo // Main.
 				new Locatable(null),
 				new Collidable(0, itemOreCollider, null, null),
 				new Drawable(itemOreVisual, null),
-				new DrawableCamera()
+				// new DrawableCamera()
 			]
 		);
 
@@ -2569,7 +2569,7 @@ class PlaceBuilderDemo // Main.
 
 		var itemDefnLogName = "Log";
 		var itemLogVisual = this.itemDefnsByName.get(itemDefnLogName).visual;
-		var itemLogCollider = new Sphere(new Coords(0, 0, 0), entityDimensionHalf);
+		var itemLogCollider = new Sphere(Coords.create(), entityDimensionHalf);
 
 		var itemLogEntityDefn = new Entity
 		(
@@ -2579,7 +2579,7 @@ class PlaceBuilderDemo // Main.
 				new Locatable(null),
 				new Collidable(0, itemLogCollider, null, null),
 				new Drawable(itemLogVisual, null),
-				new DrawableCamera()
+				// new DrawableCamera()
 			]
 		);
 
@@ -2593,7 +2593,7 @@ class PlaceBuilderDemo // Main.
 		var itemDefnMeatName = "Meat";
 		var itemMeatDefn = this.itemDefnsByName.get(itemDefnMeatName);
 		var itemMeatVisual = itemMeatDefn.visual;
-		var itemMeatCollider = new Sphere(new Coords(0, 0, 0), entityDimensionHalf);
+		var itemMeatCollider = new Sphere(Coords.create(), entityDimensionHalf);
 
 		var itemMeatEntityDefn = new Entity
 		(
@@ -2603,7 +2603,7 @@ class PlaceBuilderDemo // Main.
 				new Locatable(null),
 				new Collidable(0, itemMeatCollider, null, null),
 				new Drawable(itemMeatVisual, null),
-				new DrawableCamera(),
+				// new DrawableCamera(),
 				new Usable(itemMeatDefn.use)
 			]
 		);
@@ -2617,7 +2617,7 @@ class PlaceBuilderDemo // Main.
 
 		var itemDefnMedicineName = "Medicine";
 		var itemMedicineVisual = this.itemDefnsByName.get(itemDefnMedicineName).visual;
-		var itemMedicineCollider = new Sphere(new Coords(0, 0, 0), entityDimensionHalf);
+		var itemMedicineCollider = new Sphere(Coords.create(), entityDimensionHalf);
 
 		var itemMedicineEntityDefn = new Entity
 		(
@@ -2627,7 +2627,7 @@ class PlaceBuilderDemo // Main.
 				new Locatable(null),
 				new Collidable(0, itemMedicineCollider, null, null),
 				new Drawable(itemMedicineVisual, null),
-				new DrawableCamera(),
+				// new DrawableCamera(),
 				new Equippable(null, null)
 			]
 		);
@@ -2642,7 +2642,7 @@ class PlaceBuilderDemo // Main.
 
 		var itemMushroomVisual = this.itemDefnsByName.get(itemDefnName).visual;
 
-		var itemMushroomCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
+		var itemMushroomCollider = new Sphere(Coords.create(), entityDimension / 2);
 
 		var itemMushroomEntityDefn = new Entity
 		(
@@ -2652,7 +2652,7 @@ class PlaceBuilderDemo // Main.
 				new Locatable(null),
 				new Collidable(0, itemMushroomCollider, null, null),
 				new Drawable(itemMushroomVisual, null),
-				new DrawableCamera()
+				// new DrawableCamera()
 			]
 		);
 
@@ -2664,7 +2664,7 @@ class PlaceBuilderDemo // Main.
 		var itemDefnName = "Pick";
 		var itemPickVisual = this.itemDefnsByName.get(itemDefnName).visual;
 
-		var itemPickCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
+		var itemPickCollider = new Sphere(Coords.create(), entityDimension / 2);
 
 		var itemPickDevice = new Device
 		(
@@ -2696,7 +2696,7 @@ class PlaceBuilderDemo // Main.
 				new Collidable(0, itemPickCollider, null, null),
 				itemPickDevice,
 				new Drawable(itemPickVisual, null),
-				new DrawableCamera(),
+				// new DrawableCamera(),
 				new Equippable(null, null)
 			]
 		);
@@ -2741,7 +2741,7 @@ class PlaceBuilderDemo // Main.
 				)
 			);
 		}
-		var itemPotionCollider = new Sphere(new Coords(0, 0, 0), entityDimensionHalf);
+		var itemPotionCollider = new Sphere(Coords.create(), entityDimensionHalf);
 
 		var itemPotionEntityDefn = new Entity
 		(
@@ -2751,7 +2751,7 @@ class PlaceBuilderDemo // Main.
 				new Locatable(null),
 				new Collidable(0, itemPotionCollider, null, null),
 				new Drawable(itemPotionVisual, null),
-				new DrawableCamera()
+				// new DrawableCamera()
 			]
 		);
 
@@ -2763,7 +2763,7 @@ class PlaceBuilderDemo // Main.
 		var itemDefnName = "Shovel";
 		var itemShovelVisual = this.itemDefnsByName.get(itemDefnName).visual;
 
-		var itemShovelCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
+		var itemShovelCollider = new Sphere(Coords.create(), entityDimension / 2);
 
 		var itemShovelDevice = new Device
 		(
@@ -2809,7 +2809,7 @@ class PlaceBuilderDemo // Main.
 				new Collidable(0, itemShovelCollider, null, null),
 				itemShovelDevice,
 				new Drawable(itemShovelVisual, null),
-				new DrawableCamera(),
+				// new DrawableCamera(),
 				new Equippable(null, null)
 			]
 		);
@@ -2834,7 +2834,7 @@ class PlaceBuilderDemo // Main.
 			itemDefnName += damageTypeName;
 		}
 
-		var itemSwordCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
+		var itemSwordCollider = new Sphere(Coords.create(), entityDimension / 2);
 
 		var itemSwordDeviceUse =
 			(universe, world, place, entityUser, entityDevice) => // use
@@ -2880,7 +2880,6 @@ class PlaceBuilderDemo // Main.
 			);
 
 			var projectileVisual = entityDevice.drawable().visual;
-			projectileVisual = (projectileVisual ).child;
 			projectileVisual = (projectileVisual ).children[0].clone();
 			projectileVisual.transform(new Transform_RotateRight(1));
 
@@ -2888,7 +2887,7 @@ class PlaceBuilderDemo // Main.
 			projectileLoc.vel.overwriteWith(userVel).clearZ().double();
 
 			var projectileCollider =
-				new Sphere(new Coords(0, 0, 0), projectileDimension);
+				new Sphere(Coords.create(), projectileDimension);
 
 			var projectileCollide = (universe, world, place, entityProjectile, entityOther) =>
 			{
@@ -2917,7 +2916,7 @@ class PlaceBuilderDemo // Main.
 						[
 							new Ephemeral(8, null),
 							new Drawable(visualStrike, null),
-							new DrawableCamera(),
+							// new DrawableCamera(),
 							entityKillable.locatable()
 						]
 					);
@@ -2960,7 +2959,7 @@ class PlaceBuilderDemo // Main.
 						0, projectileCollider, [ Killable.name ], projectileCollide
 					),
 					new Drawable(projectileVisual, null),
-					new DrawableCamera()
+					// new DrawableCamera()
 				]
 			);
 
@@ -2994,7 +2993,7 @@ class PlaceBuilderDemo // Main.
 				new Locatable(null),
 				new Collidable(0, itemSwordCollider, null, null),
 				new Drawable(itemSwordVisual, null),
-				new DrawableCamera(),
+				// new DrawableCamera(),
 				itemSwordDevice,
 				new Equippable(null, null)
 			]
@@ -3009,7 +3008,7 @@ class PlaceBuilderDemo // Main.
 
 		var itemToolsetVisual = this.itemDefnsByName.get(itemDefnName).visual;
 
-		var itemToolsetCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
+		var itemToolsetCollider = new Sphere(Coords.create(), entityDimension / 2);
 
 		var itemToolsetEntityDefn = new Entity
 		(
@@ -3019,7 +3018,7 @@ class PlaceBuilderDemo // Main.
 				new Locatable(null),
 				new Collidable(0, itemToolsetCollider, null, null),
 				new Drawable(itemToolsetVisual, null),
-				new DrawableCamera()
+				// new DrawableCamera()
 			]
 		);
 
@@ -3032,7 +3031,7 @@ class PlaceBuilderDemo // Main.
 
 		var itemTorchVisual = this.itemDefnsByName.get(itemDefnName).visual;
 
-		var itemTorchCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
+		var itemTorchCollider = new Sphere(Coords.create(), entityDimension / 2);
 
 		var itemTorchEntityDefn = new Entity
 		(
@@ -3043,7 +3042,7 @@ class PlaceBuilderDemo // Main.
 				new Locatable(null),
 				new Collidable(0, itemTorchCollider, null, null),
 				new Drawable(itemTorchVisual, null),
-				new DrawableCamera()
+				// new DrawableCamera()
 			]
 		);
 
@@ -3056,7 +3055,7 @@ class PlaceBuilderDemo // Main.
 
 		var itemWeightVisual = this.itemDefnsByName.get(itemDefnName).visual;
 
-		var itemWeightCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
+		var itemWeightCollider = new Sphere(Coords.create(), entityDimension / 2);
 
 		var itemWeightEntityDefn = new Entity
 		(
@@ -3066,7 +3065,7 @@ class PlaceBuilderDemo // Main.
 				new Locatable(null),
 				new Collidable(0, itemWeightCollider, null, null),
 				new Drawable(itemWeightVisual, null),
-				new DrawableCamera()
+				// new DrawableCamera()
 			]
 		);
 

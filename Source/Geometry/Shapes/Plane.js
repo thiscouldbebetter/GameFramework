@@ -12,7 +12,7 @@ class Plane
 		this.normal = normal;
 		this.distanceFromOrigin = distanceFromOrigin;
 
-		this._displacementFromPoint0To2 = new Coords(0, 0, 0);
+		this._displacementFromPoint0To2 = Coords.create();
 	}
 
 	distanceToPointAlongNormal(point)

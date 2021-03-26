@@ -395,7 +395,7 @@ class VisualBuilder
 		]);
 
 		return returnValue;
-	};
+	}
 
 	circleWithEyesAndLegsAndArms
 	(
@@ -419,7 +419,7 @@ class VisualBuilder
 					(
 						itemDrawable == null
 						? entityWieldableEquipped.item().defn(w).visual
-						: (itemDrawable.visual ).child
+						: itemDrawable.visual
 					);
 				return itemVisual;
 			}
@@ -439,7 +439,7 @@ class VisualBuilder
 			(
 				new VisualLine
 				(
-					new Coords(0, 0, 0),
+					Coords.create(),
 					new Coords(2, 1, 0).multiplyScalar(circleRadius),
 					circleColor,
 					lineThickness
@@ -461,7 +461,7 @@ class VisualBuilder
 			(
 				new VisualLine
 				(
-					new Coords(0, 0, 0),
+					Coords.create(),
 					new Coords(-2, 0, 0).multiplyScalar(circleRadius),
 					circleColor,
 					lineThickness
@@ -483,7 +483,7 @@ class VisualBuilder
 			(
 				new VisualLine
 				(
-					new Coords(0, 0, 0),
+					Coords.create(),
 					new Coords(-2, 1, 0).multiplyScalar(circleRadius),
 					circleColor,
 					lineThickness
@@ -505,7 +505,7 @@ class VisualBuilder
 			(
 				new VisualLine
 				(
-					new Coords(0, 0, 0),
+					Coords.create(),
 					new Coords(2, 0, 0).multiplyScalar(circleRadius),
 					circleColor,
 					lineThickness

@@ -18,7 +18,7 @@ class Network
 		for (var i = 0; i < nodeCount; i++)
 		{
 			var nodeId = i;
-			var nodePos = new Coords(0, 0, 0).randomize(randomizer);
+			var nodePos = Coords.create().randomize(randomizer);
 			var node = new NetworkNode(nodeId, nodePos);
 			nodes.push(node);
 		}
@@ -38,7 +38,7 @@ class Network
 		var nodesNotYetLinked = this.nodes.slice();
 		var nodesAlreadyLinked = [ nodesNotYetLinked[0] ];
 		nodesNotYetLinked.splice(0, 1);
-		var displacement = new Coords(0, 0, 0);
+		var displacement = Coords.create();
 
 		while (nodesNotYetLinked.length > 0)
 		{

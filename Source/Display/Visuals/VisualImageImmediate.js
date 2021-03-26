@@ -14,7 +14,7 @@ class VisualImageImmediate
 
 		// Helper variables.
 
-		this._drawPos = new Coords(0, 0, 0);
+		this._drawPos = Coords.create();
 	}
 
 	// instance methods
@@ -22,7 +22,7 @@ class VisualImageImmediate
 	image(universe)
 	{
 		return this._image;
-	};
+	}
 
 	// visual
 
@@ -42,7 +42,7 @@ class VisualImageImmediate
 		{
 			display.drawImage(image, drawPos);
 		}
-	};
+	}
 
 	// Clonable.
 

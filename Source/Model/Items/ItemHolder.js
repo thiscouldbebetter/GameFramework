@@ -329,8 +329,8 @@ class ItemHolder extends EntityProperty
 
 		var back = () =>
 		{
-			var venueNext = venuePrev;
-			venueNext = new VenueFader(venueNext, universe.venueCurrent, null, null) ;
+			var venueNext= venuePrev;
+			venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
 			universe.venueNext = venueNext;
 		};
 
@@ -746,7 +746,7 @@ class ItemHolder extends EntityProperty
 		var returnValue = new ControlContainer
 		(
 			"Items",
-			new Coords(0, 0, 0), // pos
+			Coords.create(), // pos
 			sizeBase.clone(), // size
 			childControls,
 			[

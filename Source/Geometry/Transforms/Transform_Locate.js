@@ -9,7 +9,7 @@ class Transform_Locate
 
 	constructor(loc)
 	{
-		this.loc = loc || new Disposition(null, null, null);
+		this.loc = loc || Disposition.create();
 
 		this.transformOrient = new Transform_Orient(null);
 		this.transformTranslate = new Transform_Translate(null);

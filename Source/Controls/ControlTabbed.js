@@ -49,7 +49,7 @@ class ControlTabbed extends ControlBase
 
 			var buttonPos = new Coords(marginSize + this.tabButtonSize.x * i, marginSize, 0);
 
-			var button = new ControlButton
+			var button = ControlButton.from8
 			(
 				"button" + childName,
 				buttonPos,
@@ -58,8 +58,7 @@ class ControlTabbed extends ControlBase
 				this.fontHeightInPixels,
 				true, // hasBorder
 				true, // isEnabled
-				(b) => this.childSelectedIndex = buttonsForChildren.indexOf(b), // hack
-				null, null
+				(b) => this.childSelectedIndex = buttonsForChildren.indexOf(b) // hack
 			);
 			button.context = button; // hack
 			buttonsForChildren.push(button);
@@ -68,7 +67,7 @@ class ControlTabbed extends ControlBase
 		if (this.cancel != null)
 		{
 			this.children.push(null);
-			var button = new ControlButton
+			var button = ControlButton.from8
 			(
 				"buttonCancel",
 				new Coords(this.size.x - marginSize - this.tabButtonSize.x, marginSize, 0), // pos
@@ -77,8 +76,7 @@ class ControlTabbed extends ControlBase
 				this.fontHeightInPixels,
 				true, // hasBorder
 				true, // isEnabled
-				this.cancel, // click
-				null, null
+				this.cancel // click
 			);
 			buttonsForChildren.push(button);
 		}
@@ -86,13 +84,13 @@ class ControlTabbed extends ControlBase
 		this.buttonsForChildren = buttonsForChildren;
 
 		// Temporary variables.
-		this._childMax = new Coords(0, 0, 0);
+		this._childMax = Coords.create();
 		this._childrenContainingPos = [];
-		this._drawPos = new Coords(0, 0, 0);
-		this._drawLoc = new Disposition(this._drawPos, null, null);
-		this._mouseClickPos = new Coords(0, 0, 0);
-		this._mouseMovePos = new Coords(0, 0, 0);
-		this._posToCheck = new Coords(0, 0, 0);
+		this._drawPos = Coords.create();
+		this._drawLoc = Disposition.fromPos(this._drawPos);
+		this._mouseClickPos = Coords.create();
+		this._mouseMovePos = Coords.create();
+		this._posToCheck = Coords.create();
 	}
 
 	// instance methods
@@ -374,11 +372,6 @@ class ControlTabbed extends ControlBase
 		return this;
 	}
 
-	toVenue()
-	{
-		return new VenueFader(new VenueControls(this, false), null, null, null);
-	}
-
 	// drawable
 
 	draw(universe, display, drawLoc, style)
@@ -401,7 +394,7 @@ class ControlTabbed extends ControlBase
 			var button = buttons[i];
 			button.isHighlighted = (i == this.childSelectedIndex);
 			button.draw(universe, display, drawLoc);
-		};
+		}
 
 		var child = this.childSelected();
 		if (child != null)

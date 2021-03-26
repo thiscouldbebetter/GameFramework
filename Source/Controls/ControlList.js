@@ -22,8 +22,12 @@ class ControlList extends ControlBase
 
 	constructor
 	(
-		name, pos, size, items,
-		bindingForItemText, fontHeightInPixels,
+		name,
+		pos,
+		size,
+		items,
+		bindingForItemText,
+		fontHeightInPixels,
 		bindingForItemSelected, bindingForItemValue,
 		bindingForIsEnabled, confirm,
 		widthInItems
@@ -55,9 +59,9 @@ class ControlList extends ControlBase
 		);
 
 		// Helper variables.
-		this._drawPos = new Coords(0, 0, 0);
+		this._drawPos = Coords.create();
 		this._drawLoc = new Disposition(this._drawPos, null, null);
-		this._mouseClickPos = new Coords(0, 0, 0);
+		this._mouseClickPos = Coords.create();
 	}
 
 	static fromPosSizeAndItems(pos, size, items)
@@ -100,6 +104,60 @@ class ControlList extends ControlBase
 		);
 
 		return returnValue;
+	}
+
+	static from6
+	(
+		name,
+		pos,
+		size,
+		items,
+		bindingForItemText,
+		fontHeightInPixels
+	)
+	{
+		return new ControlList
+		(
+			name, pos, size, items, bindingForItemText, fontHeightInPixels,
+			null, null, null, null, null
+		);
+	}
+
+	static from7
+	(
+		name,
+		pos,
+		size,
+		items,
+		bindingForItemText,
+		fontHeightInPixels,
+		bindingForItemSelected,
+	)
+	{
+		return new ControlList
+		(
+			name, pos, size, items, bindingForItemText, fontHeightInPixels,
+			bindingForItemSelected, null, null, null, null
+		);
+	}
+
+	static from8
+	(
+		name,
+		pos,
+		size,
+		items,
+		bindingForItemText,
+		fontHeightInPixels,
+		bindingForItemSelected,
+		bindingForItemValue,
+	)
+	{
+		return new ControlList
+		(
+			name, pos, size, items, bindingForItemText, fontHeightInPixels,
+			bindingForItemSelected, bindingForItemValue, null, null, null
+		);
 	}
 
 	actionHandle(actionNameToHandle, universe)
@@ -380,7 +438,7 @@ class ControlList extends ControlBase
 
 		var itemSelected = this.itemSelected(null);
 
-		var drawPos2 = new Coords(0, 0, 0);
+		var drawPos2 = Coords.create();
 
 		for (var i = indexStart; i <= indexEnd; i++)
 		{

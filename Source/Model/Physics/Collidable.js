@@ -30,7 +30,7 @@ class Collidable extends EntityProperty
 		this._collideEntities = collideEntities;
 
 		this.collider = this.colliderAtRest.clone();
-		this.locPrev = new Disposition(null, null, null);
+		this.locPrev = Disposition.create();
 		this.ticksUntilCanCollide = 0;
 		this.entitiesAlreadyCollidedWith = [];
 		this.isDisabled = false;

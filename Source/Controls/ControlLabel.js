@@ -21,7 +21,7 @@ class ControlLabel extends ControlBase
 
 		// Helper variables.
 
-		this._drawPos = new Coords(0, 0, 0);
+		this._drawPos = Coords.create();
 	}
 
 	static fromPosAndText(pos, text)
@@ -35,7 +35,24 @@ class ControlLabel extends ControlBase
 			text,
 			10 // fontHeightInPixels
 		);
-	};
+	}
+
+	static from5
+	(
+		name, pos, size, isTextCentered,
+		text
+	)
+	{
+		return new ControlLabel
+		(
+			name,
+			pos,
+			size,
+			isTextCentered,
+			text,
+			null // fontHeightInPixels
+		);
+	}
 
 	actionHandle(actionName)
 	{

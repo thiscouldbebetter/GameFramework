@@ -28,7 +28,7 @@ class TalkNodeDefn
 			TalkNodeDefn._instances = new TalkNodeDefn_Instances();
 		}
 		return TalkNodeDefn._instances;
-	};
+	}
 }
 
 class TalkNodeDefn_Instances
@@ -106,7 +106,7 @@ class TalkNodeDefn_Instances
 			{
 				var variableName = talkNode.text;
 				var talkNodeNameToJumpTo = talkNode.next;
-				var variableValue = conversationRun.variableLookup.get(variableName);
+				var variableValue = conversationRun.variableByName(variableName);
 				if (variableValue == true)
 				{
 					scope.talkNodeAdvance(conversationRun);
@@ -131,7 +131,7 @@ class TalkNodeDefn_Instances
 			{
 				var variableName = talkNode.text;
 				var talkNodeNameToJumpTo = talkNode.next;
-				var variableValue = conversationRun.variableLookup.get(variableName);
+				var variableValue = conversationRun.variableByName(variableName);
 				if (variableValue == true)
 				{
 					scope.talkNodeCurrent = conversationRun.defn.talkNodeByName
@@ -262,7 +262,7 @@ class TalkNodeDefn_Instances
 				var scriptToRunAsString = "( function(u, cr) { return " + scriptExpression + "; } )";
 				var scriptToRun = eval(scriptToRunAsString);
 				var scriptResult = scriptToRun(conversationRun);
-				conversationRun.variableLookup.set(variableName, scriptResult);
+				conversationRun.variableSet(variableName, scriptResult);
 				scope.talkNodeAdvance(conversationRun);
 				conversationRun.update(universe); // hack
 			},
@@ -276,7 +276,7 @@ class TalkNodeDefn_Instances
 			{
 				var variableName = talkNode.text;
 				var variableValue = talkNode.next;
-				conversationRun.variableLookup.set(variableName, variableValue);
+				conversationRun.variableSet(variableName, variableValue);
 				scope.talkNodeAdvance(conversationRun);
 				conversationRun.update(universe); // hack
 			},
@@ -289,7 +289,7 @@ class TalkNodeDefn_Instances
 			(universe, conversationRun, scope, talkNode) => // execute
 			{
 				var variableName = talkNode.text;
-				var variableValue = conversationRun.variableLookup.get(variableName);
+				var variableValue = conversationRun.variableByName(variableName);
 				var scriptExpression = talkNode.next;
 				var scriptToRunAsString = "( function(u, cr) { " + scriptExpression + " = " + variableValue + "; } )";
 				var scriptToRun = eval(scriptToRunAsString);

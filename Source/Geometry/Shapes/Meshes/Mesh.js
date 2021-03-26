@@ -30,7 +30,7 @@ class Mesh
 	{
 		if (center == null)
 		{
-			center = new Coords(0, 0, 0);
+			center = Coords.create();
 		}
 		var size = new Coords(2, 2, 2);
 		var returnValue = Mesh.boxOfSize(center, size);
@@ -158,7 +158,7 @@ class Mesh
 	{
 		if (this._box == null)
 		{
-			this._box = new Box(new Coords(0, 0, 0), new Coords(0, 0, 0));
+			this._box = new Box(Coords.create(), Coords.create());
 		}
 		this._box.ofPoints(this.vertices());
 		return this._box;
@@ -195,7 +195,7 @@ class Mesh
 			this._vertices = [];
 			for (var v = 0; v < this.vertexOffsets.length; v++)
 			{
-				this._vertices.push(new Coords(0, 0, 0));
+				this._vertices.push(Coords.create());
 			}
 		}
 
@@ -289,7 +289,7 @@ class Mesh_FaceBuilder
 		}
 		var returnValue = new Face(faceVertices);
 		return returnValue;
-	};
+	}
 
 	vertexIndicesShift(offset)
 	{

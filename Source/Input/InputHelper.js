@@ -14,16 +14,17 @@ class InputHelper
 	inputsPressedByName;
 	keysToPreventDefaultsFor;
 
+	isEnabled;
 	isMouseMovementTracked;
 
 	constructor()
 	{
 		// Helper variables.
 
-		this.mouseClickPos = new Coords(0, 0, 0);
-		this.mouseMovePos = new Coords(0, 0, 0);
-		this.mouseMovePosPrev = new Coords(0, 0, 0);
-		this.mouseMovePosNext = new Coords(0, 0, 0);
+		this.mouseClickPos = Coords.create();
+		this.mouseMovePos = Coords.create();
+		this.mouseMovePosPrev = Coords.create();
+		this.mouseMovePosNext = Coords.create();
 
 		var inputNames = Input.Names();
 		this.inputNamesLookup = inputNames._AllByName;
@@ -35,6 +36,8 @@ class InputHelper
 
 		this.inputsPressed = [];
 		this.inputsPressedByName = new Map();
+
+		this.isEnabled = true;
 	}
 
 	actionsFromInput
@@ -43,7 +46,12 @@ class InputHelper
 		actionToInputsMappingsByInputName
 	)
 	{
-		var returnValues = [];
+		var returnValues = new Array();
+
+		if (this.isEnabled == false)
+		{
+			return returnValues;
+		}
 
 		var inputsPressed = this.inputsPressed;
 		for (var i = 0; i < inputsPressed.length; i++)

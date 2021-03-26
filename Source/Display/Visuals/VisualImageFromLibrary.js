@@ -11,7 +11,7 @@ class VisualImageFromLibrary
 		this.imageName = imageName;
 
 		// Helper variables.
-		this._drawPos = new Coords(0, 0, 0);
+		this._drawPos = Coords.create();
 	}
 
 	// static methods
@@ -28,7 +28,7 @@ class VisualImageFromLibrary
 		}
 
 		return returnValues;
-	};
+	}
 
 	// instance methods
 
@@ -42,7 +42,7 @@ class VisualImageFromLibrary
 	draw(universe, world, place, entity, display)
 	{
 		var image = this.image(universe);
-		var imageSize = this.image(universe).sizeInPixels;
+		var imageSize = image.sizeInPixels;
 		var drawPos = this._drawPos.clear().subtract(imageSize).half().add
 		(
 			entity.locatable().loc.pos

@@ -16,7 +16,7 @@ class Activity
 
 	defn(world)
 	{
-		return world.defn.activityDefnsByName().get(this.defnName);
+		return world.defn.activityDefnByName(this.defnName);
 	}
 
 	defnNameAndTargetSet(defnName, target)

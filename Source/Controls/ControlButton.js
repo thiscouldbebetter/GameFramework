@@ -14,9 +14,17 @@ class ControlButton extends ControlBase
 
 	constructor
 	(
-		name, pos, size, text,
-		fontHeightInPixels, hasBorder, isEnabled,
-		click, context, canBeHeldDown)
+		name,
+		pos,
+		size,
+		text,
+		fontHeightInPixels,
+		hasBorder,
+		isEnabled,
+		click,
+		context,
+		canBeHeldDown
+	)
 	{
 		super(name, pos, size, fontHeightInPixels);
 		this.text = text;
@@ -27,8 +35,47 @@ class ControlButton extends ControlBase
 		this.canBeHeldDown = (canBeHeldDown == null ? false : canBeHeldDown);
 
 		// Helper variables.
-		this._drawLoc = new Disposition(null, null, null);
-		this._sizeHalf = new Coords(0, 0, 0);
+		this._drawLoc = Disposition.create();
+		this._sizeHalf = Coords.create();
+	}
+
+	static from8
+	(
+		name,
+		pos,
+		size,
+		text,
+		fontHeightInPixels,
+		hasBorder,
+		isEnabled,
+		click
+	)
+	{
+		return new ControlButton
+		(
+			name, pos, size, text, fontHeightInPixels, hasBorder,
+			isEnabled, click, null, null
+		);
+	}
+
+	static from9
+	(
+		name,
+		pos,
+		size,
+		text,
+		fontHeightInPixels,
+		hasBorder,
+		isEnabled,
+		click,
+		context
+	)
+	{
+		return new ControlButton
+		(
+			name, pos, size, text, fontHeightInPixels, hasBorder,
+			isEnabled, click, context, null
+		);
 	}
 
 	actionHandle(actionNameToHandle, universe)
@@ -39,7 +86,7 @@ class ControlButton extends ControlBase
 		}
 
 		return (this.canBeHeldDown == false); // wasActionHandled
-	};
+	}
 
 	isEnabled()
 	{
