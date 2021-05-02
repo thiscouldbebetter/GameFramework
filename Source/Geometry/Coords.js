@@ -70,6 +70,13 @@ class Coords
 		return this;
 	}
 
+	addXY(x, y)
+	{
+		this.x += x;
+		this.y += y;
+		return this;
+	}
+
 	ceiling()
 	{
 		this.x = Math.ceil(this.x);
@@ -213,6 +220,11 @@ class Coords
 		return (this.x == other.x && this.y == other.y && this.z == other.z);
 	}
 
+	equalsWithinError(other, errorMax)
+	{
+		return (this.clone().subtract(other).magnitude() <= errorMax);
+	}
+
 	equalsXY(other)
 	{
 		return (this.x == other.x && this.y == other.y);
@@ -315,6 +327,11 @@ class Coords
 	magnitude()
 	{
 		return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+	}
+
+	magnitudeXY()
+	{
+		return Math.sqrt(this.x * this.x + this.y * this.y);
 	}
 
 	multiply(other)

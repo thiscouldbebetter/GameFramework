@@ -20,6 +20,11 @@ class Image2
 
 	// static methods
 
+	static create()
+	{
+		return new Image2(null, null);
+	}
+
 	static fromSystemImage(name, systemImage)
 	{
 		var returnValue = new Image2
@@ -39,9 +44,9 @@ class Image2
 
 	clone()
 	{
-		var returnValue = new Image2(null, null);
+		var returnValue = Image2.create();
 
-		returnValue.name = name;
+		returnValue.name = this.name;
 		returnValue.sourcePath = this.sourcePath;
 		returnValue.sizeInPixels = this.sizeInPixels.clone();
 		returnValue.systemImage = this.systemImage;

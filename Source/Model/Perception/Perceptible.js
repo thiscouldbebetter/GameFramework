@@ -1,6 +1,6 @@
 
 
-class Perceptible extends EntityProperty
+class Perceptible
 {
 	isHiding;
 	visibility;
@@ -16,8 +16,6 @@ class Perceptible extends EntityProperty
 		audibility
 	)
 	{
-		super();
-
 		this.isHiding = isHiding;
 		this.visibility = visibility;
 		this.audibility = audibility;
@@ -26,7 +24,11 @@ class Perceptible extends EntityProperty
 		this._isHidingPrev = null;
 	}
 
-	canBeSeen(u, w, p, entityPerceptible, entityPerceptor)
+	canBeSeen
+	(
+		u, w, p, entityPerceptible,
+		entityPerceptor
+	)
 	{
 		var perceptibleLoc = entityPerceptible.locatable().loc;
 		var perceptiblePos = perceptibleLoc.pos;
@@ -51,7 +53,11 @@ class Perceptible extends EntityProperty
 		return isInSight;
 	}
 
-	canBeHeard(u, w, p, entityPerceptible, entityPerceptor)
+	canBeHeard
+	(
+		u, w, p, entityPerceptible,
+		entityPerceptor
+	)
 	{
 		var perceptibleLoc = entityPerceptible.locatable().loc;
 		var perceptiblePos = perceptibleLoc.pos;
@@ -69,6 +75,11 @@ class Perceptible extends EntityProperty
 		var isInHearing = (audibilityAdjusted >= hearingThreshold);
 		return isInHearing;
 	}
+
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
 
 	updateForTimerTick(u, w, p, entity)
 	{

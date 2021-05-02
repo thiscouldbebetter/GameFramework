@@ -1,13 +1,12 @@
 
 
-class ForceField extends EntityProperty
+class ForceField
 {
 	accelerationToApply;
 	velocityToApply;
 
 	constructor(accelerationToApply, velocityToApply)
 	{
-		super();
 		this.accelerationToApply = accelerationToApply;
 		this.velocityToApply = velocityToApply;
 	}
@@ -50,4 +49,10 @@ class ForceField extends EntityProperty
 		}
 		return this;
 	}
+
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+	updateForTimerTick(u, w, p, e){}
 }

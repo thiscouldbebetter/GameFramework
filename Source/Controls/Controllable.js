@@ -1,12 +1,17 @@
 
 
-class Controllable extends EntityProperty
+class Controllable
 {
 	toControl;
 
 	constructor(toControl)
 	{
-		super();
 		this.toControl = toControl;
 	}
+
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+	updateForTimerTick(u, w, p, e){}
 }

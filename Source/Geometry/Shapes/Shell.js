@@ -75,5 +75,11 @@ class Shell
 	{
 		return surfacePointOut.overwriteWith(posToCheck); // todo
 	}
+
+	toBox(boxOut)
+	{
+		return this.sphereOuter.toBox(boxOut);
+	}
+
 }
 

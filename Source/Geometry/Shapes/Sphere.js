@@ -74,4 +74,11 @@ class Sphere
 	{
 		return surfacePointOut.overwriteWith(posToCheck); // todo
 	}
+
+	toBox(boxOut)
+	{
+		var diameter = this.radius * 2;
+		boxOut.size.overwriteWithDimensions(diameter, diameter, diameter);
+		return boxOut;
+	}
 }

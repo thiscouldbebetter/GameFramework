@@ -15,14 +15,19 @@ class VisualCircle
 		this.borderThickness = borderThickness || 1;
 	}
 
+	static fromRadiusAndColorFill(radius, colorFill)
+	{
+		return new VisualCircle(radius, colorFill, null, null);
+	}
+
 	draw(universe, world, place, entity, display)
 	{
 		display.drawCircle
 		(
 			entity.locatable().loc.pos,
 			this.radius,
-			Color.systemColorGet(this.colorFill),
-			Color.systemColorGet(this.colorBorder),
+			this.colorFill,
+			this.colorBorder,
 			this.borderThickness
 		);
 	}

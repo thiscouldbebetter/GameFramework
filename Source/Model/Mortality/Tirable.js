@@ -1,6 +1,6 @@
 
 
-class Tirable extends EntityProperty
+class Tirable
 {
 	staminaMaxAfterSleep;
 	staminaRecoveredPerTick;
@@ -20,7 +20,6 @@ class Tirable extends EntityProperty
 		fallAsleep
 	)
 	{
-		super();
 		this.staminaMaxAfterSleep = staminaMaxAfterSleep;
 		this.staminaRecoveredPerTick = staminaRecoveredPerTick;
 		this.staminaMaxLostPerTick = staminaMaxLostPerTick;
@@ -66,7 +65,15 @@ class Tirable extends EntityProperty
 		this.staminaAdd(0 - amountToSubtract);
 	}
 
-	updateForTimerTick(universe, world, place, entityStarvable)
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+
+	updateForTimerTick
+	(
+		universe, world, place, entityStarvable
+	)
 	{
 		if (this.isExhausted())
 		{

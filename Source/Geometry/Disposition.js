@@ -35,12 +35,36 @@ class Disposition
 
 	static create()
 	{
-		return new Disposition(null, null, null);
+		return new Disposition(Coords.create(), Orientation.default(), null);
+	}
+
+	static fromOrientation(orientation)
+	{
+		return new Disposition(Coords.create(), orientation, null);
 	}
 
 	static fromPos(pos)
 	{
-		return new Disposition(pos, null, null);
+		return new Disposition(pos, Orientation.default(), null);
+	}
+
+	static fromPosAndVel(pos, vel)
+	{
+		var returnValue = Disposition.fromPos(pos);
+		returnValue.vel = vel;
+		return returnValue;
+	}
+
+	equals(other)
+	{
+		var returnValue =
+		(
+			this.placeName == other.placeName
+			&& this.pos.equals(other.pos)
+			&& this.orientation.equals(other.orientation)
+		);
+
+		return returnValue;
 	}
 
 	place(world)

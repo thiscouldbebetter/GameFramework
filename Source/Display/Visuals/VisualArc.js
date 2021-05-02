@@ -12,7 +12,11 @@ class VisualArc
 	_drawPos;
 	_polar;
 
-	constructor(radiusOuter, radiusInner, directionMin, angleSpannedInTurns, colorFill, colorBorder)
+	constructor
+	(
+		radiusOuter, radiusInner, directionMin,
+		angleSpannedInTurns, colorFill, colorBorder
+	)
 	{
 		this.radiusOuter = radiusOuter;
 		this.radiusInner = radiusInner;
@@ -23,10 +27,14 @@ class VisualArc
 
 		// helper variables
 		this._drawPos = Coords.create();
-		this._polar = new Polar(0, 0, 0);
+		this._polar = Polar.create();
 	}
 
-	draw(universe, world, place, entity, display)
+	draw
+	(
+		universe, world, place, entity,
+		display
+	)
 	{
 		var drawableLoc = entity.locatable().loc;
 		var drawPos = this._drawPos.overwriteWith
@@ -45,8 +53,7 @@ class VisualArc
 			drawPos, // center
 			this.radiusInner, this.radiusOuter,
 			wedgeAngleMin, wedgeAngleMax,
-			Color.systemColorGet(this.colorFill),
-			Color.systemColorGet(this.colorBorder)
+			this.colorFill, this.colorBorder
 		);
 	}
 

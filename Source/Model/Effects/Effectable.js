@@ -1,12 +1,11 @@
 
 
-class Effectable extends EntityProperty
+class Effectable
 {
 	effects;
 
 	constructor(effects)
 	{
-		super();
 		this.effects = effects || new Array();
 	}
 
@@ -25,6 +24,11 @@ class Effectable extends EntityProperty
 		);
 		return returnValue;
 	}
+
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
 
 	updateForTimerTick(u, w, p, e)
 	{

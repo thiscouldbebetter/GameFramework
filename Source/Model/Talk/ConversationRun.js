@@ -6,7 +6,7 @@ class ConversationRun
 	quit;
 	entityPlayer;
 	entityTalker;
- 
+
 	scopeCurrent;
 	talkNodesForTranscript;
 	variablesByName;
@@ -156,11 +156,11 @@ class ConversationRun
 					), // pos
 					size, // size
 					false, // isTextCentered
-					new DataBinding
+					DataBinding.fromContextAndGet
 					(
 						conversationRun,
-						(c) => { return c.scopeCurrent.displayTextCurrent; },
-						null
+						(c) =>
+							c.scopeCurrent.displayTextCurrent
 					),
 					fontHeight
 				),
@@ -180,7 +180,7 @@ class ConversationRun
 					fontHeight
 				),
 
-				new ControlList
+				ControlList.from10
 				(
 					"listResponses",
 					new Coords
@@ -191,11 +191,11 @@ class ConversationRun
 					),
 					listSize,
 					// items
-					new DataBinding
+					DataBinding.fromContextAndGet
 					(
 						conversationRun,
-						(c) => { return c.scopeCurrent.talkNodesForOptionsActive(); },
-						null
+						(c) =>
+							c.scopeCurrent.talkNodesForOptionsActive()
 					),
 					// bindingForItemText
 					new DataBinding
@@ -208,37 +208,36 @@ class ConversationRun
 					new DataBinding
 					(
 						conversationRun,
-						(c) => c.scopeCurrent.talkNodeForOptionSelected,
-						(c, v) => { c.scopeCurrent.talkNodeForOptionSelected = v; }
+						(c) =>
+							c.scopeCurrent.talkNodeForOptionSelected,
+						(c, v) =>
+							c.scopeCurrent.talkNodeForOptionSelected = v
 					), // bindingForItemSelected
 					new DataBinding(null, null, null), // bindingForItemValue
-					DataBinding.fromContext(true), // isEnabled
+					DataBinding.fromTrue(), // isEnabled
 					(universe) => // confirm
 					{
 						next();
-					},
-					null
+					}
 				),
 
-				new ControlButton
+				ControlButton.from8
 				(
 					"buttonNext",
-					new Coords
+					Coords.fromXY
 					(
 						size.x - marginSize.x - buttonSize.x,
-						size.y - marginSize.y * 3 - buttonSize.y * 3,
-						0
+						size.y - marginSize.y * 3 - buttonSize.y * 3
 					),
 					buttonSize.clone(),
 					"Next",
 					fontHeight,
 					true, // hasBorder
 					true, // isEnabled
-					next, // click
-					null, null
+					next // click
 				),
 
-				new ControlButton
+				ControlButton.from8
 				(
 					"buttonTranscript",
 					new Coords
@@ -252,26 +251,23 @@ class ConversationRun
 					fontHeight,
 					true, // hasBorder
 					true, // isEnabled
-					viewLog, // click
-					null, null
+					viewLog // click
 				),
 
-				new ControlButton
+				ControlButton.from8
 				(
 					"buttonDone",
-					new Coords
+					Coords.fromXY
 					(
 						size.x - marginSize.x - buttonSize.x,
-						size.y - marginSize.y - buttonSize.y,
-						0
+						size.y - marginSize.y - buttonSize.y
 					),
 					buttonSize.clone(),
 					"Done",
 					fontHeight,
 					true, // hasBorder
 					true, // isEnabled
-					back, // click
-					null, null
+					back // click
 				),
 
 			], // children
@@ -303,26 +299,25 @@ class ConversationRun
 		var marginWidth = 25;
 		var labelHeight = fontHeight;
 		var buttonHeight = 25;
-		var marginSize = new Coords(1, 1, 0).multiplyScalar(marginWidth);
-		var listSize = new Coords
+		var marginSize = Coords.fromXY(1, 1).multiplyScalar(marginWidth);
+		var listSize = Coords.fromXY
 		(
 			size.x * .75,
-			size.y - labelHeight - marginSize.y * 3,
-			0
+			size.y - labelHeight - marginSize.y * 3
 		);
 
-		var returnValue = new ControlContainer
+		var returnValue = ControlContainer.from4
 		(
 			"containerConversation",
 			Coords.create(), // pos
 			size,
 			// children
 			[
-				new ControlButton
+				ControlButton.from8
 				(
 					"buttonBack",
 					marginSize, // pos
-					new Coords(1, 1, 0).multiplyScalar(buttonHeight), // size
+					Coords.fromXY(1, 1).multiplyScalar(buttonHeight), // size
 					"<",
 					fontHeight,
 					true, // hasBorder
@@ -335,16 +330,15 @@ class ConversationRun
 							venueNext, universe.venueCurrent
 						);
 						universe.venueNext = venueNext;
-					},
-					null, null
+					}
 				),
 
 				new ControlLabel
 				(
 					"labelTranscript",
-					new Coords
+					Coords.fromXY
 					(
-						size.x / 2, marginSize.y, 0
+						size.x / 2, marginSize.y
 					), // pos
 					size, // size
 					true, // isTextCentered
@@ -352,34 +346,28 @@ class ConversationRun
 					fontHeight
 				),
 
-				new ControlList
+				ControlList.from6
 				(
 					"listEntries",
-					new Coords
+					Coords.fromXY
 					(
 						(size.x - listSize.x) / 2,
-						marginSize.y * 2 + labelHeight,
-						0
+						marginSize.y * 2 + labelHeight
 					),
 					listSize,
 					// items
-					new DataBinding
+					DataBinding.fromContextAndGet
 					(
 						conversationRun,
-						(c) => { return c.talkNodesForTranscript; },
-						null
+						(c) => c.talkNodesForTranscript
 					),
-					new DataBinding
+					DataBinding.fromGet
 					(
-						null,
-						(c) => { return c.textForTranscript(conversationDefn); },
-						null
+						(c) => c.textForTranscript(conversationDefn)
 					), // bindingForItemText
-					fontHeightShort,
-					null, null, null, null, null
+					fontHeightShort
 				),
-			],
-			null, null
+			]
 		);
 
 		return returnValue;

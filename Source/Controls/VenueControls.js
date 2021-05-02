@@ -35,8 +35,8 @@ class VenueControls
 		var inputNames = Input.Names();
 
 		var inactivate = true;
-		this.actionToInputsMappings =
-		[
+		this.actionToInputsMappings = new Array
+		(
 			new ActionToInputsMapping
 			(
 				controlActionNames.ControlIncrement,
@@ -77,7 +77,7 @@ class VenueControls
 				ArrayHelper.addMany( [inputNames.Escape], buildGamepadInputs(inputNames.GamepadButton0) ),
 				inactivate
 			)
-		];
+		);
 
 		if (ignoreKeyboardAndGamepadInputs)
 		{
@@ -88,7 +88,7 @@ class VenueControls
 		if (mappingsGet != null)
 		{
 			var mappings = mappingsGet.call(this.controlRoot);
-			ArrayHelper.addMany(this.actionToInputsMappings, mappings);
+			this.actionToInputsMappings.push(...mappings);
 		}
 
 		this.actionToInputsMappingsByInputName = ArrayHelper.addLookupsMultiple
@@ -107,7 +107,7 @@ class VenueControls
 
 	static fromControl(controlRoot)
 	{
-		return new VenueControls(controlRoot, null);
+		return new VenueControls(controlRoot, false);
 	}
 
 	draw(universe)

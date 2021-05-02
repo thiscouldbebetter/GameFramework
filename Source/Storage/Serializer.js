@@ -20,7 +20,7 @@ class Serializer
 		var typeNames = new Array();
 		nodeRoot.wrap(typeNames, new Map(), [], []);
 
-		nodeRoot["typeNames"] = typeNames; 
+		nodeRoot["typeNames"] = typeNames;
 
 		var nodeRootSerialized = JSON.stringify
 		(

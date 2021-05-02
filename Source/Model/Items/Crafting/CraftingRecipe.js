@@ -5,30 +5,37 @@ class CraftingRecipe
 	name;
 	ticksToComplete;
 	itemsIn;
-	itemEntitiesOut;
+	itemsOut;
 
-	constructor(name, ticksToComplete, itemsIn, itemEntitiesOut)
+	constructor
+	(
+		name, ticksToComplete, itemsIn,
+		itemsOut
+	)
 	{
 		this.name = name;
 		this.ticksToComplete = ticksToComplete;
 		this.itemsIn = itemsIn;
-		this.itemEntitiesOut = itemEntitiesOut;
+		this.itemsOut = itemsOut;
 	}
 
 	isFulfilledByItemHolder(itemHolderStaged)
 	{
-		var itemEntitiesStaged = itemHolderStaged.itemEntities;
+		var itemsStaged = itemHolderStaged.items;
 		var areAllRequirementsFulfilledSoFar = true;
 
 		for (var i = 0; i < this.itemsIn.length; i++)
 		{
 			var itemRequired = this.itemsIn[i];
-			var itemEntityStaged = itemEntitiesStaged.filter
+			var itemStaged = itemsStaged.filter
 			(
-				x => x.item().defnName == itemRequired.defnName
+				x => x.defnName == itemRequired.defnName
 			)[0];
 			var isRequirementFulfilled =
-				(itemEntityStaged != null && itemEntityStaged.item().quantity >= itemRequired.quantity);
+			(
+				itemStaged != null
+				&& itemStaged.quantity >= itemRequired.quantity
+			);
 
 			if (isRequirementFulfilled == false)
 			{
@@ -44,7 +51,13 @@ class CraftingRecipe
 	{
 		return this.itemsIn.map
 		(
-			x => x.defnName + " (" + itemHolder.itemQuantityByDefnName(x.defnName) + "/" + x.quantity + ")"
+			x =>
+				x.defnName
+				+ " ("
+				+ itemHolder.itemQuantityByDefnName(x.defnName)
+				+ "/"
+				+ x.quantity
+				+ ")"
 		);
 	}
 
@@ -65,7 +78,7 @@ class CraftingRecipe
 		return new CraftingRecipe
 		(
 			this.name, this.ticksToComplete, ArrayHelper.clone(this.itemsIn),
-			ArrayHelper.clone(this.itemEntitiesOut)
+			ArrayHelper.clone(this.itemsOut)
 		);
 	}
 }

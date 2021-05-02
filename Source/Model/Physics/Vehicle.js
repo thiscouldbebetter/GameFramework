@@ -1,6 +1,6 @@
 
 
-class Vehicle extends EntityProperty
+class Vehicle
 {
 	accelerationPerTick;
 	speedMax;
@@ -14,7 +14,6 @@ class Vehicle extends EntityProperty
 		accelerationPerTick, speedMax, steeringAngleInTurns
 	)
 	{
-		super();
 		this.accelerationPerTick = accelerationPerTick;
 		this.speedMax = speedMax;
 		this.steeringAngleInTurns = steeringAngleInTurns;
@@ -23,7 +22,15 @@ class Vehicle extends EntityProperty
 		this.steeringDirection = 0;
 	}
 
-	updateForTimerTick(universe, world, place, entityVehicle)
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+
+	updateForTimerTick
+	(
+		universe, world, place, entityVehicle
+	)
 	{
 		if (this.entityOccupant != null)
 		{
@@ -69,7 +76,7 @@ class Vehicle extends EntityProperty
 					var occupantLoc = this.entityOccupant.locatable().loc;
 					occupantLoc.pos.overwriteWith(vehicleLoc.pos);
 					occupantLoc.vel.clear();
-					place.entitiesToSpawn.push(this.entityOccupant);
+					place.entityToSpawnAdd(this.entityOccupant);
 					this.entityOccupant = null;
 				}
 			}

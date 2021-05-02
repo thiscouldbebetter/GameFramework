@@ -1,6 +1,6 @@
 
 
-class ItemDefn extends EntityProperty
+class ItemDefn
 {
 	name;
 	appearance;
@@ -25,7 +25,6 @@ class ItemDefn extends EntityProperty
 		visual
 	)
 	{
-		super();
 		this.name = name;
 
 		this.appearance = appearance || name;
@@ -43,7 +42,10 @@ class ItemDefn extends EntityProperty
 		return new ItemDefn(name, null, null, null, null, null, null, null, null);
 	}
 
-	static fromNameCategoryNameAndUse(name, categoryName, use)
+	static fromNameCategoryNameAndUse
+	(
+		name, categoryName, use
+	)
 	{
 		var returnValue = ItemDefn.new1(name);
 		returnValue.categoryNames = [ categoryName ];
@@ -69,6 +71,13 @@ class ItemDefn extends EntityProperty
 		{
 			returnValue = this._use(u, w, p, eUsing, eUsed);
 		}
+
 		return returnValue;
 	}
+
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+	updateForTimerTick(u, w, p, e){}
 }

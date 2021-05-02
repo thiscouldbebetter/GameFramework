@@ -1,6 +1,6 @@
 
 
-class Constrainable extends EntityProperty
+class Constrainable
 {
 	constraints;
 
@@ -8,13 +8,31 @@ class Constrainable extends EntityProperty
 
 	constructor(constraints)
 	{
-		super();
-		this.constraints = constraints;
+		this.constraints = constraints || [];
 		this._constraintsByClassName =
 			ArrayHelper.addLookups(this.constraints, x => x.constructor.name);
 	}
 
-	static constrain(universe, world, place, entity)
+	static create()
+	{
+		return new Constrainable([]);
+	}
+
+	static fromConstraint(constraint)
+	{
+		return new Constrainable( [ constraint ] );
+	}
+
+	clear()
+	{
+		this.constraints.length = 0;
+		return this;
+	}
+
+	constrain
+	(
+		universe, world, place, entity
+	)
 	{
 		var constrainable = entity.constrainable();
 		var constraints = constrainable.constraints;
@@ -25,18 +43,38 @@ class Constrainable extends EntityProperty
 		}
 	}
 
+	constraintAdd(constraintToAdd)
+	{
+		this.constraints.push(constraintToAdd);
+		this._constraintsByClassName.set
+		(
+			constraintToAdd.constructor.name, constraintToAdd
+		);
+		return this;
+	}
+
 	constraintByClassName(constraintClassName)
 	{
 		return this._constraintsByClassName.get(constraintClassName);
 	}
 
-	initialize(universe, world, place, entity)
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+
+	initialize
+	(
+		universe, world, place, entity
+	)
 	{
 		this.updateForTimerTick(universe, world, place, entity);
 	}
 
-	updateForTimerTick(universe, world, place, entity)
+	updateForTimerTick
+	(
+		universe, world, place, entity
+	)
 	{
-		Constrainable.constrain(universe, world, place, entity);
+		this.constrain(universe, world, place, entity);
 	}
 }

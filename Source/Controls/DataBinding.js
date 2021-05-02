@@ -28,6 +28,11 @@ class DataBinding
 		return new DataBinding(null, get, null);
 	}
 
+	static fromTrue()
+	{
+		return DataBinding.fromContext(true);
+	}
+
 	contextSet(value)
 	{
 		this.context = value;

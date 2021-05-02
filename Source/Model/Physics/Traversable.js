@@ -1,12 +1,17 @@
 
 
-class Traversable extends EntityProperty
+class Traversable
 {
 	isBlocking
 
 	constructor(isBlocking)
 	{
-		super();
 		this.isBlocking = isBlocking;
 	}
+
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+	updateForTimerTick(u, w, p, e){}
 }

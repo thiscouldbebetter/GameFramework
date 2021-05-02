@@ -1,54 +1,64 @@
 
 
-class ItemHolder extends EntityProperty
+class ItemHolder
 {
-	itemEntities;
+	items;
 	massMax;
 	reachRadius;
 
-	itemEntitySelected;
+	itemSelected;
 	statusMessage;
 
 	constructor
 	(
-		itemEntities, massMax, reachRadius
+		items, massMax, reachRadius
 	)
 	{
-		super();
-		this.itemEntities = [];
+		this.items = [];
 		this.massMax = massMax;
 		this.reachRadius = reachRadius || 20;
 
-		itemEntities = itemEntities || [];
-		for (var i = 0; i < itemEntities.length; i++)
-		{
-			var itemEntity = itemEntities[i];
-			this.itemEntityAdd(itemEntity);
-		}
+		this.itemsAdd(items || []);
+	}
+
+	static create()
+	{
+		return new ItemHolder([], null, null);
+	}
+
+	static fromItems(items)
+	{
+		return new ItemHolder(items, null, null);
 	}
 
 	// Instance methods.
 
 	clear()
 	{
-		this.itemEntities.length = 0;
-		this.itemEntitySelected = null;
+		this.items.length = 0;
+		this.itemSelected = null;
 		this.statusMessage = "";
+
+		return this;
 	}
 
-	equipItemInNumberedSlot(universe, entityItemHolder, slotNumber)
+	equipItemInNumberedSlot
+	(
+		universe, entityItemHolder, slotNumber
+	)
 	{
-		var entityItemToEquip = this.itemEntitySelected;
-		if (entityItemToEquip != null)
+		var itemToEquip = this.itemSelected;
+		if (itemToEquip != null)
 		{
 			var world = universe.world;
 			var place = world.placeCurrent;
 			var equipmentUser = entityItemHolder.equipmentUser();
 			var socketName = "Item" + slotNumber;
 			var includeSocketNameInMessage = true;
+			var itemEntityToEquip = itemToEquip.toEntity();
 			var message = equipmentUser.equipItemEntityInSocketWithName
 			(
-				universe, world, place, entityItemHolder, entityItemToEquip,
+				universe, world, place, entityItemHolder, itemEntityToEquip,
 				socketName, includeSocketNameInMessage
 			);
 			this.statusMessage = message;
@@ -57,82 +67,100 @@ class ItemHolder extends EntityProperty
 
 	hasItem(itemToCheck)
 	{
-		return this.hasItemWithDefnNameAndQuantity(itemToCheck.defnName, itemToCheck.quantity);
+		return this.hasItemWithDefnNameAndQuantity
+		(
+			itemToCheck.defnName, itemToCheck.quantity
+		);
 	}
 
-	hasItemWithDefnNameAndQuantity(defnName, quantityToCheck)
+	hasItemWithDefnNameAndQuantity
+	(
+		defnName, quantityToCheck
+	)
 	{
 		var itemExistingQuantity = this.itemQuantityByDefnName(defnName);
 		var returnValue = (itemExistingQuantity >= quantityToCheck);
 		return returnValue;
 	}
 
-	itemEntitiesAdd(itemEntitiesToAdd)
+	itemEntities()
 	{
-		itemEntitiesToAdd.forEach(x => this.itemEntityAdd(x));
+		return this.items.map(x => x.toEntity());
 	}
 
-	itemEntitiesAllTransferTo(other)
+	itemsAdd(itemsToAdd)
 	{
-		this.itemEntitiesTransferTo(this.itemEntities, other);
+		itemsToAdd.forEach( (x) => this.itemAdd(x));
 	}
 
-	itemEntitiesByDefnName(defnName)
+	itemsAllTransferTo(other)
 	{
-		return this.itemEntities.filter
+		this.itemsTransferTo(this.items, other);
+	}
+
+	itemsByDefnName(defnName)
+	{
+		return this.items.filter
 		(
-			x => x.item().defnName == defnName
+			x => x.defnName == defnName
 		);
 	}
 
-	itemEntitiesTransferTo(itemEntitiesToTransfer, other)
+	itemsTransferTo(itemsToTransfer, other)
 	{
-		if (itemEntitiesToTransfer == this.itemEntities)
+		if (itemsToTransfer == this.items)
 		{
 			// Create a new array to avoid modifying the one being looped through.
-			itemEntitiesToTransfer = new Array();
-			itemEntitiesToTransfer.push(...this.itemEntities);
+			itemsToTransfer = new Array();
+			itemsToTransfer.push(...this.items);
 		}
-		for (var i = 0; i < itemEntitiesToTransfer.length; i++)
+
+		for (var i = 0; i < itemsToTransfer.length; i++)
 		{
-			var itemEntity = itemEntitiesToTransfer[i];
-			this.itemEntityTransferTo(itemEntity, other);
+			var item = itemsToTransfer[i];
+			this.itemTransferTo(item, other);
 		}
 	}
 
-	itemEntitiesWithDefnNameJoin(defnName)
+	itemsWithDefnNameJoin(defnName)
 	{
-		var itemEntitiesMatching = this.itemEntities.filter(x => x.item().defnName == defnName);
-		var itemEntityJoined = itemEntitiesMatching[0];
-		if (itemEntityJoined != null)
+		var itemsMatching = this.items.filter
+		(
+			x => x.defnName == defnName
+		);
+		var itemJoined = itemsMatching[0];
+		if (itemJoined != null)
 		{
-			var itemJoined = itemEntityJoined.item();
-			for (var i = 1; i < itemEntitiesMatching.length; i++)
+			for (var i = 1; i < itemsMatching.length; i++)
 			{
-				var itemEntityToJoin = itemEntitiesMatching[i];
-				itemJoined.quantity += itemEntityToJoin.item().quantity;
-				ArrayHelper.remove(this.itemEntities, itemEntityToJoin);
+				var itemToJoin = itemsMatching[i];
+				itemJoined.quantity += itemToJoin.quantity;
+				ArrayHelper.remove(this.items, itemToJoin);
 			}
 		}
-		return itemEntityJoined;
+
+		return itemJoined;
 	}
 
-	itemEntityAdd(itemEntityToAdd)
+	itemAdd(itemToAdd)
 	{
-		var itemToAdd = itemEntityToAdd.item();
 		var itemDefnName = itemToAdd.defnName;
-		var itemEntityExisting = this.itemEntitiesByDefnName(itemDefnName)[0];
-		if (itemEntityExisting == null)
+		var itemExisting = this.itemsByDefnName(itemDefnName)[0];
+		if (itemExisting == null)
 		{
-			this.itemEntities.push(itemEntityToAdd);
+			this.items.push(itemToAdd);
 		}
 		else
 		{
-			itemEntityExisting.item().quantity += itemToAdd.quantity;
+			itemExisting.quantity += itemToAdd.quantity;
 		}
 	}
 
-	itemEntityFindClosest(universe, world, place, entityItemHolder)
+	itemEntityFindClosest
+	(
+		universe, world, place,
+		entityItemHolder
+	)
 	{
 		var entityItemsInPlace = place.items();
 		var entityItemClosest = entityItemsInPlace.filter
@@ -149,14 +177,13 @@ class ItemHolder extends EntityProperty
 		return entityItemClosest;
 	}
 
-	itemEntityCanPickUp
+	itemCanPickUp
 	(
-		universe, world, place,
-		entityItemHolder, entityItemToPickUp
+		universe, world, place, itemToPickUp
 	)
 	{
 		var massAlreadyHeld = this.massOfAllItems(world);
-		var massOfItem = entityItemToPickUp.item().mass(world);
+		var massOfItem = itemToPickUp.mass(world);
 		var massAfterPickup = massAlreadyHeld + massOfItem;
 		var canPickUp = (massAfterPickup <= this.massMax);
 		return canPickUp;
@@ -165,69 +192,70 @@ class ItemHolder extends EntityProperty
 	itemEntityPickUp
 	(
 		universe, world, place,
-		entityItemHolder, entityItemToPickUp
+		entityItemHolder, itemEntityToPickUp
 	)
 	{
-		this.itemEntityAdd(entityItemToPickUp);
-		place.entitiesToRemove.push(entityItemToPickUp);
+		var itemToPickUp = itemEntityToPickUp.item();
+		this.itemAdd(itemToPickUp);
+		place.entitiesToRemove.push(itemEntityToPickUp);
 	}
 
-	itemEntityRemove(itemEntityToRemove)
+	itemRemove(itemToRemove)
 	{
-		var doesExist = this.itemEntities.indexOf(itemEntityToRemove) >= 0;
+		var doesExist = this.items.indexOf(itemToRemove) >= 0;
 		if (doesExist)
 		{
-			ArrayHelper.remove(this.itemEntities, itemEntityToRemove);
+			ArrayHelper.remove(this.items, itemToRemove);
 		}
 	}
 
-	itemEntitySplit(itemEntityToSplit, quantityToSplit)
+	itemSplit(itemToSplit, quantityToSplit)
 	{
-		var itemEntitySplitted = null;
+		var itemSplitted = null;
 
-		var itemToSplit = itemEntityToSplit.item();
 		if (itemToSplit.quantity <= 1)
 		{
-			itemEntitySplitted = itemEntityToSplit;
+			itemSplitted = itemToSplit;
 		}
 		else
 		{
-			quantityToSplit = quantityToSplit || Math.floor(itemToSplit.quantity / 2);
+			quantityToSplit =
+				quantityToSplit || Math.floor(itemToSplit.quantity / 2);
 			if (quantityToSplit >= itemToSplit.quantity)
 			{
-				itemEntitySplitted = itemEntityToSplit;
+				itemSplitted = itemToSplit;
 			}
 			else
 			{
 				itemToSplit.quantity -= quantityToSplit;
 
-				itemEntitySplitted = itemEntityToSplit.clone();
-				itemEntitySplitted.item().quantity = quantityToSplit;
+				itemSplitted = itemToSplit.clone();
+				itemSplitted.quantity = quantityToSplit;
 				// Add with no join.
 				ArrayHelper.insertElementAfterOther
 				(
-					this.itemEntities, itemEntitySplitted, itemEntityToSplit
+					this.items, itemSplitted, itemToSplit
 				);
 			}
 		}
 
-		return itemEntitySplitted;
+		return itemSplitted;
 	}
 
-	itemEntityTransferTo(itemEntity, other)
+	itemTransferTo(item, other)
 	{
-		other.itemEntityAdd(itemEntity);
-		ArrayHelper.remove(this.itemEntities, itemEntity);
-		if (this.itemEntitySelected == itemEntity)
+		other.itemAdd(item);
+		ArrayHelper.remove(this.items, item);
+		if (this.itemSelected == item)
 		{
-			this.itemEntitySelected = null;
+			this.itemSelected = null;
 		}
 	}
 
-	itemEntityTransferSingleTo(itemEntity, other)
+	itemTransferSingleTo(item, other)
 	{
-		var itemEntitySingle = this.itemEntitySplit(itemEntity, 1);
-		this.itemEntityTransferTo(itemEntitySingle, other);
+		var itemSingle = this.itemSplit(item, 1);
+		this.itemTransferTo(itemSingle, other);
 	}
 
 	itemQuantityByDefnName(defnName)
@@ -243,48 +271,56 @@ class ItemHolder extends EntityProperty
 
 	itemSubtract(itemToSubtract)
 	{
-		this.itemSubtractDefnNameAndQuantity(itemToSubtract.defnName, itemToSubtract.quantity);
+		this.itemSubtractDefnNameAndQuantity
+		(
+			itemToSubtract.defnName, itemToSubtract.quantity
+		);
 	}
 
-	itemSubtractDefnNameAndQuantity(itemDefnName, quantityToSubtract)
+	itemSubtractDefnNameAndQuantity
+	(
+		itemDefnName, quantityToSubtract
+	)
 	{
-		this.itemEntitiesWithDefnNameJoin(itemDefnName);
+		this.itemsWithDefnNameJoin(itemDefnName);
 		var itemExisting = this.itemsByDefnName(itemDefnName)[0];
 		if (itemExisting != null)
 		{
 			itemExisting.quantity -= quantityToSubtract;
 			if (itemExisting.quantity <= 0)
 			{
-				var itemEntityExisting = this.itemEntitiesByDefnName(itemDefnName)[0];
-				ArrayHelper.remove(this.itemEntities, itemEntityExisting);
+				var itemExisting = this.itemsByDefnName(itemDefnName)[0];
+				ArrayHelper.remove(this.items, itemExisting);
 			}
 		}
 	}
 
-	itemTransferTo(itemToTransfer, other)
+	/*
+	itemTransferTo2(itemToTransfer, other)
 	{
 		var itemDefnName = itemToTransfer.defnName;
-		this.itemEntitiesWithDefnNameJoin(itemDefnName);
-		var itemEntityExisting = this.itemEntitiesByDefnName(itemDefnName)[0];
-		if (itemEntityExisting != null)
+		this.itemsWithDefnNameJoin(itemDefnName);
+		var itemExisting = this.itemsByDefnName(itemDefnName)[0];
+		if (itemExisting != null)
 		{
-			var itemEntityToTransfer =
-				this.itemEntitySplit(itemEntityExisting, itemToTransfer.quantity);
-			other.itemEntityAdd(itemEntityToTransfer.clone());
+			var itemToTransfer =
+				this.itemSplit(itemExisting, itemToTransfer.quantity);
+			other.itemAdd(itemToTransfer.clone());
 			this.itemSubtract(itemToTransfer);
 		}
 	}
+	*/
 
-	itemsByDefnName(defnName)
+	itemsByDefnName2(defnName)
 	{
-		return this.itemEntitiesByDefnName(defnName).map(x => x.item());
+		return this.itemsByDefnName(defnName);
 	}
 
 	massOfAllItems(world)
 	{
-		var massTotal = this.itemEntities.reduce
+		var massTotal = this.items.reduce
 		(
-			(sumSoFar, itemEntity) => sumSoFar + itemEntity.item().mass(world),
+			(sumSoFar, item) => sumSoFar + item.mass(world),
 			0 // sumSoFar
 		);
 
@@ -298,18 +334,28 @@ class ItemHolder extends EntityProperty
 
 	tradeValueOfAllItems(world)
 	{
-		var tradeValueTotal = this.itemEntities.reduce
+		var tradeValueTotal = this.items.reduce
 		(
-			(sumSoFar, itemEntity) => sumSoFar + itemEntity.item().tradeValue(world),
+			(sumSoFar, item) => sumSoFar + item.tradeValue(world),
 			0 // sumSoFar
 		);
 
 		return tradeValueTotal;
 	}
 
-	// controls
+	// EntityProperty.
 
-	toControl(universe, size, entityItemHolder, venuePrev, includeTitleAndDoneButton)
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+	updateForTimerTick(u, w, p, e){}
+
+	// Controllable.
+
+	toControl
+	(
+		universe, size, entityItemHolder,
+		venuePrev, includeTitleAndDoneButton
+	)
 	{
 		this.statusMessage = "Use, drop, and sort items.";
 
@@ -318,7 +364,7 @@ class ItemHolder extends EntityProperty
 			size = universe.display.sizeDefault().clone();
 		}
 
-		var sizeBase = new Coords(200, 135, 1);
+		var sizeBase = Coords.fromXY(200, 135);
 
 		var fontHeight = 10;
 		var fontHeightSmall = fontHeight * .6;
@@ -336,7 +382,7 @@ class ItemHolder extends EntityProperty
 
 		var drop = () =>
 		{
-			var itemEntityToKeep = itemHolder.itemEntitySelected;
+			var itemEntityToKeep = itemHolder.itemSelected.toEntity();
 			if (itemEntityToKeep != null)
 			{
 				var world = universe.world;
@@ -348,11 +394,11 @@ class ItemHolder extends EntityProperty
 				var itemLocatable = itemEntityToDrop.locatable();
 				if (itemLocatable == null)
 				{
-					itemLocatable = new Locatable(null);
+					itemLocatable = Locatable.create();
 					itemEntityToDrop.propertyAddForPlace(itemLocatable, place);
 					itemEntityToDrop.propertyAddForPlace
 					(
-						new Drawable(itemToDropDefn.visual, null), place
+						Drawable.fromVisual(itemToDropDefn.visual), place
 					);
 					// todo - Other properties, etc.
 				}
@@ -368,7 +414,7 @@ class ItemHolder extends EntityProperty
 				itemHolder.itemSubtract(itemToDrop);
 				if (itemEntityToKeep.item().quantity == 0)
 				{
-					itemHolder.itemEntitySelected = null;
+					itemHolder.itemSelected = null;
 				}
 				itemHolder.statusMessage = itemToDropDefn.appearance + " dropped."
 				var equipmentUser = entityItemHolder.equipmentUser();
@@ -381,7 +427,7 @@ class ItemHolder extends EntityProperty
 
 		var use = () =>
 		{
-			var itemEntityToUse = itemHolder.itemEntitySelected;
+			var itemEntityToUse = itemHolder.itemSelected.toEntity();
 			if (itemEntityToUse != null)
 			{
 				var itemToUse = itemEntityToUse.item();
@@ -394,7 +440,7 @@ class ItemHolder extends EntityProperty
 						itemToUse.use(universe, world, place, user, itemEntityToUse);
 					if (itemToUse.quantity <= 0)
 					{
-						itemHolder.itemEntitySelected = null;
+						itemHolder.itemSelected = null;
 					}
 				}
 			}
@@ -402,51 +448,50 @@ class ItemHolder extends EntityProperty
 
 		var up = () =>
 		{
-			var itemEntityToMove = itemHolder.itemEntitySelected;
-			var itemEntitiesAll = itemHolder.itemEntities;
-			var index = itemEntitiesAll.indexOf(itemEntityToMove);
+			var itemToMove = itemHolder.itemSelected;
+			var itemsAll = itemHolder.items;
+			var index = itemsAll.indexOf(itemToMove);
 			if (index > 0)
 			{
-				itemEntitiesAll.splice(index, 1);
-				itemEntitiesAll.splice(index - 1, 0, itemEntityToMove);
+				itemsAll.splice(index, 1);
+				itemsAll.splice(index - 1, 0, itemToMove);
 			}
 		};
 
 		var down = () =>
 		{
-			var itemEntityToMove = itemHolder.itemEntitySelected;
-			var itemEntitiesAll = itemHolder.itemEntities;
-			var index = itemEntitiesAll.indexOf(itemEntityToMove);
-			if (index < itemEntitiesAll.length - 1)
+			var itemToMove = itemHolder.itemSelected;
+			var itemsAll = itemHolder.items;
+			var index = itemsAll.indexOf(itemToMove);
+			if (index < itemsAll.length - 1)
 			{
-				itemEntitiesAll.splice(index, 1);
-				itemEntitiesAll.splice(index + 1, 0, itemEntityToMove);
+				itemsAll.splice(index, 1);
+				itemsAll.splice(index + 1, 0, itemToMove);
 			}
 		};
 
 		var split = (universe) =>
 		{
-			itemHolder.itemEntitySplit(itemHolder.itemEntitySelected, null);
+			itemHolder.itemSplit(itemHolder.itemSelected, null);
 		};
 
 		var join = () =>
 		{
-			var itemEntityToJoin = itemHolder.itemEntitySelected;
-			var itemToJoin = itemEntityToJoin.item();
-			var itemEntityJoined =
-				itemHolder.itemEntitiesWithDefnNameJoin(itemToJoin.defnName);
-			itemHolder.itemEntitySelected = itemEntityJoined;
+			var itemToJoin = itemHolder.itemSelected;
+			var itemJoined =
+				itemHolder.itemsWithDefnNameJoin(itemToJoin.defnName);
+			itemHolder.itemSelected = itemJoined;
 		};
 
 		var sort = () =>
 		{
-			itemHolder.itemEntities.sort
+			itemHolder.items.sort
 			(
-				(x, y) => (x.item().defnName > y.item().defnName ? 1 : -1)
+				(x, y) => (x.defnName > y.defnName ? 1 : -1)
 			);
 		};
 
-		var buttonSize = new Coords(20, 10, 0);
+		var buttonSize = Coords.fromXY(20, 10);
 		var visualNone = new VisualNone();
 
 		var childControls =
@@ -454,190 +499,167 @@ class ItemHolder extends EntityProperty
 			new ControlLabel
 			(
 				"labelItemsHeld",
-				new Coords(10, 5, 0), // pos
-				new Coords(70, 25, 0), // size
+				Coords.fromXY(10, 5), // pos
+				Coords.fromXY(70, 25), // size
 				false, // isTextCentered
 				"Items Held:",
 				fontHeightSmall
 			),
 
-			new ControlList
+			ControlList.from10
 			(
 				"listItems",
-				new Coords(10, 15, 0), // pos
-				new Coords(70, 100, 0), // size
-				new DataBinding(this.itemEntities, null, null), // items
-				new DataBinding
+				Coords.fromXY(10, 15), // pos
+				Coords.fromXY(70, 100), // size
+				DataBinding.fromContext(this.items), // items
+				DataBinding.fromGet
 				(
-					null,
-					(c) => c.item().toString(world),
-					null
+					(c) => c.toString(world)
 				), // bindingForItemText
 				fontHeightSmall,
 				new DataBinding
 				(
 					this,
-					(c) => c.itemEntitySelected,
-					(c, v) => { c.itemEntitySelected = v; }
+					(c) => c.itemSelected,
+					(c, v) => c.itemSelected = v
 				), // bindingForItemSelected
 				DataBinding.fromGet( (c) => c ), // bindingForItemValue
-				DataBinding.fromContext(true), // isEnabled
-				(universe) => // confirm
-				{
-					use();
-				},
-				null
+				DataBinding.fromTrue(), // isEnabled
+				use
 			),
 
 			new ControlLabel
 			(
 				"infoWeight",
-				new Coords(10, 115, 0), // pos
-				new Coords(100, 25, 0), // size
+				Coords.fromXY(10, 115), // pos
+				Coords.fromXY(100, 25), // size
 				false, // isTextCentered
-				new DataBinding
+				DataBinding.fromContextAndGet
 				(
 					this,
-					(c) => "Weight: " + c.massOfAllItemsOverMax(world) ,
-					null
+					(c) => "Weight: " + c.massOfAllItemsOverMax(world)
 				),
 				fontHeightSmall
 			),
 
-			new ControlButton
+			ControlButton.from8
 			(
 				"buttonUp",
-				new Coords(85, 15, 0), // pos
-				new Coords(15, 10, 0), // size
+				Coords.fromXY(85, 15), // pos
+				Coords.fromXY(15, 10), // size
 				"Up",
 				fontHeightSmall,
 				true, // hasBorder
-				new DataBinding
+				DataBinding.fromContextAndGet
 				(
 					this,
 					(c) =>
 					{
 						var returnValue =
 						(
-							c.itemEntitySelected != null
-							&& c.itemEntities.indexOf(c.itemEntitySelected) > 0
+							c.itemSelected != null
+							&& c.items.indexOf(c.itemSelected) > 0
 						);
 						return returnValue;
-					},
-					null
+					}
 				), // isEnabled
-				up, // click
-				null, null
+				up // click
 			),
 
-			new ControlButton
+			ControlButton.from8
 			(
 				"buttonDown",
-				new Coords(85, 30, 0), // pos
-				new Coords(15, 10, 0), // size
+				Coords.fromXY(85, 30), // pos
+				Coords.fromXY(15, 10), // size
 				"Down",
 				fontHeightSmall,
 				true, // hasBorder
-				new DataBinding
+				DataBinding.fromContextAndGet
 				(
 					this,
 					(c) =>
 					{
 						var returnValue =
 						(
-							c.itemEntitySelected != null
-							&& c.itemEntities.indexOf(c.itemEntitySelected) < c.itemEntities.length - 1
+							c.itemSelected != null
+							&& c.items.indexOf(c.itemSelected) < c.items.length - 1
 						);
 						return returnValue;
-					},
-					null
+					}
 				), // isEnabled
-				down,
-				null, null
+				down
 			),
 
-			new ControlButton
+			ControlButton.from8
 			(
 				"buttonSplit",
-				new Coords(85, 45, 0), // pos
-				new Coords(15, 10, 0), // size
+				Coords.fromXY(85, 45), // pos
+				Coords.fromXY(15, 10), // size
 				"Split",
 				fontHeightSmall,
 				true, // hasBorder
-				new DataBinding
+				DataBinding.fromContextAndGet
 				(
 					this,
 					(c) =>
 					{
-						var itemEntity = c.itemEntitySelected;
+						var item = c.itemSelected;
 						var returnValue =
 						(
-							itemEntity != null
-							&& (itemEntity.item().quantity > 1)
+							item != null
+							&& (item.quantity > 1)
 						);
 						return returnValue;
-					},
-					null
+					}
 				), // isEnabled
-				split,
-				null, null
+				split
 			),
 
-			new ControlButton
+			ControlButton.from8
 			(
 				"buttonJoin",
-				new Coords(85, 60, 0), // pos
-				new Coords(15, 10, 0), // size
+				Coords.fromXY(85, 60), // pos
+				Coords.fromXY(15, 10), // size
 				"Join",
 				fontHeightSmall,
 				true, // hasBorder
-				new DataBinding
+				DataBinding.fromContextAndGet
 				(
 					this,
-					(c) => 
-					{
-						var returnValue =
+					(c) =>
+						c.itemSelected != null
+						&&
 						(
-							c.itemEntitySelected != null
-							&&
+							c.items.filter
 							(
-								c.itemEntities.filter
-								(
-									(x) => x.item().defnName == c.itemEntitySelected.item().defnName
-								).length > 1
-							)
-						);
-						return returnValue;
-					},
-					null
+								(x) => x.defnName == c.itemSelected.defnName
+							).length > 1
+						)
 				), // isEnabled
-				join,
-				null, null
+				join
 			),
 
-			new ControlButton
+			ControlButton.from8
 			(
 				"buttonSort",
-				new Coords(85, 75, 0), // pos
-				new Coords(15, 10, 0), // size
+				Coords.fromXY(85, 75), // pos
+				Coords.fromXY(15, 10), // size
 				"Sort",
 				fontHeightSmall,
 				true, // hasBorder
-				new DataBinding
+				DataBinding.fromContextAndGet
 				(
 					this,
-					(c) => (c.itemEntities.length > 1),
-					null
+					(c) => (c.itemEntities.length > 1)
 				), // isEnabled
-				sort,
-				null, null
+				sort
 			),
 
 			new ControlLabel
 			(
 				"labelItemSelected",
-				new Coords(150, 10, 0), // pos
-				new Coords(100, 15, 0), // size
+				Coords.fromXY(150, 10), // pos
+				Coords.fromXY(100, 15), // size
 				true, // isTextCentered
 				"Item Selected:",
 				fontHeightSmall
@@ -646,100 +668,86 @@ class ItemHolder extends EntityProperty
 			new ControlLabel
 			(
 				"infoItemSelected",
-				new Coords(150, 20, 0), // pos
-				new Coords(200, 15, 0), // size
+				Coords.fromXY(150, 20), // pos
+				Coords.fromXY(200, 15), // size
 				true, // isTextCentered
-				new DataBinding
+				DataBinding.fromContextAndGet
 				(
 					this,
 					(c) =>
 					{
-						var i = c.itemEntitySelected;
-						return (i == null ? "-" : i.item().toString(world));
-					},
-					null
+						var i = c.itemSelected;
+						return (i == null ? "-" : i.toString(world));
+					}
 				), // text
 				fontHeightSmall
 			),
 
-			new ControlVisual
+			ControlVisual.from5
 			(
 				"visualImage",
-				new Coords(125, 25, 0), // pos
-				new Coords(50, 50, 0), // size
-				new DataBinding
+				Coords.fromXY(125, 25), // pos
+				Coords.fromXY(50, 50), // size
+				DataBinding.fromContextAndGet
 				(
 					this,
 					(c) =>
 					{
-						var i = c.itemEntitySelected;
-						return (i == null ? visualNone : i.item().defn(world).visual);
-					},
-					null
+						var i = c.itemSelected;
+						return (i == null ? visualNone : i.defn(world).visual);
+					}
 				),
-				Color.byName("Black"), // colorBackground
-				null
+				Color.byName("Black") // colorBackground
 			),
 
 			new ControlLabel
 			(
 				"infoStatus",
-				new Coords(150, 115, 0), // pos
-				new Coords(200, 15, 0), // size
+				Coords.fromXY(150, 115), // pos
+				Coords.fromXY(200, 15), // size
 				true, // isTextCentered
-				new DataBinding
+				DataBinding.fromContextAndGet
 				(
 					this,
-					(c) => c.statusMessage,
-					null
+					(c) => c.statusMessage
 				), // text
 				fontHeightSmall
 			),
 
-			new ControlButton
+			ControlButton.from8
 			(
 				"buttonUse",
-				new Coords(132.5, 95, 0), // pos
-				new Coords(15, 10, 0), // size
+				Coords.fromXY(132.5, 95), // pos
+				Coords.fromXY(15, 10), // size
 				"Use",
 				fontHeightSmall,
 				true, // hasBorder
-				new DataBinding
+				DataBinding.fromContextAndGet
 				(
 					this,
 					(c) =>
 					{
-						var itemEntity = c.itemEntitySelected;
-						return (itemEntity != null && itemEntity.item().isUsable(world));
-					},
-					null
+						var item = c.itemSelected;
+						return (item != null && item.isUsable(world));
+					}
 				), // isEnabled
-				(universe) => 
-				{
-					use();
-				},
-				null, null
+				use // click
 			),
 
-			new ControlButton
+			ControlButton.from8
 			(
 				"buttonDrop",
-				new Coords(152.5, 95, 0), // pos
-				new Coords(15, 10, 0), // size
+				Coords.fromXY(152.5, 95), // pos
+				Coords.fromXY(15, 10), // size
 				"Drop",
 				fontHeightSmall,
 				true, // hasBorder
-				new DataBinding
+				DataBinding.fromContextAndGet
 				(
 					this,
-					(c) => (c.itemEntitySelected != null),
-					null
+					(c) => (c.itemSelected != null)
 				), // isEnabled
-				(universe) => // click
-				{
-					drop();
-				},
-				null, null
+				drop // click
 			)
 		];
 
@@ -760,7 +768,7 @@ class ItemHolder extends EntityProperty
 				new Action("Drop", drop),
 				new Action("Use", use),
 
-				new Action("Item0", () => itemHolder.equipItemInNumberedSlot(universe, entityItemHolder, 0) ),
+				new Action("Item0", () => itemHolder.equipItemInNumberedSlot(universe, entityItemHolder, null) ),
 				new Action("Item1", () => itemHolder.equipItemInNumberedSlot(universe, entityItemHolder, 1) ),
 				new Action("Item2", () => itemHolder.equipItemInNumberedSlot(universe, entityItemHolder, 2) ),
 				new Action("Item3", () => itemHolder.equipItemInNumberedSlot(universe, entityItemHolder, 3) ),
@@ -806,8 +814,8 @@ class ItemHolder extends EntityProperty
 				new ControlLabel
 				(
 					"labelItems",
-					new Coords(100, -5, 0), // pos
-					new Coords(100, 25, 0), // size
+					Coords.fromXY(100, -5), // pos
+					Coords.fromXY(100, 25), // size
 					true, // isTextCentered
 					"Items",
 					fontHeightLarge
@@ -815,20 +823,19 @@ class ItemHolder extends EntityProperty
 			);
 			childControls.push
 			(
-				new ControlButton
+				ControlButton.from8
 				(
 					"buttonDone",
-					new Coords(170, 115, 0), // pos
+					Coords.fromXY(170, 115), // pos
 					buttonSize.clone(),
 					"Done",
 					fontHeightSmall,
 					true, // hasBorder
 					true, // isEnabled
-					back, // click
-					null, null
+					back // click
 				)
 			);
-			var titleHeight = new Coords(0, 15, 0);
+			var titleHeight = Coords.fromXY(0, 15);
 			sizeBase.add(titleHeight);
 			returnValue.size.add(titleHeight);
 			returnValue.shiftChildPositions(titleHeight);
@@ -846,7 +853,7 @@ class ItemHolder extends EntityProperty
 	{
 		return new ItemHolder
 		(
-			ArrayHelper.clone(this.itemEntities),
+			ArrayHelper.clone(this.items),
 			this.massMax,
 			this.reachRadius
 		);

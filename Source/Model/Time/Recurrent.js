@@ -1,6 +1,6 @@
 
 
-class Recurrent extends EntityProperty
+class Recurrent
 {
 	ticksPerRecurrence;
 	timesToRecur;
@@ -11,7 +11,6 @@ class Recurrent extends EntityProperty
 
 	constructor(ticksPerRecurrence, timesToRecur, recur)
 	{
-		super();
 		this.ticksPerRecurrence = ticksPerRecurrence;
 		this.timesToRecur = timesToRecur;
 		this.recur = recur;
@@ -19,6 +18,11 @@ class Recurrent extends EntityProperty
 		this.timesRecurredSoFar = 0;
 		this.ticksUntilRecurrence = this.ticksPerRecurrence;
 	}
+
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
 
 	updateForTimerTick(universe, world, place, entity)
 	{

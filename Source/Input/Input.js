@@ -34,7 +34,6 @@ class Input_Names
 	ArrowRight;
 	ArrowUp;
 	Backspace;
-	Backtick;
 	Control;
 	Enter;
 	Escape;
@@ -75,7 +74,7 @@ class Input_Names
 		this.Space = "_";
 		this.Tab = "Tab";
 
-		this._All = 
+		this._All =
 		[
 			this.ArrowDown,
 			this.ArrowLeft,

@@ -31,6 +31,16 @@ class Wedge
 		this.rayDirectionMinAsPolar = new Polar(0, 1, 0);
 	}
 
+	angleAsRangeExtent()
+	{
+		var angleStartInTurns = this.directionMin.headingInTurns();
+		return new RangeExtent
+		(
+			angleStartInTurns,
+			angleStartInTurns + this.angleSpannedInTurns
+		);
+	}
+
 	angleInTurnsMax()
 	{
 		var returnValue = NumberHelper.wrapToRangeMinMax
@@ -133,7 +143,7 @@ class Wedge
 		return this._collider;
 	}
 
-	// cloneable
+	// Clonable.
 
 	clone()
 	{
@@ -145,6 +155,27 @@ class Wedge
 		this.vertex.overwriteWith(other.vertex);
 		this.directionMin.overwriteWith(other.directionMin);
 		this.angleSpannedInTurns = other.angleSpannedInTurns;
+		return this;
 	}
+
+	// ShapeBase.
+
+	locate(loc)
+	{
+		this.vertex.overwriteWith(loc.pos);
+		return this;
+	}
+
+	normalAtPos(posToCheck, normalOut)
+	{
+		throw("Not implemented!");
+	}
+
+	surfacePointNearPos(posToCheck, surfacePointOut)
+	{
+		throw("Not implemented!");
+	}
+
+	toBox(boxOut){ throw("Not implemented!"); }
 }
 

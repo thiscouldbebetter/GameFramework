@@ -52,8 +52,8 @@ class VisualText
 			text,
 			this.heightInPixels,
 			entity.locatable().loc.pos,
-			Color.systemColorGet(this.colorFill),
-			Color.systemColorGet(this.colorBorder),
+			this.colorFill,
+			this.colorBorder,
 			false, // areColorsReversed
 			true, // isCentered
 			null // widthMaxInPixels

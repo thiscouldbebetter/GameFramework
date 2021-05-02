@@ -28,30 +28,28 @@ class ControlScrollbar extends ControlBase
 
 		this.handleSize = new Coords(this.size.x, this.size.x, 0);
 
-		this.buttonScrollUp = new ControlButton
+		this.buttonScrollUp = ControlButton.from8
 		(
-			null, // name
+			"buttonScrollUp", // name
 			Coords.create(), // pos
 			this.handleSize.clone(), // size
 			"-", // text
 			this.fontHeightInPixels,
 			true, // hasBorder
 			true, // isEnabled
-			this.scrollUp, // click
-			null, null
+			this.scrollUp // click
 		);
 
-		this.buttonScrollDown = new ControlButton
+		this.buttonScrollDown = ControlButton.from8
 		(
-			null, // name
+			"buttonScrollDown", // name
 			new Coords(0, this.size.y - this.handleSize.y, 0), // pos
 			this.handleSize.clone(), // size
 			"+", // text
 			this.fontHeightInPixels,
 			true, // hasBorder
 			true, // isEnabled
-			this.scrollDown, // click
-			null, null
+			this.scrollDown // click
 		);
 
 		// Helper variables.
@@ -166,7 +164,7 @@ class ControlScrollbar extends ControlBase
 			var colorBack = (this.isHighlighted ? style.colorBorder : style.colorFill);
 
 			var drawPos = this._drawPos.overwriteWith(drawLoc.pos).add(this.pos);
-			display.drawRectangle(drawPos, this.size, Color.systemColorGet(colorFore), null, null);
+			display.drawRectangle(drawPos, this.size, colorFore, null, null);
 
 			drawLoc.pos.add(this.pos);
 			this.buttonScrollDown.draw(universe, display, drawLoc, style);
@@ -178,8 +176,7 @@ class ControlScrollbar extends ControlBase
 			display.drawRectangle
 			(
 				sliderPosInPixels, sliderSizeInPixels,
-				Color.systemColorGet(colorBack), 
-				Color.systemColorGet(colorFore),
+				colorBack, colorFore,
 				null
 			);
 		}

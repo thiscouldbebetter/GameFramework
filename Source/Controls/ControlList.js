@@ -28,8 +28,10 @@ class ControlList extends ControlBase
 		items,
 		bindingForItemText,
 		fontHeightInPixels,
-		bindingForItemSelected, bindingForItemValue,
-		bindingForIsEnabled, confirm,
+		bindingForItemSelected,
+		bindingForItemValue,
+		bindingForIsEnabled,
+		confirm,
 		widthInItems
 	)
 	{
@@ -38,7 +40,7 @@ class ControlList extends ControlBase
 		this.bindingForItemText = bindingForItemText;
 		this.bindingForItemSelected = bindingForItemSelected;
 		this.bindingForItemValue = bindingForItemValue;
-		this.bindingForIsEnabled = bindingForIsEnabled || DataBinding.fromContext(true);
+		this.bindingForIsEnabled = bindingForIsEnabled || DataBinding.fromTrue();
 		this.confirm = confirm;
 		this.widthInItems = widthInItems || 1;
 
@@ -60,7 +62,7 @@ class ControlList extends ControlBase
 
 		// Helper variables.
 		this._drawPos = Coords.create();
-		this._drawLoc = new Disposition(this._drawPos, null, null);
+		this._drawLoc = Disposition.fromPos(this._drawPos);
 		this._mouseClickPos = Coords.create();
 	}
 
@@ -72,11 +74,11 @@ class ControlList extends ControlBase
 			pos,
 			size,
 			items,
-			new DataBinding(null, null, null), // bindingForItemText,
+			DataBinding.fromContext(null), // bindingForItemText,
 			10, // fontHeightInPixels,
 			null, // bindingForItemSelected,
 			null, // bindingForItemValue,
-			DataBinding.fromContext(true), // isEnabled
+			DataBinding.fromTrue(), // isEnabled
 			null, null
 		);
 
@@ -99,7 +101,7 @@ class ControlList extends ControlBase
 			10, // fontHeightInPixels,
 			null, // bindingForItemSelected,
 			null, // bindingForItemValue,
-			DataBinding.fromContext(true), // isEnabled
+			DataBinding.fromTrue(), // isEnabled
 			null, null
 		);
 
@@ -157,6 +159,49 @@ class ControlList extends ControlBase
 		(
 			name, pos, size, items, bindingForItemText, fontHeightInPixels,
 			bindingForItemSelected, bindingForItemValue, null, null, null
+		);
+	}
+
+	static from9
+	(
+		name,
+		pos,
+		size,
+		items,
+		bindingForItemText,
+		fontHeightInPixels,
+		bindingForItemSelected,
+		bindingForItemValue,
+		bindingForIsEnabled
+	)
+	{
+		return new ControlList
+		(
+			name, pos, size, items, bindingForItemText, fontHeightInPixels,
+			bindingForItemSelected, bindingForItemValue, bindingForIsEnabled,
+			null, null
+		);
+	}
+
+	static from10
+	(
+		name,
+		pos,
+		size,
+		items,
+		bindingForItemText,
+		fontHeightInPixels,
+		bindingForItemSelected,
+		bindingForItemValue,
+		bindingForIsEnabled,
+		confirm
+	)
+	{
+		return new ControlList
+		(
+			name, pos, size, items, bindingForItemText, fontHeightInPixels,
+			bindingForItemSelected, bindingForItemValue, bindingForIsEnabled,
+			confirm, null
 		);
 	}
 
@@ -385,11 +430,11 @@ class ControlList extends ControlBase
 		return true; // wasActionHandled
 	}
 
-	mouseEnter() {}
+	mouseEnter(){}
 
-	mouseExit() {}
+	mouseExit(){}
 
-	mouseMove(movePos) {}
+	mouseMove(movePos){ return false; }
 
 	scalePosAndSize(scaleFactor)
 	{
@@ -398,11 +443,17 @@ class ControlList extends ControlBase
 		this.fontHeightInPixels *= scaleFactor.y;
 		this._itemSpacing.multiply(scaleFactor);
 		this.scrollbar.scalePosAndSize(scaleFactor);
+
+		return this;
 	}
 
 	// drawable
 
-	draw(universe, display, drawLoc, style)
+	draw
+	(
+		universe, display, drawLoc,
+		style
+	)
 	{
 		drawLoc = this._drawLoc.overwriteWith(drawLoc);
 		var drawPos = this._drawPos.overwriteWith(drawLoc.pos).add(this.pos);
@@ -415,8 +466,8 @@ class ControlList extends ControlBase
 		(
 			drawPos,
 			this.size,
-			Color.systemColorGet(colorBack), // fill
-			Color.systemColorGet(style.colorBorder), // border
+			colorBack, // fill
+			style.colorBorder, // border
 			false // areColorsReversed
 		);
 
@@ -469,7 +520,7 @@ class ControlList extends ControlBase
 				(
 					drawPos2,
 					this.itemSpacing(),
-					Color.systemColorGet(colorFore), // colorFill
+					colorFore, // colorFill
 					null, null
 				);
 			}
@@ -489,8 +540,8 @@ class ControlList extends ControlBase
 				text,
 				this.fontHeightInPixels,
 				drawPos2,
-				Color.systemColorGet(colorFore),
-				Color.systemColorGet(colorBack),
+				colorFore,
+				colorBack,
 				(i == this.indexOfItemSelected(null)), // areColorsReversed
 				false, // isCentered
 				this.size.x // widthMaxInPixels

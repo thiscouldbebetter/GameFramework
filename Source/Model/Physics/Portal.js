@@ -1,6 +1,6 @@
 
 
-class Portal extends EntityProperty
+class Portal
 {
 	destinationPlaceName;
 	destinationEntityName;
@@ -12,13 +12,16 @@ class Portal extends EntityProperty
 		velocityToApply
 	)
 	{
-		super();
 		this.destinationPlaceName = destinationPlaceName;
 		this.destinationEntityName = destinationEntityName;
 		this.velocityToApply = velocityToApply;
 	}
 
-	use(universe, world, placeToDepart, entityToTransport, entityPortal)
+	use
+	(
+		universe, world, placeToDepart,
+		entityToTransport, entityPortal
+	)
 	{
 		var entityPortalCollidable = entityPortal.collidable();
 		entityPortalCollidable.ticksUntilCanCollide = 40; // hack
@@ -45,7 +48,11 @@ class Portal extends EntityProperty
 		universe.venueNext = venueMessage;
 	}
 
-	transport(universe, world, placeToDepart, entityToTransport, entityPortal)
+	transport
+	(
+		universe, world, placeToDepart,
+		entityToTransport, entityPortal
+	)
 	{
 		var destinationPlace = world.placesByName.get(this.destinationPlaceName);
 		destinationPlace.initialize(universe, world);
@@ -69,8 +76,8 @@ class Portal extends EntityProperty
 			entityToTransportLoc.vel.overwriteWith(this.velocityToApply);
 		}
 
-		placeToDepart.entitiesToRemove.push(entityToTransport);
-		destinationPlace.entitiesToSpawn.push(entityToTransport);
+		placeToDepart.entityToRemoveAdd(entityToTransport);
+		destinationPlace.entityToSpawnAdd(entityToTransport);
 	}
 
 	clone()
@@ -82,4 +89,10 @@ class Portal extends EntityProperty
 			this.velocityToApply == null ? null : this.velocityToApply.clone()
 		);
 	}
+
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+	updateForTimerTick(u, w, p, e){}
 }

@@ -7,6 +7,8 @@ class WorldDefn
 
 	constructor(defnArrays)
 	{
+		defnArrays = defnArrays || [];
+
 		this.defnArraysByTypeName = new Map();
 		this.defnsByNameByTypeName = new Map();
 
@@ -14,38 +16,56 @@ class WorldDefn
 		{
 			var defnsOfType = defnArrays[i];
 			var defnsByName = ArrayHelper.addLookupsByName(defnsOfType);
-			var itemFirst = defnsOfType[0];
-			var itemTypeName = itemFirst.constructor.name;
-			this.defnArraysByTypeName.set(itemTypeName, defnsOfType);
-			this.defnsByNameByTypeName.set(itemTypeName, defnsByName);
+			if (defnsOfType.length > 0)
+			{
+				var itemFirst = defnsOfType[0];
+				var itemTypeName = itemFirst.constructor.name;
+				this.defnArraysByTypeName.set(itemTypeName, defnsOfType);
+				this.defnsByNameByTypeName.set(itemTypeName, defnsByName);
+			}
 		}
+	}
+
+	static default()
+	{
+		return new WorldDefn(null);
 	}
 
 	// Convenience methods.
 
-	actionDefnByName(defnName)
+	actionByName(defnName)
 	{
-		return this.defnsByNameByTypeName.get(Action.name).get(defnName);
+		var defnsByName = this.defnsByNameByTypeName.get(Action.name);
+		var returnValue = defnsByName.get(defnName) ;
+		return returnValue;
 	}
 
 	activityDefnByName(defnName)
 	{
-		return this.defnsByNameByTypeName.get(ActivityDefn.name).get(defnName);
+		var defnsByName = this.defnsByNameByTypeName.get(ActivityDefn.name);
+		var returnValue = defnsByName.get(defnName) ;
+		return returnValue;
 	}
 
 	entityDefnByName(defnName)
 	{
-		return this.defnsByNameByTypeName.get(Entity.name).get(defnName);
+		var defnsByName = this.defnsByNameByTypeName.get(Entity.name);
+		var returnValue = defnsByName.get(defnName) ;
+		return returnValue;
 	}
 
 	itemDefnByName(defnName)
 	{
-		return this.defnsByNameByTypeName.get(ItemDefn.name).get(defnName);
+		var defnsByName = this.defnsByNameByTypeName.get(ItemDefn.name);
+		var returnValue = defnsByName.get(defnName) ;
+		return returnValue;
 	}
 
 	placeDefnByName(defnName)
 	{
-		return this.defnsByNameByTypeName.get(PlaceDefn.name).get(defnName);
+		var defnsByName = this.defnsByNameByTypeName.get(PlaceDefn.name);
+		var returnValue = defnsByName.get(defnName) ;
+		return returnValue;
 	}
 
 }

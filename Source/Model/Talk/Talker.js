@@ -1,16 +1,19 @@
 
 
-class Talker extends EntityProperty
+class Talker
 {
 	conversationDefnName;
 
 	constructor(conversationDefnName)
 	{
-		super();
 		this.conversationDefnName = conversationDefnName;
 	}
 
-	talk(universe, world, place, entityTalker, entityTalkee)
+	talk
+	(
+		universe, world, place,
+		entityTalker, entityTalkee
+	)
 	{
 		var conversationDefnAsJSON =
 			universe.mediaLibrary.textStringGetByName(this.conversationDefnName).value;
@@ -34,4 +37,11 @@ class Talker extends EntityProperty
 
 		universe.venueNext = venueNext;
 	}
+
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+	updateForTimerTick(u, w, p, e){}
+
 }

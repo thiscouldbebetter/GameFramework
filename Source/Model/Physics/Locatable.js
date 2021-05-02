@@ -1,18 +1,47 @@
 
 
-class Locatable extends EntityProperty
+class Locatable
 {
 	loc;
 
 	constructor(loc)
 	{
-		super();
 		this.loc = loc || Disposition.create();
+	}
+
+	static create()
+	{
+		return new Locatable(null);
 	}
 
 	static fromPos(pos)
 	{
 		return new Locatable(Disposition.fromPos(pos));
+	}
+
+	static entitiesSortByZThenY(entitiesToSort)
+	{
+		entitiesToSort.sort
+		(
+			(a, b) =>
+			{
+				var aPos = a.locatable().loc.pos;
+				var bPos = b.locatable().loc.pos;
+				var returnValue;
+				if (aPos.z != bPos.z)
+				{
+					returnValue = bPos.z - aPos.z;
+				}
+				else
+				{
+					returnValue = aPos.y - bPos.y;
+				}
+
+				return returnValue;
+			}
+		);
+
+		return entitiesToSort;
 	}
 
 	approachOtherWithAccelerationAndSpeedMax
@@ -116,4 +145,10 @@ class Locatable extends EntityProperty
 	{
 		return new Locatable(this.loc.clone());
 	}
+
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+
 }

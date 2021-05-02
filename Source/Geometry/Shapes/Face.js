@@ -124,6 +124,16 @@ class Face
 		return this;
 	}
 
+	// ShapeBase.
+
+	locate(loc){ throw("Not implemented!"); }
+
+	normalAtPos(posToCheck, normalOut){ throw("Not implemented!"); }
+
+	surfacePointNearPos(posToCheck, surfacePointOut){ throw("Not implemented!"); }
+
+	toBox(boxOut){ throw("Not implemented!"); }
+
 	// Transformable.
 
 	transform(transformToApply)

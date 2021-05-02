@@ -41,7 +41,7 @@ class PlaceZoned extends Place
 	initialize(universe, world)
 	{
 		var zoneStart = this.zoneGetByName(this.zoneStartName);
-		this.entitiesToSpawn.push(...zoneStart.entities);
+		this.entitiesToSpawnAdd(zoneStart.entities);
 		super.initialize(universe, world);
 	}
 
@@ -76,7 +76,7 @@ class PlaceZoned extends Place
 				{
 					zone.entities.forEach
 					(
-						entity => 
+						entity =>
 						{
 							entity.locatable().loc.pos.subtract(zone.bounds.min());
 							this.entitiesToRemove.push(entity);
@@ -91,10 +91,10 @@ class PlaceZoned extends Place
 				{
 					zone.entities.forEach
 					(
-						entity => 
+						entity =>
 						{
 							entity.locatable().loc.pos.add(zone.bounds.min());
-							this.entitiesToSpawn.push(entity);
+							this.entityToSpawnAdd(entity);
 						}
 					)
 				}

@@ -1,6 +1,6 @@
 
 
-class Usable extends EntityProperty
+class Usable
 {
 	_use;
 
@@ -8,7 +8,6 @@ class Usable extends EntityProperty
 
 	constructor(use)
 	{
-		super();
 		this._use = use;
 
 		this.isDisabled = false;
@@ -36,4 +35,10 @@ class Usable extends EntityProperty
 		this._use = other._use;
 		return this;
 	}
+
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+	updateForTimerTick(u, w, p, e){}
 }

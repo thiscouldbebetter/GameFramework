@@ -2,12 +2,10 @@
 
 class VisualRotate
 {
-	rotationInTurns;
 	child;
 
-	constructor(rotationInTurns, child)
+	constructor(child)
 	{
-		this.rotationInTurns = rotationInTurns;
 		this.child = child;
 	}
 
@@ -15,7 +13,13 @@ class VisualRotate
 	{
 		display.stateSave();
 
-		display.rotateTurnsAroundCenter(this.rotationInTurns, entity.locatable().loc.pos);
+		var entityLoc = entity.locatable().loc;
+
+		var rotationInTurns = entityLoc.orientation.forward.headingInTurns();
+		display.rotateTurnsAroundCenter
+		(
+			rotationInTurns, entityLoc.pos
+		);
 
 		this.child.draw(universe, world, place, entity, display);
 

@@ -51,5 +51,7 @@ class MapLocated
 	{
 		return surfacePointOut.overwriteWith(posToCheck); // todo
 	}
+
+	toBox(boxOut){ throw("Not implemented!"); }
 }
 

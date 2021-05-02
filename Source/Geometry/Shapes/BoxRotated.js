@@ -76,6 +76,8 @@ class BoxRotated
 		return surfacePointOut.overwriteWith(posToCheck); // todo
 	}
 
+	toBox(boxOut){ throw("Not implemented!"); }
+
 	// cloneable
 
 	clone()

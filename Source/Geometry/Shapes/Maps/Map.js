@@ -5,7 +5,7 @@ class MapOfCells
 	name;
 	sizeInCells;
 	cellSize;
-	cellPrototype;
+	cellCreate;
 	_cellAtPosInCells;
 	cellSource;
 
@@ -16,15 +16,25 @@ class MapOfCells
 
 	_cell;
 	_posInCells;
+	_posInCellsMax;
+	_posInCellsMin;
 
-	constructor(name, sizeInCells, cellSize, cellPrototype, cellAtPosInCells, cellSource)
+	constructor
+	(
+		name,
+		sizeInCells,
+		cellSize,
+		cellCreate,
+		cellAtPosInCells,
+		cellSource
+	)
 	{
 		this.name = name;
 		this.sizeInCells = sizeInCells;
 		this.cellSize = cellSize;
-		this.cellPrototype = cellPrototype;
-		this._cellAtPosInCells = cellAtPosInCells;
-		this.cellSource = cellSource;
+		this.cellCreate = cellCreate || this.cellCreateDefault;
+		this._cellAtPosInCells = cellAtPosInCells || this.cellAtPosInCellsDefault;
+		this.cellSource = cellSource || new Array();
 
 		this.sizeInCellsMinusOnes = this.sizeInCells.clone().subtract
 		(
@@ -35,8 +45,10 @@ class MapOfCells
 		this.cellSizeHalf = this.cellSize.clone().half();
 
 		// Helper variables.
-		this._cell = this.cellPrototype.clone();
+		this._cell = this.cellCreate();
 		this._posInCells = Coords.create();
+		this._posInCellsMax = Coords.create();
+		this._posInCellsMin = Coords.create();
 	}
 
 	cellAtPos(pos)
@@ -50,22 +62,78 @@ class MapOfCells
 		return this._cellAtPosInCells(this, cellPosInCells, this._cell);
 	}
 
-	numberOfCells()
+	cellAtPosInCellsDefault(map, cellPosInCells, cell)
+	{
+		var cellIndex = cellPosInCells.y * this.sizeInCells.x + cellPosInCells.x;
+		var cell = this.cellSource[cellIndex] ;
+		if (cell == null)
+		{
+			cell = this.cellCreate();
+			this.cellSource[cellIndex] = cell;
+		}
+		return cell;
+	}
+
+	cellCreateDefault()
+	{
+		return {};
+	}
+
+	cellsCount()
 	{
 		return this.sizeInCells.x * this.sizeInCells.y;
 	}
 
+	cellsInBoxAddToList(box, cellsInBox)
+	{
+		ArrayHelper.clear(cellsInBox);
+
+		var minPosInCells = this._posInCellsMin.overwriteWith
+		(
+			box.min()
+		).divide
+		(
+			this.cellSize
+		).floor().trimToRangeMax
+		(
+			this.sizeInCellsMinusOnes
+		);
+
+		var maxPosInCells = this._posInCellsMax.overwriteWith
+		(
+			box.max()
+		).divide
+		(
+			this.cellSize
+		).floor().trimToRangeMax
+		(
+			this.sizeInCellsMinusOnes
+		);
+
+		var cellPosInCells = this._posInCells;
+		for (var y = minPosInCells.y; y <= maxPosInCells.y; y++)
+		{
+			cellPosInCells.y = y;
+
+			for (var x = minPosInCells.x; x <= maxPosInCells.x; x++)
+			{
+				cellPosInCells.x = x;
+
+				var cellAtPos = this.cellAtPosInCells(cellPosInCells);
+				cellsInBox.push(cellAtPos);
+			}
+		}
+
+		return cellsInBox;
+	}
+
 	cellsAsEntities(mapAndCellPosToEntity)
 	{
-		var returnValues = [];
+		var returnValues = new Array();
 
 		var cellPosInCells = Coords.create();
 		var cellPosStart = Coords.create();
 		var cellPosEnd = this.sizeInCells;
-
-		// todo
-		// var cellSizeInPixels = this.cellSize;
-		// var cellVisual = new VisualRectangle(cellSizeInPixels, Color.byName("Blue"), null, false); // isCentered
 
 		for (var y = cellPosStart.y; y < cellPosEnd.y; y++)
 		{
@@ -90,14 +158,19 @@ class MapOfCells
 	{
 		return new MapOfCells
 		(
-			this.name, this.sizeInCells, this.cellSize,
-			this.cellPrototype, this.cellAtPosInCells, this.cellSource
+			this.name,
+			this.sizeInCells,
+			this.cellSize,
+			this.cellCreate,
+			this._cellAtPosInCells,
+			this.cellSource
 		);
 	}
 
 	overwriteWith(other)
 	{
 		this.cellSource.overwriteWith(other.cellSource);
+		return this;
 	}
 }
 

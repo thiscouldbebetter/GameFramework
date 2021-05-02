@@ -36,16 +36,16 @@ function main()
 	var universe = Universe.create
 	(
 		"Game Framework Demo Game",
-		"0.0.0-20200829-2200", // version
+		"0.0.0-20210502-0030", // version
 		timerHelper,
 		display,
 		mediaLibrary,
 		controlBuilder,
-		null // worldCreate
+		World.create
 	);
 	universe.initialize
 	(
-		function() { universe.start(); }
+		() => universe.start()
 	);
 }
 

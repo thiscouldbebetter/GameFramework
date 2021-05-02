@@ -19,7 +19,18 @@ class VisualPolygon
 		this.transformLocate = new Transform_Locate(null);
 	}
 
-	draw(universe, world, place, entity, display)
+	static fromVerticesAndColorFill(vertices, colorFill)
+	{
+		var verticesAsPath = new Path(vertices);
+		var returnValue = new VisualPolygon(verticesAsPath, colorFill, null);
+		return returnValue;
+	}
+
+	draw
+	(
+		universe, world, place, entity,
+		display
+	)
 	{
 		var drawableLoc = entity.locatable().loc;
 		this.transformLocate.loc.overwriteWith(drawableLoc);
@@ -38,8 +49,7 @@ class VisualPolygon
 		display.drawPolygon
 		(
 			this.verticesAsPathTransformed.points,
-			Color.systemColorGet(this.colorFill),
-			Color.systemColorGet(this.colorBorder)
+			this.colorFill, this.colorBorder
 		);
 	}
 

@@ -1,18 +1,25 @@
 
 
-class Ephemeral extends EntityProperty
+class Ephemeral
 {
 	ticksToLive;
 	expire;
 
 	constructor(ticksToLive, expire)
 	{
-		super();
 		this.ticksToLive = ticksToLive;
 		this.expire = expire;
 	}
 
-	updateForTimerTick(universe, world, place, entityEphemeral)
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+
+	updateForTimerTick
+	(
+		universe, world, place, entityEphemeral
+	)
 	{
 		this.ticksToLive--;
 		if (this.ticksToLive <= 0)

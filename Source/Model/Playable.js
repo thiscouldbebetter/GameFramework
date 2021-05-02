@@ -1,6 +1,6 @@
 
 
-class Playable extends EntityProperty
+class Playable
 {
 	static toControlMenu
 	(
@@ -10,7 +10,7 @@ class Playable extends EntityProperty
 		var controlsForTabs = new Array();
 
 		var fontHeight = 12;
-		var labelSize = new Coords(300, fontHeight * 1.25, 0);
+		var labelSize = Coords.fromXY(300, fontHeight * 1.25);
 		var marginX = fontHeight;
 
 		var timePlayingAsString =
@@ -21,7 +21,7 @@ class Playable extends EntityProperty
 			new ControlLabel
 			(
 				"labelProfile",
-				new Coords(marginX, labelSize.y, 0), // pos
+				Coords.fromXY(marginX, labelSize.y), // pos
 				labelSize.clone(),
 				false, // isTextCentered
 				"Profile: " + universe.profile.name,
@@ -31,7 +31,7 @@ class Playable extends EntityProperty
 			new ControlLabel
 			(
 				"labelTimePlaying",
-				new Coords(marginX, labelSize.y * 2, 0), // pos
+				Coords.fromXY(marginX, labelSize.y * 2), // pos
 				labelSize.clone(),
 				false, // isTextCentered
 				"Time Playing: " + timePlayingAsString,
@@ -45,7 +45,7 @@ class Playable extends EntityProperty
 			var labelHealth = new ControlLabel
 			(
 				"labelHealth",
-				new Coords(marginX, labelSize.y * 3, 0), // pos
+				Coords.fromXY(marginX, labelSize.y * 3), // pos
 				labelSize.clone(),
 				false, // isTextCentered
 				"Health: " + entity.killable().integrity + "/" + entity.killable().integrityMax,
@@ -54,10 +54,10 @@ class Playable extends EntityProperty
 			controlsForStatusFields.push(labelHealth);
 		}
 
-		var tabButtonSize = new Coords(36, 20, 0);
+		var tabButtonSize = Coords.fromXY(36, 20);
 		var tabPageSize = size.clone().subtract
 		(
-			new Coords(0, tabButtonSize.y + fontHeight, 0)
+			Coords.fromXY(0, tabButtonSize.y + fontHeight)
 		);
 
 		var includeTitleAndDoneButtonFalse = false;
@@ -104,7 +104,7 @@ class Playable extends EntityProperty
 			var labelExperience = new ControlLabel
 			(
 				"labelExperience",
-				new Coords(marginX, labelSize.y * 4, 0), // pos
+				Coords.fromXY(marginX, labelSize.y * 4), // pos
 				labelSize.clone(),
 				false, // isTextCentered
 				"Experience: " + entity.skillLearner().learningAccumulated,
@@ -129,14 +129,13 @@ class Playable extends EntityProperty
 		);
 		controlsForTabs.push(gameAndSettingsMenuAsControl);
 
-		var statusAsControl = new ControlContainer
+		var statusAsControl = ControlContainer.from4
 		(
 			"Status",
 			Coords.create(), // pos
 			size.clone().addDimensions(0, -32, 0), // size
 			// children
-			controlsForStatusFields,
-			null, null
+			controlsForStatusFields
 		);
 		controlsForTabs.splice(0, 0, statusAsControl);
 
@@ -160,7 +159,10 @@ class Playable extends EntityProperty
 		return returnValue;
 	}
 
-	static toControlWorldOverlay(universe, size, entity)
+	static toControlWorldOverlay
+	(
+		universe, size, entity
+	)
 	{
 		var world = universe.world;
 		var place = world.placeCurrent;
@@ -174,7 +176,7 @@ class Playable extends EntityProperty
 
 		var worldDefn = world.defn;
 
-		var playerVisualBarSize = new Coords(entityDimension * 4, entityDimension, 0);
+		var playerVisualBarSize = Coords.fromXY(entityDimension * 4, entityDimension);
 
 		var killable = entity.killable();
 		var playerVisualHealthBar = new VisualBar
@@ -182,9 +184,9 @@ class Playable extends EntityProperty
 			null, // "H", // abbreviation
 			playerVisualBarSize,
 			Color.Instances().Red,
-			new DataBinding(null, (c) => killable.integrity, null),
+			DataBinding.fromGet((c) => killable.integrity),
 			null, // amountThreshold
-			new DataBinding(null, (c) => killable.integrityMax, null),
+			DataBinding.fromGet((c) => killable.integrityMax),
 			null, // fractionBelowWhichToShow
 			null, // colorForBorderAsValueBreakGroup
 			null // text
@@ -198,7 +200,7 @@ class Playable extends EntityProperty
 			new VisualOffset
 			(
 				playerVisualHealthIcon,
-				new Coords(-playerVisualBarSize.x / 2 - playerVisualBarSize.y, 0, 0)
+				Coords.fromXY(-playerVisualBarSize.x / 2 - playerVisualBarSize.y, 0)
 			)
 		]);
 
@@ -208,9 +210,9 @@ class Playable extends EntityProperty
 			null, // "F", // abbreviation
 			playerVisualBarSize,
 			Color.Instances().Brown,
-			new DataBinding(null, (c) => starvable.satiety, null ),
+			DataBinding.fromGet((c) => starvable.satiety),
 			null, // amountThreshold
-			new DataBinding(null, (c) => starvable.satietyMax, null ),
+			DataBinding.fromGet((c) => starvable.satietyMax),
 			null, // fractionBelowWhichToShow
 			null, // colorForBorderAsValueBreakGroup
 			null // text
@@ -224,7 +226,7 @@ class Playable extends EntityProperty
 			new VisualOffset
 			(
 				playerVisualSatietyIcon,
-				new Coords(-playerVisualBarSize.x / 2 - playerVisualBarSize.y, 0, 0)
+				Coords.fromXY(-playerVisualBarSize.x / 2 - playerVisualBarSize.y, 0)
 			)
 		]);
 
@@ -234,9 +236,9 @@ class Playable extends EntityProperty
 			null, // "S", // abbreviation
 			playerVisualBarSize,
 			Color.Instances().Yellow,
-			new DataBinding(null, (c) => tirable.stamina, null ),
-			new DataBinding(null, (c) => tirable.staminaMaxRemainingBeforeSleep, null ),
-			new DataBinding(null, (c) => tirable.staminaMaxAfterSleep, null ),
+			DataBinding.fromGet( (c) => tirable.stamina),
+			DataBinding.fromGet( (c) => tirable.staminaMaxRemainingBeforeSleep),
+			DataBinding.fromGet( (c) => tirable.staminaMaxAfterSleep),
 			null, // fractionBelowWhichToShow
 			null, // colorForBorderAsValueBreakGroup
 			null // text
@@ -245,7 +247,7 @@ class Playable extends EntityProperty
 		var playerVisualStaminaIcon = new VisualImageScaled
 		(
 			new VisualImageFromLibrary("Zap"),
-			new Coords(1, 1, 0).multiplyScalar(playerVisualBarSize.y * 1.5)
+			Coords.fromXY(1, 1).multiplyScalar(playerVisualBarSize.y * 1.5)
 		);
 
 		var playerVisualStaminaBarPlusIcon = new VisualGroup
@@ -254,7 +256,7 @@ class Playable extends EntityProperty
 			new VisualOffset
 			(
 				playerVisualStaminaIcon,
-				new Coords(-playerVisualBarSize.x / 2 - playerVisualBarSize.y, 0, 0)
+				Coords.fromXY(-playerVisualBarSize.x / 2 - playerVisualBarSize.y, 0)
 			)
 		]);
 
@@ -284,25 +286,21 @@ class Playable extends EntityProperty
 			null, // "T", // abbreviation
 			playerVisualBarSize,
 			Color.Instances().Cyan,
-			new DataBinding
+			DataBinding.fromGet
 			(
-				null,
-				(c) => world.timerTicksSoFar % timerTicksPerGameDay,
-				null
+				(c) => world.timerTicksSoFar % timerTicksPerGameDay
 			),
 			null, // threshold
-			new DataBinding
+			DataBinding.fromGet
 			(
-				null,
-				(c) => timerTicksPerGameDay,
-				null
+				(c) => timerTicksPerGameDay
 			),
 			null, // fractionBelowWhichToShow
 			null, // colorForBorderAsValueBreakGroup
 			// text
-			new DataBinding
+			DataBinding.fromContextAndGet
 			(
-				world, (c) => ticksToHH_MM(c.timerTicksSoFar), null
+				world, (c) => ticksToHH_MM(c.timerTicksSoFar)
 			)
 		);
 
@@ -314,11 +312,11 @@ class Playable extends EntityProperty
 			new VisualOffset
 			(
 				playerVisualTimeIcon,
-				new Coords(-playerVisualBarSize.x / 2 - playerVisualBarSize.y, 0, 0)
+				Coords.fromXY(-playerVisualBarSize.x / 2 - playerVisualBarSize.y, 0)
 			)
 		]);
 
-		var childSpacing = new Coords(0, playerVisualBarSize.y * 2, 0);
+		var childSpacing = Coords.fromXY(0, playerVisualBarSize.y * 2);
 
 		var playerVisualStatusInfo= new VisualGroup
 		([
@@ -340,13 +338,12 @@ class Playable extends EntityProperty
 			)
 		]);
 
-		var controlPlayerStatusInfo = new ControlVisual
+		var controlPlayerStatusInfo = ControlVisual.from4
 		(
 			"visualPlayerStatusInfo",
-			new Coords(5, 2, 0).multiplyScalar(playerVisualBarSize.y), // pos
+			Coords.fromXY(5, 2).multiplyScalar(playerVisualBarSize.y), // pos
 			Coords.create(), // size
-			DataBinding.fromContext(playerVisualStatusInfo),
-			null, null
+			DataBinding.fromContext(playerVisualStatusInfo)
 		);
 
 		childControls.push(controlPlayerStatusInfo);
@@ -356,10 +353,10 @@ class Playable extends EntityProperty
 		var selector = entity.selector();
 
 		var controlSelectionSize =
-			new Coords(playerVisualBarSize.x * 1.5, margin * 3, 0);
+			Coords.fromXY(playerVisualBarSize.x * 1.5, margin * 3);
 
 		var controlSelectionPos =
-			new Coords(size.x - controlSelectionSize.x - margin, margin, 0);
+			Coords.fromXY(size.x - controlSelectionSize.x - margin, margin);
 
 		var controlSelection =
 			selector.toControl(controlSelectionSize, controlSelectionPos);
@@ -370,13 +367,13 @@ class Playable extends EntityProperty
 
 		var itemQuickSlotCount = 10;
 
-		var buttonSize = new Coords(25, 25, 0);
+		var buttonSize = Coords.fromXY(25, 25);
 		var buttonWidthAll = itemQuickSlotCount * buttonSize.x;
 		var buttonMargin = (size.x - buttonWidthAll) / (itemQuickSlotCount + 1);
 
-		var buttonPos = new Coords
+		var buttonPos = Coords.fromXY
 		(
-			buttonMargin, size.y - margin - buttonSize.y, 0
+			buttonMargin, size.y - margin - buttonSize.y
 		);
 
 		var useItemInQuickSlot = (slotNumber) =>
@@ -418,12 +415,12 @@ class Playable extends EntityProperty
 				false // canBeHeldDown
 			);
 
-			var visualItemInQuickSlot = new ControlVisual
+			var visualItemInQuickSlot = ControlVisual.from4
 			(
 				"visualItemInQuickSlot",
 				buttonPos.clone(),
 				buttonSize,
-				new DataBinding
+				DataBinding.fromContextAndGet
 				(
 					i,
 					(c) =>
@@ -437,17 +434,15 @@ class Playable extends EntityProperty
 							returnValue = item.defn(world).visual;
 						}
 						return returnValue;
-					},
-					null
-				),
-				null, null // colorBackground, colorBorder
+					}
+				)
 			);
 
 			childControls.push(visualItemInQuickSlot);
 			childControls.push(button);
 
 			buttonPos.x += buttonSize.x + buttonMargin;
-		} 
+		}
 
 		var controlOverlayContainer = new ControlContainer
 		(
@@ -464,5 +459,11 @@ class Playable extends EntityProperty
 
 		return controlOverlayTransparent;
 	}
+
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+	updateForTimerTick(u, w, p, e){}
 
 }

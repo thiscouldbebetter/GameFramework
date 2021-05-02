@@ -1,6 +1,6 @@
 
 
-class Equippable extends EntityProperty
+class Equippable
 {
 	_equip;
 	_unequip;
@@ -13,13 +13,20 @@ class Equippable extends EntityProperty
 		unequip
 	)
 	{
-		super();
 		this._equip = equip;
 		this._unequip = unequip;
 		this.isEquipped = false;
 	}
 
-	equip(u, w, p, eEquipmentUser, eEquippable)
+	static create()
+	{
+		return new Equippable(null, null);
+	}
+
+	equip
+	(
+		u, w, p, eEquipmentUser, eEquippable
+	)
 	{
 		if (this._equip != null)
 		{
@@ -28,7 +35,10 @@ class Equippable extends EntityProperty
 		this.isEquipped = true;
 	}
 
-	unequip(u, w, p, eEquipmentUser, eEquippable)
+	unequip
+	(
+		u, w, p, eEquipmentUser, eEquippable
+	)
 	{
 		if (this._unequip != null)
 		{
@@ -47,5 +57,11 @@ class Equippable extends EntityProperty
 	overwriteWith(other)
 	{
 		return this;
-	} 
+	}
+
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+	updateForTimerTick(u, w, p, e){}
 }

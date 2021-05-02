@@ -1,11 +1,12 @@
 
 
-class Place
+class Place //
 {
 	name;
 	defnName;
 	size;
 	entities;
+	entitiesById;
 	entitiesByName;
 
 	_entitiesByPropertyName;
@@ -19,12 +20,24 @@ class Place
 		this.defnName = defnName;
 		this.size = size;
 		this.entities = [];
+		this.entitiesById = new Map();
 		this.entitiesByName = new Map();
 
 		this._entitiesByPropertyName = new Map();
 		this.entitiesToSpawn = entities.slice();
 		this.entitiesToRemove = [];
 		this.isLoaded = false;
+	}
+
+	static default()
+	{
+		return new Place
+		(
+			"Default",
+			"Default", // defnName,
+			Coords.fromXY(1, 1).multiplyScalar(1000), // size
+			[] // entities
+		);
 	}
 
 	defn(world)
@@ -34,15 +47,26 @@ class Place
 
 	draw(universe, world, display)
 	{
-		var entitiesDrawable = this.entitiesByPropertyName(Drawable.name);
-		for (var i = 0; i < entitiesDrawable.length; i++)
+		var colorBlack = Color.byName("Black");
+		display.drawBackground(colorBlack, colorBlack);
+
+		var cameraEntity = this.camera();
+		if (cameraEntity == null)
 		{
-			var entity = entitiesDrawable[i];
-			var drawable = entity.drawable();
-			drawable.updateForTimerTick(universe, world, this, entity);
+			var drawables = this.drawables();
+			drawables.forEach
+			(
+				(x) =>
+				{
+					x.drawable().updateForTimerTick(universe, world, this, x);
+				}
+			)
 		}
-		var camera = this.camera();
-		camera.drawEntitiesInView(universe, world, this, display);
+		else
+		{
+			var camera = cameraEntity.camera();
+			camera.drawEntitiesInView(universe, world, this, cameraEntity, display);
+		}
 	}
 
 	entitiesByPropertyName(propertyName)
@@ -67,6 +91,16 @@ class Place
 		this.entitiesToRemove.length = 0;
 	}
 
+	entitiesToRemoveAdd(entitiesToRemove)
+	{
+		this.entitiesToRemove.push(...entitiesToRemove);
+	}
+
+	entitiesToSpawnAdd(entitiesToSpawn)
+	{
+		this.entitiesToSpawn.push(...entitiesToSpawn);
+	}
+
 	entitiesSpawn(universe, world)
 	{
 		for (var i = 0; i < this.entitiesToSpawn.length; i++)
@@ -76,6 +110,16 @@ class Place
 		}
 
 		this.entitiesToSpawn.length = 0;
+	}
+
+	entityById(entityId)
+	{
+		return this.entitiesById.get(entityId);
+	}
+
+	entityByName(entityName)
+	{
+		return this.entitiesByName.get(entityName);
 	}
 
 	entityRemove(entity)
@@ -90,6 +134,7 @@ class Place
 			ArrayHelper.remove(entitiesWithProperty, entity);
 		}
 		ArrayHelper.remove(this.entities, entity);
+		this.entitiesById.delete(entity.id);
 		this.entitiesByName.delete(entity.name);
 	}
 
@@ -106,6 +151,7 @@ class Place
 		}
 
 		this.entities.push(entity);
+		this.entitiesById.set(entity.id, entity);
 		this.entitiesByName.set(entity.name, entity);
 
 		var entityProperties = entity.properties;
@@ -118,6 +164,16 @@ class Place
 		}
 
 		entity.initialize(universe, world, this);
+	}
+
+	entityToRemoveAdd(entityToRemove)
+	{
+		this.entitiesToRemove.push(entityToRemove);
+	}
+
+	entityToSpawnAdd(entityToSpawn)
+	{
+		this.entitiesToSpawn.push(entityToSpawn);
 	}
 
 	finalize(universe, world)
@@ -170,7 +226,8 @@ class Place
 
 		this.entitiesSpawn(universe, world);
 
-		var propertyNamesToProcess = this.defn(world).propertyNamesToProcess;
+		var placeDefn = this.defn(world);
+		var propertyNamesToProcess = placeDefn.propertyNamesToProcess;
 		for (var p = 0; p < propertyNamesToProcess.length; p++)
 		{
 			var propertyName = propertyNamesToProcess[p];
@@ -204,8 +261,20 @@ class Place
 
 	camera()
 	{
-		var cameraEntity = this.entitiesByPropertyName(Camera.name)[0];
-		return (cameraEntity == null ? null : cameraEntity.camera());
+		return this.entitiesByPropertyName(Camera.name)[0];
+	}
+
+	collisionTracker()
+	{
+		var collisionTrackerEntity = this.entitiesByPropertyName(CollisionTracker.name)[0];
+		var returnValueAsProperty =
+		(
+			collisionTrackerEntity == null
+			? null
+			: collisionTrackerEntity.propertyByName(CollisionTracker.name)
+		);
+		var returnValue = returnValueAsProperty ;
+		return returnValue;
 	}
 
 	drawables()

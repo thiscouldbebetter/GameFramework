@@ -25,7 +25,7 @@ class Box
 
 	static create()
 	{
-		return new Box(null, null);
+		return new Box(Coords.create(), Coords.create());
 	}
 
 	static fromMinAndMax(min, max)
@@ -39,6 +39,11 @@ class Box
 	{
 		var center = size.clone().half().add(min);
 		return new Box(center, size);
+	}
+
+	static fromSize(size)
+	{
+		return new Box(Coords.create(), size);
 	}
 
 	// Static methods.
@@ -381,4 +386,10 @@ class Box
 	{
 		return surfacePointOut.overwriteWith(posToCheck); // todo
 	}
+
+	toBox(boxOut)
+	{
+		return boxOut.overwriteWith(this);
+	}
+
 }

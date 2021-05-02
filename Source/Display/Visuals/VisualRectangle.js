@@ -16,11 +16,16 @@ class VisualRectangle
 		this.size = size;
 		this.colorFill = colorFill;
 		this.colorBorder = colorBorder;
-		this.isCentered = (isCentered == null ? true : isCentered);
+		this.isCentered = isCentered || true;
 
 		this.sizeHalf = this.size.clone().half();
 
 		this._drawPos = Coords.create();
+	}
+
+	static fromSizeAndColorFill(size, colorFill)
+	{
+		return new VisualRectangle(size, colorFill, null, null);
 	}
 
 	draw(universe, world, place, entity, display)
@@ -37,10 +42,7 @@ class VisualRectangle
 
 		display.drawRectangle
 		(
-			drawPos, this.size,
-			Color.systemColorGet(this.colorFill),
-			Color.systemColorGet(this.colorBorder),
-			null
+			drawPos, this.size, this.colorFill, this.colorBorder, null
 		);
 	}
 

@@ -1,13 +1,12 @@
 
 
-class Item extends EntityProperty
+class Item
 {
 	defnName;
 	quantity;
 
 	constructor(defnName, quantity)
 	{
-		super();
 		this.defnName = defnName;
 		this.quantity = quantity;
 	}
@@ -29,7 +28,6 @@ class Item extends EntityProperty
 
 	toEntity()
 	{
-		// todo
 		return new Entity(this.defnName, [ this ]);
 	}
 
@@ -43,13 +41,20 @@ class Item extends EntityProperty
 		return this.quantity * this.defn(world).tradeValue;
 	}
 
-	use(universe, world, place, userEntity, itemEntity)
+	use
+	(
+		universe, world, place,
+		userEntity, itemEntity
+	)
 	{
 		var returnValue = null;
 		var defn = this.defn(world);
 		if (defn.use != null)
 		{
-			returnValue = defn.use(universe, world, place, userEntity, itemEntity, this);
+			returnValue = defn.use
+			(
+				universe, world, place, userEntity, itemEntity
+			);
 		}
 		return returnValue;
 	}
@@ -60,4 +65,10 @@ class Item extends EntityProperty
 	{
 		return new Item(this.defnName, this.quantity);
 	}
+
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+	updateForTimerTick(u, w, p, e){}
 }

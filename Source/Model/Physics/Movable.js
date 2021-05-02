@@ -1,6 +1,6 @@
 
 
-class Movable extends EntityProperty
+class Movable
 {
 	accelerationPerTick;
 	speedMax;
@@ -13,18 +13,37 @@ class Movable extends EntityProperty
 		accelerate
 	)
 	{
-		super();
 		this.accelerationPerTick = accelerationPerTick;
 		this.speedMax = speedMax;
 		this._accelerate = accelerate || this.accelerateForward;
 	}
 
-	accelerate(universe, world, place, entityMovable)
+	static create()
+	{
+		return new Movable(null, null, null);
+	}
+
+	static fromAccelerationAndSpeedMax
+	(
+		accelerationPerTick, speedMax
+	)
+	{
+		return new Movable(accelerationPerTick, speedMax, null)
+	}
+
+	accelerate
+	(
+		universe, world, place, entityMovable
+	)
 	{
 		this._accelerate(universe, world, place, entityMovable, this.accelerationPerTick);
 	}
 
-	accelerateForward(universe, world, place, entityMovable, accelerationPerTick)
+	accelerateForward
+	(
+		universe, world, place, entityMovable,
+		accelerationPerTick
+	)
 	{
 		var entityLoc = entityMovable.locatable().loc;
 		entityLoc.accel.overwriteWith
@@ -38,7 +57,8 @@ class Movable extends EntityProperty
 
 	accelerateInDirection
 	(
-		universe, world, place, entity, directionToMove
+		universe, world, place, entity,
+		directionToMove
 	)
 	{
 		var entityLoc = entity.locatable().loc;
@@ -51,10 +71,83 @@ class Movable extends EntityProperty
 		}
 	}
 
-	// cloneable
+	// Clonable.
 
 	clone()
 	{
 		return this;
 	}
+
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+	updateForTimerTick(u, w, p, e){}
+
+	// Actions.
+
+	static actionAccelerateDown()
+	{
+		return new Action
+		(
+			"AccelerateDown",
+			// perform
+			(universe, world, place, actor) =>
+			{
+				actor.movable().accelerateInDirection
+				(
+					universe, world, place, actor, Coords.Instances().ZeroOneZero
+				);
+			}
+		)
+	}
+
+	static actionAccelerateLeft()
+	{
+		return new Action
+		(
+			"AccelerateLeft",
+			// perform
+			(universe, world, place, actor) =>
+			{
+				actor.movable().accelerateInDirection
+				(
+					universe, world, place, actor, Coords.Instances().MinusOneZeroZero
+				);
+			}
+		);
+	}
+
+	static actionAccelerateRight()
+	{
+		return new Action
+		(
+			"AccelerateRight",
+			// perform
+			(universe, world, place, actor) =>
+			{
+				actor.movable().accelerateInDirection
+				(
+					universe, world, place, actor, Coords.Instances().OneZeroZero
+				);
+			}
+		);
+	}
+
+	static actionAccelerateUp()
+	{
+		return new Action
+		(
+			"AccelerateUp",
+			// perform
+			(universe, world, place, actor) =>
+			{
+				actor.movable().accelerateInDirection
+				(
+					universe, world, place, actor, Coords.Instances().ZeroMinusOneZero
+				);
+			}
+		);
+	}
+
 }

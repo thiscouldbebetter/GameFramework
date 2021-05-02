@@ -25,9 +25,9 @@ class ActivityDefn
 		return ActivityDefn._instances;
 	}
 
-	perform(u, w, p, e, a)
+	perform(u, w, p, e)
 	{
-		this._perform(u, w, p, e, a);
+		this._perform(u, w, p, e);
 	}
 }
 
@@ -37,6 +37,7 @@ class ActivityDefn_Instances
 	_AllByName;
 
 	DoNothing;
+	HandleUserInput;
 	Simultaneous;
 
 	constructor()
@@ -45,23 +46,25 @@ class ActivityDefn_Instances
 		(
 			"DoNothing",
 			// perform
-			(u, w, p, e, a) =>
+			(u, w, p, e) =>
 			{}
 		);
+
+		this.HandleUserInput = UserInputListener.activityDefnHandleUserInput();
 
 		this.Simultaneous = new ActivityDefn
 		(
 			"Simultaneous",
 			// perform
-			(u, w, p, e, a) =>
+			(u, w, p, e) =>
 			{
-				var childActivities = a.target ;
-				childActivities = childActivities.filter(x => x.isDone == false);
-				a.target = childActivities;
-				for (var i = 0; i < childActivities.length; i++)
+				var activity = e.actor().activity;
+				var childDefnNames = activity.target() ;
+				for (var i = 0; i < childDefnNames.length; i++)
 				{
-					var childActivity = childActivities[i];
-					childActivity.perform(u, w, p, e);
+					var childDefnName = childDefnNames[i];
+					var childDefn = w.defn.activityDefnByName(childDefnName);
+					childDefn.perform(u, w, p, e);
 				}
 			}
 		);
@@ -69,6 +72,7 @@ class ActivityDefn_Instances
 		this._All =
 		[
 			this.DoNothing,
+			this.HandleUserInput,
 			this.Simultaneous
 		];
 

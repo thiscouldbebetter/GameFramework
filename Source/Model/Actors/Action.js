@@ -34,28 +34,45 @@ class Action
 class Action_Instances
 {
 	DoNothing;
-	ShowMenu;
+	ShowMenuPlayer;
+	ShowMenuSettings;
 
 	constructor()
 	{
 		this.DoNothing = new Action
 		(
 			"DoNothing",
-			(u, w, p, e) => 
+			(u, w, p, e) =>
 			{
 				// Do nothing.
 			}
 		);
 
-		this.ShowMenu = new Action
+		this.ShowMenuPlayer = new Action
 		(
-			"ShowMenu",
-			(universe, world, place, actor) => // perform
+			"ShowMenuPlayer",
+			// perform
+			(universe, world, place, actor) =>
 			{
 				var control = actor.controllable().toControl
 				(
-					universe, universe.display.sizeInPixels, actor, universe.venueCurrent, true
+					universe, universe.display.sizeInPixels, actor,
+					universe.venueCurrent, true
 				);
+				var venueNext= control.toVenue();
+				venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
+				universe.venueNext = venueNext;
+			}
+		);
+
+		this.ShowMenuSettings = new Action
+		(
+			"ShowMenuSettings",
+			// perform
+			(universe, world, place, actor) =>
+			{
+				var controlBuilder = universe.controlBuilder;
+				var control = controlBuilder.gameAndSettings1(universe);
 				var venueNext= control.toVenue();
 				venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
 				universe.venueNext = venueNext;

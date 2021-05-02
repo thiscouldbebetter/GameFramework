@@ -1,14 +1,18 @@
 
 
-class Modellable extends EntityProperty
+class Modellable
 {
 	model;
 
 	constructor(model)
 	{
-		super();
 		this.model = model;
 	}
+
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
 
 	updateForTimerTick(universe, world, place, entity)
 	{

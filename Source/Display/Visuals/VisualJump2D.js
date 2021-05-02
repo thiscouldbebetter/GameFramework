@@ -31,7 +31,7 @@ class VisualJump2D
 	{
 		var entityPos = entity.locatable().loc.pos;
 		var entityPosZ = entityPos.z;
-		var camera = world.placeCurrent.camera(); // hack
+		var camera = world.placeCurrent.camera().camera(); // hack
 		entityPosZ -= camera.focalLength;
 		var height = 0 - entityPosZ;
 		if (height <= 0)

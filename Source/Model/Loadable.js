@@ -1,6 +1,6 @@
 
 
-class Loadable extends EntityProperty
+class Loadable
 {
 	isLoaded;
 	_load;
@@ -12,7 +12,6 @@ class Loadable extends EntityProperty
 		unload
 	)
 	{
-		super();
 		this.isLoaded = false;
 		this._load = load;
 		this._unload = unload;

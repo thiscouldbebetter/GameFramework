@@ -42,6 +42,34 @@ class PlaceDefn
 		);
 	}
 
+	static default()
+	{
+		return new PlaceDefn
+		(
+			"Default", // name,
+			[], // actions,
+			[], // actionToInputsMappings,
+			[], // propertyNamesToProcess,
+			null, // placeInitialize
+			null // placeFinalize
+		);
+	}
+
+	static from4
+	(
+		name,
+		actions,
+		actionToInputsMappings,
+		propertyNamesToProcess
+	)
+	{
+		return new PlaceDefn
+		(
+			name, actions, actionToInputsMappings, propertyNamesToProcess,
+			null, null // placeInitialize, placeFinalize
+		);
+	}
+
 	actionToInputsMappingsEdit()
 	{
 		ArrayHelper.overwriteWith

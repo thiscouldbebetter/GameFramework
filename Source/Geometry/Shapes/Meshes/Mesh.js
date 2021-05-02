@@ -267,6 +267,11 @@ class Mesh
 	{
 		return surfacePointOut.overwriteWith(posToCheck); // todo
 	}
+
+	toBox(boxOut)
+	{
+		return boxOut.ofPoints(this.vertices());
+	}
 }
 
 class Mesh_FaceBuilder

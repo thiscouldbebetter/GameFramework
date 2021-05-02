@@ -63,4 +63,10 @@ class Arc
 	{
 		return surfacePointOut.overwriteWith(posToCheck); // todo
 	}
+
+	toBox(boxOut)
+	{
+		return this.shell.toBox(boxOut);
+	}
+
 }

@@ -1,13 +1,12 @@
 
 
-class Phased extends EntityProperty
+class Phased
 {
 	tickBorn;
 	phases;
 
 	constructor(tickBorn, phases)
 	{
-		super();
 		this.tickBorn = tickBorn;
 		this.phases = phases;
 	}
@@ -32,6 +31,9 @@ class Phased extends EntityProperty
 	}
 
 	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
 
 	updateForTimerTick(u, w, p, e)
 	{

@@ -66,7 +66,7 @@ class VisualParticles
 				(
 					particleName,
 					[
-						new Drawable(this.particleVisual.clone(), true),
+						Drawable.fromVisual(this.particleVisual.clone()),
 						new Ephemeral(particleTicksToLive, null),
 						new Locatable(particleLoc)
 					]

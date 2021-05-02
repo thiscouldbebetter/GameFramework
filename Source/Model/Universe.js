@@ -47,11 +47,10 @@ class Universe
 		this.display = display;
 		this.mediaLibrary = mediaLibrary;
 		this.controlBuilder = controlBuilder;
-		this._worldCreate =
-			worldCreate || ( (u) => World.create(u) );
+		this._worldCreate = worldCreate;
 
 		this.collisionHelper = new CollisionHelper();
-		this.displayRecorder = new DisplayRecorder 
+		this.displayRecorder = new DisplayRecorder
 		(
 			1, // ticksPerFrame
 			100, // bufferSizeInFrames - 5 seconds at 20 fps.
@@ -97,17 +96,28 @@ class Universe
 		return returnValue;
 	}
 
+	static default()
+	{
+		var universe = Universe.create
+		(
+			"Default",
+			"0.0.0", // version
+			new TimerHelper(20),
+			Display2D.fromSize
+			(
+				Coords.fromXY(200, 150)
+			),
+			MediaLibrary.default(),
+			ControlBuilder.default(),
+			() => World.default()
+		);
+
+		return universe;
+	}
+
 	// instance methods
 
 	initialize(callback)
-	{
-		this.mediaLibrary.waitForItemsAllToLoad
-		(
-			this.initialize_MediaLibraryLoaded.bind(this, callback)
-		);
-	}
-
-	initialize_MediaLibraryLoaded(callback)
 	{
 		this.platformHelper.initialize(this);
 		this.storageHelper = new StorageHelper
@@ -138,7 +148,11 @@ class Universe
 		this.inputHelper = new InputHelper();
 		this.inputHelper.initialize(this);
 
-		callback(this);
+		var universe = this;
+		this.mediaLibrary.waitForItemsAllToLoad
+		(
+			() => callback(universe)
+		);
 	}
 
 	reset()

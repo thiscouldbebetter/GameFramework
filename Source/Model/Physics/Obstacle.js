@@ -1,12 +1,7 @@
 
 
-class Obstacle extends EntityProperty
+class Obstacle
 {
-	constructor()
-	{
-		super();
-	}
-
 	collide(u, w, p, e, eOther)
 	{
 		var collisionHelper = u.collisionHelper;
@@ -25,4 +20,10 @@ class Obstacle extends EntityProperty
 	{
 		return this;
 	}
+
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+	updateForTimerTick(u, w, p, e){}
 }

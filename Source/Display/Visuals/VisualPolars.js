@@ -42,7 +42,7 @@ class VisualPolars
 
 			display.drawLine
 			(
-				fromPos, toPos, this.color.systemColor(), this.lineThickness
+				fromPos, toPos, this.color, this.lineThickness
 			);
 
 			fromPos.overwriteWith(toPos);

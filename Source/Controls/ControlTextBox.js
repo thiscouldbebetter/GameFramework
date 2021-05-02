@@ -32,7 +32,7 @@ class ControlTextBox extends ControlBase
 		// Helper variables.
 		this._drawPos = Coords.create();
 		this._drawPosText = Coords.create();
-		this._drawLoc = new Disposition(this._drawPos, null, null);
+		this._drawLoc = Disposition.fromPos(this._drawPos);
 		this._textMargin = Coords.create();
 		this._textSize = Coords.create();
 	}
@@ -136,7 +136,7 @@ class ControlTextBox extends ControlBase
 
 			if (this.numberOfCharsMax == null || text.length < this.numberOfCharsMax)
 			{
-				var textEdited = 
+				var textEdited =
 					text.substr(0, this.cursorPos)
 						+ actionNameToHandle
 						+ text.substr(this.cursorPos);
@@ -200,8 +200,7 @@ class ControlTextBox extends ControlBase
 		display.drawRectangle
 		(
 			drawPos, this.size,
-			Color.systemColorGet(style.colorFill),
-			Color.systemColorGet(style.colorBorder),
+			style.colorFill, style.colorBorder,
 			this.isHighlighted // areColorsReversed
 		);
 
@@ -219,8 +218,8 @@ class ControlTextBox extends ControlBase
 			text,
 			this.fontHeightInPixels,
 			drawPosText,
-			Color.systemColorGet(style.colorBorder),
-			Color.systemColorGet(style.colorFill),
+			style.colorBorder,
+			style.colorFill,
 			this.isHighlighted,
 			false, // isCentered
 			this.size.x // widthMaxInPixels
@@ -244,8 +243,8 @@ class ControlTextBox extends ControlBase
 			(
 				drawPosText,
 				new Coords(cursorWidth, this.fontHeightInPixels, 0), // size
-				Color.systemColorGet(style.colorFill),
-				Color.systemColorGet(style.colorFill),
+				style.colorFill,
+				style.colorFill, // ?
 				null
 			);
 
@@ -254,7 +253,7 @@ class ControlTextBox extends ControlBase
 				textAtCursor,
 				this.fontHeightInPixels,
 				drawPosText,
-				Color.systemColorGet(style.colorBorder),
+				style.colorBorder,
 				null, // colorBack
 				false, // isHighlighted
 				false, // isCentered

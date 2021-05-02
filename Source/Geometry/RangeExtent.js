@@ -16,9 +16,24 @@ class RangeExtent
 		return new RangeExtent(0, 0);
 	}
 
+	static _instances;
+	static Instances()
+	{
+		if (RangeExtent._instances == null)
+		{
+			RangeExtent._instances = new RangeExtent_Instances();
+		}
+		return RangeExtent._instances;
+	}
+
 	clone()
 	{
 		return new RangeExtent(this.min, this.max);
+	}
+
+	contains(valueToCheck)
+	{
+		return (valueToCheck >= this.min && valueToCheck <= this.max);
 	}
 
 	intersectWith(other)
@@ -99,6 +114,19 @@ class RangeExtent
 		return returnValues;
 	}
 
+	trimValue(valueToTrim)
+	{
+		if (valueToTrim < this.min)
+		{
+			valueToTrim = this.min;
+		}
+		else if (valueToTrim > this.max)
+		{
+			valueToTrim = this.max;
+		}
+		return valueToTrim;
+	}
+
 	touches(other)
 	{
 		var returnValue =
@@ -108,5 +136,33 @@ class RangeExtent
 		);
 
 		return returnValue;
+	}
+
+	wrapValue(valueToWrap)
+	{
+		var returnValue = valueToWrap;
+
+		var size = this.size();
+
+		while (returnValue < this.min)
+		{
+			returnValue += size;
+		}
+		while (returnValue > this.max)
+		{
+			returnValue -= size;
+		}
+
+		return returnValue;
+	}
+}
+
+class RangeExtent_Instances
+{
+	ZeroToOne;
+
+	constructor()
+	{
+		this.ZeroToOne = new RangeExtent(0, 1);
 	}
 }

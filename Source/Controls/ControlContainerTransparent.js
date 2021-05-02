@@ -80,7 +80,7 @@ class ControlContainerTransparent extends ControlBase
 
 	mouseMove(mouseMovePos)
 	{
-		this.containerInner.mouseMove(mouseMovePos);
+		return this.containerInner.mouseMove(mouseMovePos);
 	}
 
 	scalePosAndSize(scaleFactor)
@@ -90,7 +90,11 @@ class ControlContainerTransparent extends ControlBase
 
 	// drawable
 
-	draw(universe, display, drawLoc, style)
+	draw
+	(
+		universe, display, drawLoc,
+		style
+	)
 	{
 		if (this.isVisible() == false)
 		{
@@ -109,7 +113,7 @@ class ControlContainerTransparent extends ControlBase
 		(
 			drawPos, this.containerInner.size,
 			null, // display.colorBack,
-			Color.systemColorGet(style.colorBorder), null
+			style.colorBorder, null
 		);
 
 		var children = this.containerInner.children;

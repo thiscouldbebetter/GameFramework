@@ -38,13 +38,16 @@ class ControlTextarea extends ControlBase
 			new Coords(scrollbarWidth, this.size.y, 0), // size
 			this.fontHeightInPixels,
 			this.lineSpacing, // itemHeight
-			new DataBinding(this, (c) => c.textAsLines(), null),
+			DataBinding.fromContextAndGet
+			(
+				this, (c) => c.textAsLines()
+			),
 			0 // sliderPosInItems
 		);
 
 		// Helper variables.
 		this._drawPos = Coords.create();
-		this._drawLoc = new Disposition(this._drawPos, null, null);
+		this._drawLoc = Disposition.fromPos(this._drawPos);
 		this._mouseClickPos = Coords.create();
 	}
 
@@ -131,7 +134,7 @@ class ControlTextarea extends ControlBase
 
 			if (this.charCountMax == null || text.length < this.charCountMax)
 			{
-				var textEdited = 
+				var textEdited =
 					text.substr(0, this.cursorPos)
 						+ actionNameToHandle
 						+ text.substr(this.cursorPos)
@@ -292,8 +295,8 @@ class ControlTextarea extends ControlBase
 		(
 			drawPos,
 			this.size,
-			Color.systemColorGet(colorBack), // fill
-			Color.systemColorGet(style.colorBorder), // border
+			colorBack, // fill
+			style.colorBorder, // border
 			false // areColorsReversed
 		);
 
@@ -336,8 +339,8 @@ class ControlTextarea extends ControlBase
 				line,
 				this.fontHeightInPixels,
 				drawPos2,
-				Color.systemColorGet(colorFore),
-				Color.systemColorGet(colorBack),
+				colorFore,
+				colorBack,
 				false, // areColorsReversed
 				false, // isCentered
 				this.size.x // widthMaxInPixels

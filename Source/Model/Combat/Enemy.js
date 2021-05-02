@@ -1,20 +1,20 @@
 
 
-class Enemy extends EntityProperty
+class Enemy
 {
 	weapon;
 
 	constructor(weapon)
 	{
-		super();
 		this.weapon = weapon;
 	}
 
 	static activityDefnBuild()
 	{
 		var enemyActivityPerform =
-			(universe, world, place, actor, activity) =>
+			(universe, world, place, actor) =>
 		{
+			var activity = actor.actor().activity;
 			var actorLocatable = actor.locatable();
 
 			var entityToTargetPrefix = "Player";
@@ -63,7 +63,7 @@ class Enemy extends EntityProperty
 				}
 				else
 				{
-					var targetPosExisting = activity.target;
+					var targetPosExisting = activity.target() ;
 					if (targetPosExisting == null)
 					{
 						targetPosToApproach =
@@ -76,10 +76,10 @@ class Enemy extends EntityProperty
 				}
 			}
 
-			activity.target = targetPosToApproach;
+			activity.targetSet(targetPosToApproach);
 
 			// hack
-			var targetLocatable = new Locatable(new Disposition(targetPosToApproach, null, null));
+			var targetLocatable = Locatable.fromPos(targetPosToApproach);
 
 			var enemy = actor.enemy();
 			var weapon = enemy.weapon;
@@ -100,4 +100,9 @@ class Enemy extends EntityProperty
 		return enemyActivityDefn;
 	}
 
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+	updateForTimerTick(u, w, p, e){}
 }

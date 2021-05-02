@@ -114,7 +114,7 @@ class ControlBuilder
 
 			for (var i = 0; i < numberOfOptions; i++)
 			{
-				var button = ControlButton.from8
+				var button = ControlButton.from9
 				(
 					"buttonOption" + i,
 					Coords.fromXY
@@ -127,7 +127,8 @@ class ControlBuilder
 					fontHeight,
 					true, // hasBorder
 					true, // isEnabled
-					optionFunctions[i]
+					optionFunctions[i],
+					universe
 				);
 
 				childControls.push(button);
@@ -172,12 +173,18 @@ class ControlBuilder
 
 	choiceList
 	(
-		universe, size, message,
-		options, bindingForOptionText,
-		buttonSelectText, select
+		universe,
+		size,
+		message,
+		options,
+		bindingForOptionText,
+		buttonSelectText,
+		select
 	)
 	{
 		// todo - Variable sizes.
+
+		size = size || universe.display.sizeDefault();
 
 		var marginWidth = 10;
 		var marginSize = Coords.fromXY(1, 1).multiplyScalar(marginWidth);
@@ -500,7 +507,7 @@ class ControlBuilder
 
 	gameAndSettings1(universe)
 	{
-		return this.gameAndSettings(universe, null, null, null);
+		return this.gameAndSettings(universe, null, universe.venueCurrent, true);
 	}
 
 	gameAndSettings
@@ -630,7 +637,7 @@ class ControlBuilder
 		return returnValue;
 	}
 
-	inputs (universe, size, venuePrev)
+	inputs(universe, size, venuePrev)
 	{
 		var controlBuilder = this;
 
@@ -644,10 +651,12 @@ class ControlBuilder
 
 		var fontHeight = this.fontHeightInPixelsBase;
 
+
 		var world = universe.world;
-		var placeCurrentDefnName = "Demo"; // hack
-		var placeDefn = world.defn.placeDefnByName(placeCurrentDefnName);
-		placeDefn.actionToInputsMappingsEdit();
+
+		// hack - Should do ALL placeDefns, not just the current one.
+		var placeCurrent = world.placeCurrent;
+		var placeDefn = placeCurrent.defn(world);
 
 		var returnValue = ControlContainer.from4
 		(
@@ -705,7 +714,7 @@ class ControlBuilder
 					DataBinding.fromContextAndGet
 					(
 						placeDefn,
-						(c) => 
+						(c) =>
 						{
 							var i = c.actionToInputsMappingSelected;
 							return (i == null ? "-" : i.inputNames.join(", "));
@@ -861,7 +870,7 @@ class ControlBuilder
 					DataBinding.fromContextAndGet
 					(
 						placeDefn,
-						(c) => 
+						(c) =>
 						{
 							var mappings = c.actionToInputsMappingsEdited;
 							var doAnyActionsLackInputs = mappings.some
@@ -955,7 +964,7 @@ class ControlBuilder
 					"imageOpening",
 					this._zeroes.clone(),
 					this.sizeBase.clone(), // size
-					new DataBinding(visual, null, null),
+					DataBinding.fromContext(visual),
 					null, null // colors
 				),
 
@@ -1046,18 +1055,12 @@ class ControlBuilder
 					new DataBinding
 					(
 						universe.soundHelper,
-						(c) => { return c.musicVolume; },
-						(c, v) => { c.musicVolume = v; }
+						(c) => c.musicVolume,
+						(c, v) => c.musicVolume = v
 					), // valueSelected
 					SoundHelper.controlSelectOptionsVolume(), // options
-					new DataBinding
-					(
-						null, (c) => c.value, null
-					), // bindingForOptionValues,
-					new DataBinding
-					(
-						null, (c) => { return c.text; }, null
-					), // bindingForOptionText
+					DataBinding.fromGet((c) => c.value), // bindingForOptionValues,
+					DataBinding.fromGet((c) => { return c.text; }), // bindingForOptionText
 					fontHeight
 				),
 
@@ -1128,7 +1131,8 @@ class ControlBuilder
 							controlRootAsContainer.childrenByName.get("selectDisplaySize") ;
 						var displaySizeSpecified = selectDisplaySize.optionSelected();
 
-						var display = universe.display ;
+						var displayAsDisplay = universe.display;
+						var display = displayAsDisplay ;
 						var platformHelper = universe.platformHelper;
 						platformHelper.platformableRemove(display);
 						display.sizeInPixels = displaySizeSpecified;
@@ -1192,7 +1196,12 @@ class ControlBuilder
 		return returnValue;
 	}
 
-	slideshow(universe, size, imageNamesAndMessagesForSlides, venueAfterSlideshow)
+	slideshow
+	(
+		universe, size,
+		imageNamesAndMessagesForSlides,
+		venueAfterSlideshow
+	)
 	{
 		var controlBuilder = this;
 
@@ -1206,11 +1215,32 @@ class ControlBuilder
 
 		var controlsForSlides= [];
 
+		var nextDefn = (slideIndexNext) => // click
+		{
+			var venueNext;
+			if (slideIndexNext < controlsForSlides.length)
+			{
+				var controlForSlideNext = controlsForSlides[slideIndexNext];
+				venueNext = controlForSlideNext.toVenue();
+			}
+			else
+			{
+				venueNext = venueAfterSlideshow;
+			}
+			venueNext = controlBuilder.venueTransitionalFromTo
+			(
+				universe.venueCurrent, venueNext
+			);
+			universe.venueNext = venueNext;
+		};
+
 		for (var i = 0; i < imageNamesAndMessagesForSlides.length; i++)
 		{
 			var imageNameAndMessage = imageNamesAndMessagesForSlides[i];
 			var imageName = imageNameAndMessage[0];
 			var message = imageNameAndMessage[1];
+
+			var next = nextDefn.bind(this, i + 1);
 
 			var containerSlide = ControlContainer.from4
 			(
@@ -1224,9 +1254,9 @@ class ControlBuilder
 						"imageSlide",
 						this._zeroes,
 						this.sizeBase.clone(), // size
-						new DataBinding
+						DataBinding.fromContext
 						(
-							new VisualImageFromLibrary(imageName), null, null
+							new VisualImageFromLibrary(imageName)
 						),
 						null, null
 					),
@@ -1250,24 +1280,7 @@ class ControlBuilder
 						this.fontHeightInPixelsBase,
 						false, // hasBorder
 						true, // isEnabled
-						function(slideIndexNext) // click
-						{
-							var venueNext;
-							if (slideIndexNext < controlsForSlides.length)
-							{
-								var controlForSlideNext = controlsForSlides[slideIndexNext];
-								venueNext = controlForSlideNext.toVenue();
-							}
-							else
-							{
-								venueNext = venueAfterSlideshow;
-							}
-							venueNext = controlBuilder.venueTransitionalFromTo
-							(
-								universe.venueCurrent, venueNext
-							);
-							universe.venueNext = venueNext;
-						}.bind(this, i + 1)
+						next
 					)
 				],
 			);
@@ -1301,11 +1314,8 @@ class ControlBuilder
 			var venueTask = new VenueTask
 			(
 				venueMessage,
-				() => // perform
-				{
-					var result = Profile.toControlProfileSelect(universe, null, universe.venueCurrent);
-					return result;
-				},
+				() =>
+					Profile.toControlProfileSelect(universe, null, universe.venueCurrent),
 				(universe, result) => // done
 				{
 					var venueProfileSelect = result.toVenue();
@@ -1349,7 +1359,7 @@ class ControlBuilder
 					"imageTitle",
 					this._zeroes.clone(),
 					this.sizeBase.clone(), // size
-					new DataBinding(visual, null, null),
+					DataBinding.fromContext(visual),
 					null, null // colors
 				),
 
@@ -1678,11 +1688,10 @@ class ControlBuilder
 					"listSaveStates",
 					Coords.fromXY(30, 50), // pos
 					Coords.fromXY(140, 50), // size
-					new DataBinding
+					DataBinding.fromContextAndGet
 					(
 						universe.profile,
-						(c) => c.saveStates,
-						null
+						(c) => c.saveStates
 					), // items
 					DataBinding.fromGet( (c) => c.name ), // bindingForOptionText
 					fontHeight,
@@ -1703,12 +1712,12 @@ class ControlBuilder
 					"Load",
 					fontHeight,
 					true, // hasBorder
-					DataBinding.fromContext(true), // isEnabled
+					DataBinding.fromTrue(), // isEnabled
 					() => // click
 					{
 						var controlConfirm = universe.controlBuilder.confirm
 						(
-							universe, size, "Abandon the current game?", 
+							universe, size, "Abandon the current game?",
 							confirm, cancel
 						);
 						var venueConfirm = controlConfirm.toVenue();
@@ -1732,7 +1741,7 @@ class ControlBuilder
 					{
 						var venueFileUpload = new VenueFileUpload(null, null);
 
-						var controlMessageReadyToLoad = 
+						var controlMessageReadyToLoad =
 							universe.controlBuilder.message
 							(
 								universe,
@@ -1771,7 +1780,7 @@ class ControlBuilder
 								null
 							);
 
-						var venueMessageReadyToLoad = 
+						var venueMessageReadyToLoad =
 							controlMessageReadyToLoad.toVenue();
 
 						var controlMessageCancelled = universe.controlBuilder.message

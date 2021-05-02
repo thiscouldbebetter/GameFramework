@@ -24,16 +24,33 @@ class ControlVisual extends ControlBase
 
 		// Helper variables.
 		this._drawPos = Coords.create();
-		this._locatable = new Locatable(new Disposition(this._drawPos, null, null));
+		this._locatable = Locatable.fromPos(this._drawPos);
 		this._locatableEntity = new Entity
 		(
 			"_drawableEntity",
 			[
 				this._locatable,
-				new Drawable(new VisualNone(), null)
+				Drawable.fromVisual(new VisualNone())
 			]
 		);
 		this._sizeHalf = Coords.create();
+	}
+
+	static from4
+	(
+		name, pos, size, visual
+	)
+	{
+		return new ControlVisual(name, pos, size, visual, null, null);
+	}
+
+	static from5
+	(
+		name, pos, size,
+		visual, colorBackground
+	)
+	{
+		return new ControlVisual(name, pos, size, visual, colorBackground, null);
 	}
 
 	actionHandle(actionName, universe)
@@ -74,8 +91,8 @@ class ControlVisual extends ControlBase
 			display.drawRectangle
 			(
 				drawPos, this.size,
-				Color.systemColorGet(colorFill),
-				Color.systemColorGet(colorBorder),
+				colorFill,
+				colorBorder,
 				null
 			);
 

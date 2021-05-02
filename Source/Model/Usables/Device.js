@@ -1,6 +1,6 @@
 
 
-class Device extends EntityProperty
+class Device
 {
 	name;
 	_initialize;
@@ -16,9 +16,9 @@ class Device extends EntityProperty
 		ticksToCharge,
 		initialize,
 		update,
-		use)
+		use
+	)
 	{
-		super();
 		this.name = name;
 		this.ticksToCharge = ticksToCharge;
 		this._initialize = initialize;
@@ -27,6 +27,11 @@ class Device extends EntityProperty
 
 		this.tickLastUsed = 0 - this.ticksToCharge;
 	}
+
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	updateForTimerTick(u, w, p, e){}
 
 	initialize(u, w, p, e)
 	{

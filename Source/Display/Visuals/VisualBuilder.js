@@ -33,7 +33,7 @@ class VisualBuilder
 
 		var circleWithEyes= new VisualGroup
 		([
-			new VisualCircle(circleRadius, circleColor, null, null),
+			VisualCircle.fromRadiusAndColorFill(circleRadius, circleColor),
 			visualEyesDirectional
 		]);
 
@@ -368,7 +368,7 @@ class VisualBuilder
 				}
 				else
 				{
-					var headingCount = 4; 
+					var headingCount = 4;
 					var headingIndex =
 						Math.floor(entityForwardInTurns * headingCount); // todo
 					var entitySpeed = entityLoc.vel.magnitude();
@@ -409,7 +409,7 @@ class VisualBuilder
 		var visualNone = new VisualNone();
 		var visualWieldable= new VisualDynamic
 		(
-			(u, w, d, e) => 
+			(u, w, p, e) =>
 			{
 				var equipmentUser = e.equipmentUser();
 				var entityWieldableEquipped =
@@ -549,7 +549,7 @@ class VisualBuilder
 			{
 				var itemEntityWielded =
 					e.equipmentUser().itemEntityInSocketWithName("Wielding");
-				var returnValue = 
+				var returnValue =
 					(itemEntityWielded == null ? "Hidden" : "Visible");
 				return [ returnValue ];
 			}
@@ -571,19 +571,19 @@ class VisualBuilder
 
 		var visualEye = new VisualGroup
 		([
-			new VisualCircle(visualEyeRadius, Color.byName("White"), null, null),
-			new VisualCircle(visualPupilRadius, Color.byName("Black"), null, null)
+			VisualCircle.fromRadiusAndColorFill(visualEyeRadius, Color.byName("White")),
+			VisualCircle.fromRadiusAndColorFill(visualPupilRadius, Color.byName("Black"))
 		]);
 
 		var visualEyes = new VisualGroup
 		([
 			new VisualOffset
 			(
-				visualEye, new Coords(-visualEyeRadius, 0, 0)
+				visualEye, Coords.fromXY(-visualEyeRadius, 0)
 			),
 			new VisualOffset
 			(
-				visualEye, new Coords(visualEyeRadius, 0, 0)
+				visualEye, Coords.fromXY(visualEyeRadius, 0)
 			)
 		]);
 
@@ -708,7 +708,7 @@ class VisualBuilder
 				color, rayThickness
 			),
 
-			new VisualCircle(dimension / 2, color, null, null),
+			VisualCircle.fromRadiusAndColorFill(dimension / 2, color),
 		]);
 
 		return sunVisual;

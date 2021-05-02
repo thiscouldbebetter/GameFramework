@@ -41,4 +41,42 @@ class Hemispace
 		}
 		return coordsToTrim;
 	}
+
+	// Clonable.
+
+	clone()
+	{
+		return new Hemispace(this.plane.clone());
+	}
+	
+	overwriteWith(other)
+	{
+		this.plane.overwriteWith(other.plane);
+		return this;
+	}
+
+	// ShapeBase.
+
+	locate(loc)
+	{
+		throw("Not implemented!");
+	}
+
+	normalAtPos(posToCheck, normalOut)
+	{
+		return this.plane.normal;
+	}
+
+	surfacePointNearPos(posToCheck, surfacePointOut)
+	{
+		return surfacePointOut.overwriteWith
+		(
+			this.plane.pointOnPlaneNearestPos(posToCheck)
+		);
+	}
+
+	toBox(boxOut)
+	{
+		throw("Not implemented!");
+	}
 }

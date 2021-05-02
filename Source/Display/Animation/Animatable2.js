@@ -1,6 +1,6 @@
 
 
-class Animatable extends EntityProperty
+class Animatable2
 {
 	animationDefnGroup;
 	transformableAtRest;
@@ -14,12 +14,16 @@ class Animatable extends EntityProperty
 		transformableTransformed
 	)
 	{
-		super();
 		this.animationDefnGroup = animationDefnGroup;
 		this.transformableAtRest = transformableAtRest;
 		this.transformableTransformed = transformableTransformed;
 
 		this.ticksStartedByAnimationName = new Map();
+	}
+
+	static create()
+	{
+		return new Animatable2(null, null, null);
 	}
 
 	animationStartByName(name, world)
@@ -75,6 +79,11 @@ class Animatable extends EntityProperty
 	{
 		this.transformableTransformed.overwriteWith(this.transformableAtRest);
 	}
+
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
 
 	updateForTimerTick(universe, world, place, entity)
 	{

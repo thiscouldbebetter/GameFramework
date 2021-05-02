@@ -1,11 +1,20 @@
 <html>
 <body>
 
+<!--
+This file is nearly identical to Demo/Demo.html,
+and mainly exists to satisfy the standard structure
+for repositories hosted at github.com/thiscouldbebetter,
+so it can be published on thiscouldbebetter.github.io.
+-->
+
 <script type="text/javascript" src="Helpers/ArrayHelper.js"></script>
+<script type="text/javascript" src="Helpers/ByteHelper.js"></script>
 <script type="text/javascript" src="Helpers/NumberHelper.js"></script>
 <script type="text/javascript" src="Helpers/StringHelper.js"></script>
 
 <!-- hack - Must declare EntityProperty before any subclasses. -->
+<script type="text/javascript" src="Model/Entity.js"></script>
 <script type="text/javascript" src="Model/EntityProperty.js"></script>
 
 <script type="text/javascript" src="Controls/ControlActionNames.js"></script>
@@ -33,11 +42,10 @@
 <script type="text/javascript" src="Display/Display2D.js"></script>
 <script type="text/javascript" src="Display/DisplayRecorder.js"></script>
 <script type="text/javascript" src="Display/Drawable.js"></script>
-<script type="text/javascript" src="Display/DrawableCamera.js"></script>
 <script type="text/javascript" src="Display/VenueFader.js"></script>
 <script type="text/javascript" src="Display/VenueLayered.js"></script>
 
-<script type="text/javascript" src="Display/Animation/Animatable.js"></script>
+<script type="text/javascript" src="Display/Animation/Animatable2.js"></script>
 
 <script type="text/javascript" src="Display/Visuals/Transform_Colorize.js"></script>
 <script type="text/javascript" src="Display/Visuals/VisualAnchor.js"></script>
@@ -45,7 +53,6 @@
 <script type="text/javascript" src="Display/Visuals/VisualBar.js"></script>
 <script type="text/javascript" src="Display/Visuals/VisualBuilder.js"></script>
 <script type="text/javascript" src="Display/Visuals/VisualBuffered.js"></script>
-<script type="text/javascript" src="Display/Visuals/VisualCameraProjection.js"></script>
 <script type="text/javascript" src="Display/Visuals/VisualCircle.js"></script>
 <script type="text/javascript" src="Display/Visuals/VisualControl.js"></script>
 <script type="text/javascript" src="Display/Visuals/VisualDirectional.js"></script>
@@ -77,10 +84,6 @@
 <script type="text/javascript" src="Display/Visuals/Animation/VisualAnimation.js"></script>
 
 <script type="text/javascript" src="Geometry/Camera.js"></script>
-<script type="text/javascript" src="Geometry/Collision.js"></script>
-<script type="text/javascript" src="Geometry/CollisionHelper.js"></script>
-<script type="text/javascript" src="Geometry/CollisionTracker.js"></script>
-<script type="text/javascript" src="Geometry/Constraint.js"></script>
 <script type="text/javascript" src="Geometry/Coords.js"></script>
 <script type="text/javascript" src="Geometry/Direction.js"></script>
 <script type="text/javascript" src="Geometry/Disposition.js"></script>
@@ -89,6 +92,20 @@
 <script type="text/javascript" src="Geometry/Quaternion.js"></script>
 <script type="text/javascript" src="Geometry/RangeExtent.js"></script>
 <script type="text/javascript" src="Geometry/Rotation.js"></script>
+
+<script type="text/javascript" src="Geometry/Collisions/Collision.js"></script>
+<script type="text/javascript" src="Geometry/Collisions/CollisionHelper.js"></script>
+<script type="text/javascript" src="Geometry/Collisions/CollisionTracker.js"></script>
+
+<script type="text/javascript" src="Geometry/Constraints/Constraint_AttachToEntityWithName.js"></script>
+<script type="text/javascript" src="Geometry/Constraints/Constraint_Conditional.js"></script>
+<script type="text/javascript" src="Geometry/Constraints/Constraint_ContainInBox.js"></script>
+<script type="text/javascript" src="Geometry/Constraints/Constraint_ContainInHemispace.js"></script>
+<script type="text/javascript" src="Geometry/Constraints/Constraint_FrictionXY.js"></script>
+<script type="text/javascript" src="Geometry/Constraints/Constraint_Gravity.js"></script>
+<script type="text/javascript" src="Geometry/Constraints/Constraint_SpeedMaxXY.js"></script>
+
+<script type="text/javascript" src="Geometry/Network/Network.js"></script>
 
 <script type="text/javascript" src="Geometry/Shapes/Arc.js"></script>
 <script type="text/javascript" src="Geometry/Shapes/Box.js"></script>
@@ -130,6 +147,7 @@
 <script type="text/javascript" src="Input/ActionToInputsMapping.js"></script>
 <script type="text/javascript" src="Input/Input.js"></script>
 <script type="text/javascript" src="Input/InputHelper.js"></script>
+<script type="text/javascript" src="Input/UserInputListener.js"></script>
 <script type="text/javascript" src="Input/VenueInputCapture.js"></script>
 
 <script type="text/javascript" src="Media/Font.js"></script>
@@ -144,10 +162,8 @@
 <script type="text/javascript" src="Media/VideoHelper.js"></script>
 <script type="text/javascript" src="Media/VisualSound.js"></script>
 
-<script type="text/javascript" src="Model/Entity.js"></script>
 <script type="text/javascript" src="Model/EntityBuilder.js"></script>
-<script type="text/javascript" src="Model/Generator.js"></script>
-<script type="text/javascript" src="Model/Goal.js"></script>
+<script type="text/javascript" src="Model/EntityGenerator.js"></script>
 <script type="text/javascript" src="Model/Loadable.js"></script>
 <script type="text/javascript" src="Model/Playable.js"></script>
 <script type="text/javascript" src="Model/Routable.js"></script>
@@ -218,16 +234,8 @@
 <script type="text/javascript" src="Model/Physics/Vehicle.js"></script>
 
 <script type="text/javascript" src="Model/Places/Place.js"></script>
-<script type="text/javascript" src="Model/Places/PlaceBuilderDemo.js"></script>
-<script type="text/javascript" src="Model/Places/PlaceBuilderDemo_Actions.js"></script>
-<script type="text/javascript" src="Model/Places/PlaceBuilderDemo_Emplacements.js"></script>
-<script type="text/javascript" src="Model/Places/PlaceBuilderDemo_Items.js"></script>
-<script type="text/javascript" src="Model/Places/PlaceBuilderDemo_Movers.js"></script>
 <script type="text/javascript" src="Model/Places/PlaceDefn.js"></script>
-<script type="text/javascript" src="Model/Places/PlaceRoom.js"></script>
 <script type="text/javascript" src="Model/Places/PlaceZoned.js"></script>
-
-<script type="text/javascript" src="Model/Places/Network/Network.js"></script>
 
 <script type="text/javascript" src="Model/Skills/Skill.js"></script>
 <script type="text/javascript" src="Model/Skills/SkillLearner.js"></script>
@@ -254,13 +262,20 @@
 <script type="text/javascript" src="Storage/StorageHelper.js"></script>
 <script type="text/javascript" src="Storage/VenueFileUpload.js"></script>
 
+<script type="text/javascript" src="Storage/TarFiles/TarFile.js"></script>
+<script type="text/javascript" src="Storage/TarFiles/TarFileEntry.js"></script>
+<script type="text/javascript" src="Storage/TarFiles/TarFileEntryHeader.js"></script>
+<script type="text/javascript" src="Storage/TarFiles/TarFileTypeFlag.js"></script>
+
 <script type="text/javascript" src="Storage/Compressor/BitStream.js"></script>
 <script type="text/javascript" src="Storage/Compressor/ByteStreamFromBytes.js"></script>
 <script type="text/javascript" src="Storage/Compressor/ByteStreamFromString.js"></script>
 <script type="text/javascript" src="Storage/Compressor/CompressorLZW.js"></script>
 
+<script type="text/javascript" src="Utility/Base64Encoder.js"></script>
 <script type="text/javascript" src="Utility/ClonableHelper.js"></script>
 <script type="text/javascript" src="Utility/DateTime.js"></script>
+<script type="text/javascript" src="Utility/Debug.js"></script>
 <script type="text/javascript" src="Utility/DiceRoll.js"></script>
 <script type="text/javascript" src="Utility/IDHelper.js"></script>
 <script type="text/javascript" src="Utility/InterpolationMode.js"></script>
@@ -274,10 +289,22 @@
 <script type="text/javascript" src="Utility/ValueBreakGroup.js"></script>
 <script type="text/javascript" src="Utility/VenueTask.js"></script>
 
-<script type="text/javascript" src="main.js"></script>
+<script type="text/javascript" src="Demo/Model/WorldDemo.js"></script>
+
+<script type="text/javascript" src="Demo/Model/EntityProperties/Goal.js"></script>
+
+<script type="text/javascript" src="Demo/Model/Places/PlaceBuilderDemo.js"></script>
+<script type="text/javascript" src="Demo/Model/Places/PlaceBuilderDemo_Actions.js"></script>
+<script type="text/javascript" src="Demo/Model/Places/PlaceBuilderDemo_Emplacements.js"></script>
+<script type="text/javascript" src="Demo/Model/Places/PlaceBuilderDemo_Items.js"></script>
+<script type="text/javascript" src="Demo/Model/Places/PlaceBuilderDemo_Movers.js"></script>
+<script type="text/javascript" src="Demo/Model/Places/PlaceRoom.js"></script>
+
+<script type="text/javascript" src="Demo/GameDemo.js"></script>
 
 <script type="text/javascript">
-main();
+var contentDirectoryPath = "../Content/";
+new GameDemo(contentDirectoryPath).main();
 </script>
 
 </body>

@@ -22,6 +22,17 @@ class VisualDirectional
 		this.numberOfDirections = this.visualsForDirections.length;
 	}
 
+	static fromVisuals
+	(
+		visualForNoDirection, visualsForDirections,
+	)
+	{
+		return new VisualDirectional
+		(
+			visualForNoDirection, visualsForDirections, null
+		);
+	}
+
 	headingInTurnsGetForEntity(entity)
 	{
 		var returnValue= null;
@@ -41,7 +52,11 @@ class VisualDirectional
 
 	// Visual.
 
-	draw(universe, world, place, entity, display)
+	draw
+	(
+		universe, world, place, entity,
+		display
+	)
 	{
 		var headingInTurns = this.headingInTurnsGetForEntity(entity);
 		var visualForHeading;

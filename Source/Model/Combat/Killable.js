@@ -1,6 +1,6 @@
 
 
-class Killable extends EntityProperty
+class Killable
 {
 	integrityMax;
 	_damageApply;
@@ -15,7 +15,6 @@ class Killable extends EntityProperty
 		die
 	)
 	{
-		super();
 		this.integrityMax = integrityMax;
 		this._damageApply = damageApply;
 		this._die = die;
@@ -23,7 +22,11 @@ class Killable extends EntityProperty
 		this.integrity = this.integrityMax;
 	}
 
-	damageApply(universe, world, place, entityDamager, entityKillable, damageToApply)
+	damageApply
+	(
+		universe, world, place, entityDamager,
+		entityKillable, damageToApply
+	)
 	{
 		var damageApplied;
 		if (this._damageApply == null)
@@ -71,6 +74,11 @@ class Killable extends EntityProperty
 		return (this.integrity > 0);
 	}
 
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+
 	updateForTimerTick(universe, world, place, entityKillable)
 	{
 		if (this.isAlive() == false)
@@ -86,4 +94,5 @@ class Killable extends EntityProperty
 	{
 		return new Killable(this.integrityMax, this._damageApply, this._die);
 	}
+
 }

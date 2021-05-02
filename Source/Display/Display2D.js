@@ -41,6 +41,11 @@ class Display2D
 		this._zeroes = Coords.Instances().Zeroes;
 	}
 
+	static fromSize(size)
+	{
+		return new Display2D([size], null, null, null, null, false);
+	}
+
 	static fromSizeAndIsInvisible(size, isInvisible)
 	{
 		return new Display2D([size], null, null, null, null, isInvisible);
@@ -76,7 +81,7 @@ class Display2D
 
 		if (colorFill != null)
 		{
-			this.graphics.fillStyle = colorFill;
+			this.graphics.fillStyle = Color.systemColorGet(colorFill);
 
 			this.graphics.beginPath();
 			this.graphics.arc
@@ -103,7 +108,7 @@ class Display2D
 
 		if (colorBorder != null)
 		{
-			this.graphics.strokeStyle = colorBorder;
+			this.graphics.strokeStyle = Color.systemColorGet(colorBorder);
 			this.graphics.beginPath();
 			this.graphics.arc
 			(
@@ -158,7 +163,7 @@ class Display2D
 
 		if (colorFill != null)
 		{
-			this.graphics.fillStyle = colorFill;
+			this.graphics.fillStyle = Color.systemColorGet(colorFill);
 			this.graphics.fill();
 		}
 
@@ -167,14 +172,18 @@ class Display2D
 			var lineWidthToRestore = this.graphics.lineWidth;
 
 			this.graphics.lineWidth = borderThickness;
-			this.graphics.strokeStyle = colorBorder;
+			this.graphics.strokeStyle = Color.systemColorGet(colorBorder);
 			this.graphics.stroke();
 
 			this.graphics.lineWidth = lineWidthToRestore;
 		}
 	}
 
-	drawCircleWithGradient(center, radius, gradientFill, colorBorder)
+	drawCircleWithGradient
+	(
+		center, radius, gradientFill,
+		colorBorder
+	)
 	{
 		this.graphics.beginPath();
 		this.graphics.arc
@@ -194,7 +203,7 @@ class Display2D
 		for (var i = 0; i < gradientStops.length; i++)
 		{
 			var stop = gradientStops[i];
-			var stopColor = stop.color ;
+			var stopColor = stop.value ;
 			systemGradient.addColorStop(stop.position, stopColor.systemColor());
 		}
 
@@ -203,7 +212,7 @@ class Display2D
 
 		if (colorBorder != null)
 		{
-			this.graphics.strokeStyle = colorBorder;
+			this.graphics.strokeStyle = Color.systemColorGet(colorBorder);
 			this.graphics.stroke();
 		}
 	}
@@ -212,7 +221,7 @@ class Display2D
 	{
 		var drawPos = this._drawPos.overwriteWith(center);
 		this.graphics.beginPath();
-		this.graphics.strokeStyle = color;
+		this.graphics.strokeStyle = Color.systemColorGet(color);
 		this.graphics.moveTo(drawPos.x - radius, drawPos.y);
 		this.graphics.lineTo(drawPos.x + radius, drawPos.y);
 		this.graphics.moveTo(drawPos.x, drawPos.y - radius);
@@ -246,13 +255,13 @@ class Display2D
 
 		if (colorFill != null)
 		{
-			this.graphics.fillStyle = colorFill;
+			this.graphics.fillStyle = Color.systemColorGet(colorFill);
 			this.graphics.fill();
 		}
 
 		if (colorBorder != null)
 		{
-			this.graphics.strokeStyle = colorBorder;
+			this.graphics.strokeStyle = Color.systemColorGet(colorBorder);
 			this.graphics.stroke();
 		}
 
@@ -264,7 +273,10 @@ class Display2D
 		this.graphics.drawImage(imageToDraw.systemImage, pos.x, pos.y);
 	}
 
-	drawImagePartial(imageToDraw, pos, regionToDrawAsBox)
+	drawImagePartial
+	(
+		imageToDraw, pos, regionToDrawAsBox
+	)
 	{
 		this.drawImagePartialScaled(imageToDraw, pos, regionToDrawAsBox, null);
 	}
@@ -295,11 +307,14 @@ class Display2D
 		this.graphics.drawImage(imageToDraw.systemImage, pos.x, pos.y, size.x, size.y);
 	}
 
-	drawLine(fromPos, toPos, color, lineThickness)
+	drawLine
+	(
+		fromPos, toPos, color, lineThickness
+	)
 	{
 		var drawPos = this._drawPos;
 
-		this.graphics.strokeStyle = color;
+		this.graphics.strokeStyle = Color.systemColorGet(color);
 		var lineWidthToRestore = this.graphics.lineWidth;
 		if (lineThickness != null)
 		{
@@ -319,12 +334,18 @@ class Display2D
 		this.graphics.lineWidth = lineWidthToRestore;
 	}
 
-	drawMeshWithOrientation(mesh, meshOrientation)
+	drawMeshWithOrientation
+	(
+		mesh, meshOrientation
+	)
 	{
 		// todo
 	}
 
-	drawPath(vertices, color, lineThickness, isClosed)
+	drawPath
+	(
+		vertices, color, lineThickness, isClosed
+	)
 	{
 		var lineWidthSaved = this.graphics.lineWidth;
 
@@ -353,7 +374,7 @@ class Display2D
 			this.graphics.closePath();
 		}
 
-		this.graphics.strokeStyle = color;
+		this.graphics.strokeStyle = Color.systemColorGet(color);
 
 		this.graphics.stroke();
 
@@ -362,14 +383,17 @@ class Display2D
 
 	drawPixel(pos, color)
 	{
-		this.graphics.fillStyle = color;
+		this.graphics.fillStyle = Color.systemColorGet(color);
 		this.graphics.fillRect
 		(
 			pos.x, pos.y, 1, 1
 		);
 	}
 
-	drawPolygon(vertices, colorFill, colorBorder)
+	drawPolygon
+	(
+		vertices, colorFill, colorBorder
+	)
 	{
 		this.graphics.beginPath();
 
@@ -393,20 +417,21 @@ class Display2D
 
 		if (colorFill != null)
 		{
-			this.graphics.fillStyle = colorFill;
+			this.graphics.fillStyle = Color.systemColorGet(colorFill);
 			this.graphics.fill();
 		}
 
 		if (colorBorder != null)
 		{
-			this.graphics.strokeStyle = colorBorder;
+			this.graphics.strokeStyle = Color.systemColorGet(colorBorder);
 			this.graphics.stroke();
 		}
 	}
 
 	drawRectangle
 	(
-		pos, size, colorFill, colorBorder, areColorsReversed
+		pos, size, colorFill, colorBorder,
+		areColorsReversed
 	)
 	{
 		if (areColorsReversed)
@@ -418,7 +443,7 @@ class Display2D
 
 		if (colorFill != null)
 		{
-			this.graphics.fillStyle = colorFill;
+			this.graphics.fillStyle = Color.systemColorGet(colorFill);
 			this.graphics.fillRect
 			(
 				pos.x, pos.y,
@@ -428,7 +453,7 @@ class Display2D
 
 		if (colorBorder != null)
 		{
-			this.graphics.strokeStyle = colorBorder;
+			this.graphics.strokeStyle = Color.systemColorGet(colorBorder);
 			this.graphics.strokeRect
 			(
 				pos.x, pos.y,
@@ -479,7 +504,7 @@ class Display2D
 			colorFill = this.colorFore;
 		}
 
-		this.graphics.fillStyle = colorFill;
+		this.graphics.fillStyle = Color.systemColorGet(colorFill);
 
 		var drawPos = new Coords(pos.x, pos.y + fontHeightInPixels, 0);
 
@@ -508,13 +533,13 @@ class Display2D
 				(
 					0 - textWidthInPixels / 2,
 					0 - (fontHeightInPixels / 2) * 1.2, // hack
-					0)
-				;
+					0
+				);
 			}
 
 			if (colorOutline != null)
 			{
-				this.graphics.strokeStyle = colorOutline;
+				this.graphics.strokeStyle = Color.systemColorGet(colorOutline);
 				this.graphics.strokeText(textTrimmed, drawPos.x, drawPos.y);
 			}
 
@@ -538,7 +563,7 @@ class Display2D
 
 		if (colorFill != null)
 		{
-			this.graphics.fillStyle = colorFill;
+			this.graphics.fillStyle = Color.systemColorGet(colorFill);
 
 			this.graphics.beginPath();
 			this.graphics.moveTo(center.x, center.y);
@@ -560,7 +585,7 @@ class Display2D
 
 		if (colorBorder != null)
 		{
-			this.graphics.strokeStyle = colorBorder;
+			this.graphics.strokeStyle = Color.systemColorGet(colorBorder);
 			this.graphics.beginPath();
 			this.graphics.moveTo(center.x, center.y);
 			drawPos.overwriteWith(center).add
@@ -602,7 +627,7 @@ class Display2D
 		}
 	}
 
-	flush() {}
+	flush(){}
 
 	hide(universe)
 	{
@@ -637,7 +662,10 @@ class Display2D
 		return this;
 	}
 
-	rotateTurnsAroundCenter(turnsToRotate, centerOfRotation)
+	rotateTurnsAroundCenter
+	(
+		turnsToRotate, centerOfRotation
+	)
 	{
 		var graphics = this.graphics;
 
@@ -674,7 +702,10 @@ class Display2D
 		this.graphics.save();
 	}
 
-	textWidthForFontHeight(textToMeasure, fontHeightInPixels)
+	textWidthForFontHeight
+	(
+		textToMeasure, fontHeightInPixels
+	)
 	{
 		var fontToRestore = this.graphics.font;
 		this.fontSet(null, fontHeightInPixels);

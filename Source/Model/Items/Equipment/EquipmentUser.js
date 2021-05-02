@@ -1,6 +1,6 @@
 
 
-class EquipmentUser extends EntityProperty
+class EquipmentUser
 {
 	socketGroup;
 	socketDefnGroup;
@@ -11,7 +11,6 @@ class EquipmentUser extends EntityProperty
 
 	constructor(socketDefnGroup)
 	{
-		super();
 		this.socketGroup = new EquipmentSocketGroup(socketDefnGroup);
 	}
 
@@ -32,7 +31,7 @@ class EquipmentUser extends EntityProperty
 
 		var socketFound = sockets.filter
 		(
-			(socket) => 
+			(socket) =>
 			{
 				var socketDefn = socket.defn(socketDefnGroup);
 				var isItemAllowedInSocket = socketDefn.categoriesAllowedNames.some
@@ -204,7 +203,7 @@ class EquipmentUser extends EntityProperty
 	unequipItemsNoLongerHeld(entityEquipmentUser)
 	{
 		var itemHolder = entityEquipmentUser.itemHolder();
-		var itemEntitiesHeld = itemHolder.itemEntities;
+		var itemsHeld = itemHolder.items;
 		var sockets = this.socketGroup.sockets;
 		for (var i = 0; i < sockets.length; i++)
 		{
@@ -212,14 +211,15 @@ class EquipmentUser extends EntityProperty
 			var socketItemEntity = socket.itemEntityEquipped;
 			if (socketItemEntity != null)
 			{
-				var socketItemDefnName = socketItemEntity.item().defnName;
-				if (itemEntitiesHeld.indexOf(socketItemEntity) == -1)
+				var socketItem = socketItemEntity.item();
+				var socketItemDefnName = socketItem.defnName;
+				if (itemsHeld.indexOf(socketItem) == -1)
 				{
-					var itemEntityOfSameType = itemEntitiesHeld.filter
+					var itemOfSameType = itemsHeld.filter
 					(
-						x => x.item().defnName == socketItemDefnName
+						x => x.defnName == socketItemDefnName
 					)[0];
-					socket.itemEntityEquipped = itemEntityOfSameType;
+					socket.itemEntityEquipped = itemOfSameType.toEntity();
 				}
 			}
 		}
@@ -237,7 +237,11 @@ class EquipmentUser extends EntityProperty
 		}
 	}
 
-	useItemInSocketNumbered(universe, world, place, actor, socketNumber)
+	useItemInSocketNumbered
+	(
+		universe, world, place, actor,
+		socketNumber
+	)
 	{
 		var equipmentUser = actor.equipmentUser();
 		var socketName = "Item" + socketNumber;
@@ -249,6 +253,12 @@ class EquipmentUser extends EntityProperty
 		}
 		this.unequipItemsNoLongerHeld(actor);
 	}
+
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+	updateForTimerTick(u, w, p, e){}
 
 	// control
 
@@ -265,7 +275,7 @@ class EquipmentUser extends EntityProperty
 			size = universe.display.sizeDefault().clone();
 		}
 
-		var sizeBase = new Coords(200, 135, 1);
+		var sizeBase = Coords.fromXY(200, 135);
 
 		var fontHeight = 10;
 		var fontHeightSmall = fontHeight * .6;
@@ -291,14 +301,17 @@ class EquipmentUser extends EntityProperty
 				}
 			}
 		}
-		var itemEntitiesEquippable = itemHolder.itemEntities.filter(x => x.equippable() != null)
+		var itemEntitiesEquippable = itemHolder.itemEntities().filter
+		(
+			x => x.equippable() != null
+		);
 
 		var world = universe.world;
 		var place = world.placeCurrent;
 
 		var listHeight = 100;
 
-		var equipItemSelectedToSocketDefault = () => 
+		var equipItemSelectedToSocketDefault = () =>
 		{
 			var itemEntityToEquip = equipmentUser.itemEntitySelected;
 
@@ -312,21 +325,19 @@ class EquipmentUser extends EntityProperty
 		var listEquippables = new ControlList
 		(
 			"listEquippables",
-			new Coords(10, 15, 0), // pos
-			new Coords(70, listHeight, 0), // size
-			new DataBinding(itemEntitiesEquippable, null, null), // items
-			new DataBinding
+			Coords.fromXY(10, 15), // pos
+			Coords.fromXY(70, listHeight), // size
+			DataBinding.fromContext(itemEntitiesEquippable), // items
+			DataBinding.fromGet
 			(
-				null,
-				(c) => { return c.item().toString(world); },
-				null
+				(c) => c.item().toString(world),
 			), // bindingForItemText
 			fontHeightSmall,
 			new DataBinding
 			(
 				this,
-				(c) => { return c.itemEntitySelected; },
-				(c, v) => { c.itemEntitySelected = v; }
+				(c) => c.itemEntitySelected,
+				(c, v) => c.itemEntitySelected = v
 			), // bindingForItemSelected
 			DataBinding.fromGet( (c) => c ), // bindingForItemValue
 			null, // bindingForIsEnabled
@@ -334,7 +345,7 @@ class EquipmentUser extends EntityProperty
 			null
 		);
 
-		var equipItemSelectedToSocketSelected = () => 
+		var equipItemSelectedToSocketSelected = () =>
 		{
 			var itemEntityToEquip = equipmentUser.itemEntitySelected;
 
@@ -358,7 +369,7 @@ class EquipmentUser extends EntityProperty
 			equipmentUser.statusMessage = message;
 		};
 
-		var equipItemSelectedInQuickSlot = (quickSlotNumber) => 
+		var equipItemSelectedInQuickSlot = (quickSlotNumber) =>
 		{
 			equipmentUser.equipItemEntityInSocketWithName
 			(
@@ -369,57 +380,56 @@ class EquipmentUser extends EntityProperty
 			);
 		};
 
-		var buttonEquip = new ControlButton
+		var buttonEquip = ControlButton.from8
 		(
 			"buttonEquip",
-			new Coords(85, 50, 0), // pos
-			new Coords(10, 10, 0), // size
+			Coords.fromXY(85, 50), // pos
+			Coords.fromXY(10, 10), // size
 			">", // text
 			fontHeight * 0.8,
 			true, // hasBorder
 			true, // isEnabled - todo
-			equipItemSelectedToSocketSelected,
-			null, null
+			equipItemSelectedToSocketSelected
 		);
 
 		var unequipFromSocketSelected = () =>
 		{
 			var socketToUnequipFrom = equipmentUser.socketSelected;
-			var message = equipmentUser.unequipItemFromSocketWithName(world, socketToUnequipFrom.defnName);
+			var message = equipmentUser.unequipItemFromSocketWithName
+			(
+				world, socketToUnequipFrom.defnName
+			);
 			equipmentUser.statusMessage = message;
 		};
 
-		var buttonUnequip = new ControlButton
+		var buttonUnequip = ControlButton.from8
 		(
 			"buttonEquip",
-			new Coords(85, 65, 0), // pos
-			new Coords(10, 10, 0), // size
+			Coords.fromXY(85, 65), // pos
+			Coords.fromXY(10, 10), // size
 			"<", // text
 			fontHeight * 0.8,
 			true, // hasBorder
 			true, // isEnabled - todo
-			unequipFromSocketSelected,
-			null, null
+			unequipFromSocketSelected
 		);
 
 		var listEquipped = new ControlList
 		(
 			"listEquipped",
-			new Coords(100, 15, 0), // pos
-			new Coords(90, listHeight, 0), // size
-			new DataBinding(sockets, null, null), // items
-			new DataBinding
+			Coords.fromXY(100, 15), // pos
+			Coords.fromXY(90, listHeight), // size
+			DataBinding.fromContext(sockets), // items
+			DataBinding.fromGet
 			(
-				null,
 				(c) => c.toString(world),
-				null
 			), // bindingForItemText
 			fontHeightSmall,
 			new DataBinding
 			(
 				this,
 				(c) => c.socketSelected,
-				(c, v) => { c.socketSelected = v; }
+				(c, v) => c.socketSelected = v
 			), // bindingForItemSelected
 			DataBinding.fromGet( (c) => c ), // bindingForItemValue
 			null, // bindingForIsEnabled
@@ -430,7 +440,10 @@ class EquipmentUser extends EntityProperty
 		var back = () =>
 		{
 			var venueNext = venuePrev;
-			venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
+			venueNext = VenueFader.fromVenuesToAndFrom
+			(
+				venueNext, universe.venueCurrent
+			);
 			universe.venueNext = venueNext;
 		};
 
@@ -444,8 +457,8 @@ class EquipmentUser extends EntityProperty
 				new ControlLabel
 				(
 					"labelEquippable",
-					new Coords(10, 5, 0), // pos
-					new Coords(70, 25, 0), // size
+					Coords.fromXY(10, 5), // pos
+					Coords.fromXY(70, 25), // size
 					false, // isTextCentered
 					"Equippable:",
 					fontHeightSmall
@@ -455,13 +468,13 @@ class EquipmentUser extends EntityProperty
 
 				buttonEquip,
 
-				buttonUnequip, 
+				buttonUnequip,
 
 				new ControlLabel
 				(
 					"labelEquipped",
-					new Coords(100, 5, 0), // pos
-					new Coords(100, 25, 0), // size
+					Coords.fromXY(100, 5), // pos
+					Coords.fromXY(100, 25), // size
 					false, // isTextCentered
 					"Equipped:",
 					fontHeightSmall
@@ -472,14 +485,13 @@ class EquipmentUser extends EntityProperty
 				new ControlLabel
 				(
 					"infoStatus",
-					new Coords(sizeBase.x / 2, 125, 0), // pos
-					new Coords(sizeBase.x, 15, 0), // size
+					Coords.fromXY(sizeBase.x / 2, 125), // pos
+					Coords.fromXY(sizeBase.x, 15), // size
 					true, // isTextCentered
-					new DataBinding
+					DataBinding.fromContextAndGet
 					(
 						this,
-						(c) => c.statusMessage,
-						null
+						(c) => c.statusMessage
 					), // text
 					fontHeightSmall
 				)
@@ -525,8 +537,8 @@ class EquipmentUser extends EntityProperty
 				new ControlLabel
 				(
 					"labelEquipment",
-					new Coords(100, -5, 0), // pos
-					new Coords(100, 25, 0), // size
+					Coords.fromXY(100, -5), // pos
+					Coords.fromXY(100, 25), // size
 					true, // isTextCentered
 					"Equip",
 					fontHeightLarge
@@ -534,21 +546,20 @@ class EquipmentUser extends EntityProperty
 			);
 			childControls.push
 			(
-				new ControlButton
+				ControlButton.from8
 				(
 					"buttonDone",
-					new Coords(170, 115, 0), // pos
-					new Coords(20, 10, 0), // size
+					Coords.fromXY(170, 115), // pos
+					Coords.fromXY(20, 10), // size
 					"Done",
 					fontHeightSmall,
 					true, // hasBorder
 					true, // isEnabled
-					back, // click
-					null, null
+					back // click
 				)
 			);
 
-			var titleHeight = new Coords(0, 15, 0);
+			var titleHeight = Coords.fromXY(0, 15);
 			sizeBase.add(titleHeight);
 			returnValue.size.add(titleHeight);
 			returnValue.shiftChildPositions(titleHeight);

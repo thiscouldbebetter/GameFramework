@@ -116,7 +116,7 @@ class VenueFader
 		(
 			Coords.create(),
 			display.sizeDefault(), // Scaled automatically.
-			fadeColor.systemColor(),
+			fadeColor,
 			null, null
 		);
 	}

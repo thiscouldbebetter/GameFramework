@@ -13,9 +13,17 @@ class ActionToInputsMapping
 		this.inactivateInputWhenActionPerformed = inactivateInputWhenActionPerformed;
 	}
 
+	static fromActionAndInputName
+	(
+		actionName, inputName
+	)
+	{
+		return new ActionToInputsMapping(actionName, [ inputName ], false);
+	}
+
 	action(universe)
 	{
-		return universe.world.defn.actionDefnByName(this.actionName);
+		return universe.world.defn.actionByName(this.actionName);
 	}
 
 	// Cloneable implementation.
@@ -33,5 +41,6 @@ class ActionToInputsMapping
 		this.actionName = other.actionName;
 		this.inputNames = other.inputNames.slice();
 		this.inactivateInputWhenActionPerformed = other.inactivateInputWhenActionPerformed;
+		return this;
 	}
 }

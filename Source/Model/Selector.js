@@ -1,6 +1,6 @@
 
 
-class Selector extends EntityProperty
+class Selector
 {
 	entitiesSelected;
 
@@ -9,12 +9,11 @@ class Selector extends EntityProperty
 
 	constructor()
 	{
-		super();
 		this.entitiesSelected = new Array();
 
 		var visualReticle = new VisualRectangle
 		(
-			new Coords(20, 20, 0),
+			Coords.fromXY(20, 20),
 			null, // colorFill
 			Color.byName("White"),
 			true // isCentered
@@ -23,9 +22,8 @@ class Selector extends EntityProperty
 		(
 			"Reticle",
 			[
-				new Locatable(null),
+				Locatable.create(),
 				new Drawable(visualReticle, false), // isVisible
-				// new DrawableCamera()
 			]
 		);
 	}
@@ -70,7 +68,7 @@ class Selector extends EntityProperty
 				new ControlLabel
 				(
 					"labelSelected",
-					new Coords(1, 0, 0).multiplyScalar(margin), // pos
+					Coords.fromXY(1, 0).multiplyScalar(margin), // pos
 					labelSize,
 					false, // isTextCentered
 					"Selected:",
@@ -80,15 +78,14 @@ class Selector extends EntityProperty
 				new ControlLabel
 				(
 					"textEntitySelectedName",
-					new Coords(1, 1.5, 0).multiplyScalar(margin), // pos
+					Coords.fromXY(1, 1.5).multiplyScalar(margin), // pos
 					labelSize,
 					false, // isTextCentered
-					new DataBinding
+					DataBinding.fromContextAndGet
 					(
 						this,
 						(c) =>
-							(c.entitiesSelected.length == 0 ? "-" : c.entitiesSelected[0].name),
-						null
+							(c.entitiesSelected.length == 0 ? "-" : c.entitiesSelected[0].name)
 					),
 					fontHeightInPixels
 				)
@@ -105,6 +102,9 @@ class Selector extends EntityProperty
 	}
 
 	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
 
 	updateForTimerTick(u, w, p, entitySelector)
 	{

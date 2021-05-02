@@ -1,21 +1,25 @@
 
 
-class Routable extends EntityProperty
+class Routable
 {
 	route;
 
 	constructor(route)
 	{
-		super();
 		this.route = route;
 	}
 
 	// EntityProperty.
 
+	finalize(u, w, p, e){}
+
 	initialize(u, w, p, e)
 	{
 		this.route.bounds = Box.fromMinAndMax(Coords.create(), p.size.clone());
 	}
+
+	updateForTimerTick(u, w, p, e){}
+
 
 	// Clonable.
 

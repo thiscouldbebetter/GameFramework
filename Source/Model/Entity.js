@@ -1,13 +1,15 @@
 
 
-class Entity
+class Entity //
 {
+	id;
 	name;
 	properties;
 	propertiesByName;
 
 	constructor(name, properties)
 	{
+		this.id = IDHelper.Instance().idNext();
 		this.name = name;
 		this.properties = properties;
 
@@ -31,6 +33,7 @@ class Entity
 				property.finalize(universe, world, place, this);
 			}
 		}
+		return this;
 	}
 
 	initialize(universe, world, place)
@@ -44,11 +47,12 @@ class Entity
 				property.initialize(universe, world, place, this);
 			}
 		}
+		return this;
 	}
 
 	propertyAdd(propertyToAdd)
 	{
-		this.propertyAddForPlace(propertyToAdd, null);
+		return this.propertyAddForPlace(propertyToAdd, null);
 	}
 
 	propertyAddForPlace(propertyToAdd, place)
@@ -61,6 +65,7 @@ class Entity
 			var entitiesWithProperty = place.entitiesByPropertyName(propertyName);
 			entitiesWithProperty.push(this);
 		}
+		return this;
 	}
 
 	propertyByName(name)
@@ -77,6 +82,20 @@ class Entity
 			var propertyName = propertyToRemove.constructor.name;
 			var entitiesWithProperty = place.entitiesByPropertyName(propertyName);
 			ArrayHelper.remove(entitiesWithProperty, this);
+		}
+		return this;
+	}
+
+	updateForTimerTick(universe, world, place)
+	{
+		var entityProperties = this.properties;
+		for (var p = 0; p < entityProperties.length; p++)
+		{
+			var property = entityProperties[p];
+			if (property.finalize != null)
+			{
+				property.finalize(universe, world, place, this);
+			}
 		}
 		return this;
 	}
@@ -101,10 +120,23 @@ class Entity
 		return returnValue;
 	}
 
+	// Equatable.
+
+	equals(other)
+	{
+		var areAllPropertiesEqual =
+			ArrayHelper.areEqual(this.properties, other.properties);
+
+		var areEntitiesEqual =
+			(this.name == other.name && areAllPropertiesEqual);
+
+		return areEntitiesEqual;
+	}
+
 	// Convenience methods for properties.
 
 	actor(){ return this.propertyByName(Actor.name) ; }
-	animatable(){ return this.propertyByName(Animatable.name) ; }
+	animatable(){ return this.propertyByName(Animatable2.name) ; }
 	boundable(){ return this.propertyByName(Boundable.name) ; }
 	camera(){ return this.propertyByName(Camera.name) ; }
 	collidable(){ return this.propertyByName(Collidable.name) ; }

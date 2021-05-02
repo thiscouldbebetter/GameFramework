@@ -1,12 +1,17 @@
 
 
-class Damager extends EntityProperty
+class Damager
 {
 	damagePerHit;
 
 	constructor(damagePerHit)
 	{
-		super();
 		this.damagePerHit = damagePerHit;
 	}
+
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+	updateForTimerTick(u, w, p, e){}
 }

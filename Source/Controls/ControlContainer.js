@@ -359,6 +359,8 @@ class ControlContainer extends ControlBase
 				}
 			}
 		}
+
+		return false; // wasMoveHandled
 	}
 
 	scalePosAndSize(scaleFactor)
@@ -398,7 +400,11 @@ class ControlContainer extends ControlBase
 
 	// drawable
 
-	draw(universe, display, drawLoc, style)
+	draw
+	(
+		universe, display, drawLoc,
+		style
+	)
 	{
 		drawLoc = this._drawLoc.overwriteWith(drawLoc);
 		var drawPos = this._drawPos.overwriteWith(drawLoc.pos).add(this.pos);
@@ -407,8 +413,8 @@ class ControlContainer extends ControlBase
 		display.drawRectangle
 		(
 			drawPos, this.size,
-			Color.systemColorGet(style.colorBackground),
-			Color.systemColorGet(style.colorBorder),
+			style.colorBackground,
+			style.colorBorder,
 			null
 		);
 

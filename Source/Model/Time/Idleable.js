@@ -1,6 +1,6 @@
 
 
-class Idleable extends EntityProperty
+class Idleable
 {
 	ticksUntilIdle;
 	_idle;
@@ -9,7 +9,6 @@ class Idleable extends EntityProperty
 
 	constructor(ticksUntilIdle, idle)
 	{
-		super();
 		this.ticksUntilIdle = ticksUntilIdle;
 		this._idle = idle;
 		this.tickLastActionPerformed = 0;
@@ -32,6 +31,11 @@ class Idleable extends EntityProperty
 	{
 		return world.timerTicksSoFar - this.tickLastActionPerformed;
 	}
+
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
 
 	updateForTimerTick(universe, world, place, entity)
 	{

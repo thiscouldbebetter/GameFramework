@@ -38,7 +38,8 @@ class VenueFileUpload
 		var platformHelper = universe.platformHelper;
 		platformHelper.platformableRemove(this);
 		var display = universe.display;
-		display.drawBackground("Black", null);
+		var colorBlack = Color.byName("Black");
+		display.drawBackground(colorBlack, null);
 		platformHelper.platformableShow(display);
 	}
 

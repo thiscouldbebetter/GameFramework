@@ -1,15 +1,19 @@
 
 
-class Drawable extends EntityProperty
+class Drawable
 {
 	visual;
 	isVisible;
 
 	constructor(visual, isVisible)
 	{
-		super();
 		this.visual = visual;
 		this.isVisible = (isVisible == null ? true : isVisible);
+	}
+
+	static fromVisual(visual)
+	{
+		return new Drawable(visual, null);
 	}
 
 	updateForTimerTick(universe, world, place, entity)
@@ -26,5 +30,11 @@ class Drawable extends EntityProperty
 	{
 		return new Drawable(this.visual, this.isVisible);
 	}
+
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+
 }
 

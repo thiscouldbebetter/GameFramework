@@ -3,15 +3,29 @@
 class Activity
 {
 	defnName;
-	target;
-	isDone;
+	targetsByName;
 
-	constructor(defnName, target)
+	constructor(defnName, targetsByName)
 	{
 		this.defnName = defnName;
-		this.target = target;
+		this.targetsByName = targetsByName || new Map([]);
+	}
 
-		this.isDone = false;
+	static fromDefnName(defnName)
+	{
+		return new Activity(defnName, null);
+	}
+
+	static fromDefnNameAndTarget(defnName, target)
+	{
+		return new Activity
+		(
+			defnName,
+			new Map
+			([
+				[ defnName, target ]
+			])
+		);
 	}
 
 	defn(world)
@@ -22,7 +36,7 @@ class Activity
 	defnNameAndTargetSet(defnName, target)
 	{
 		this.defnName = defnName;
-		this.target = target;
+		this.targetSet(target);
 		return this;
 	}
 
@@ -30,7 +44,30 @@ class Activity
 	{
 		if (this.defnName != null)
 		{
-			this.defn(w).perform(u, w, p, e, this);
+			var defn = this.defn(w);
+			defn.perform(u, w, p, e);
 		}
+	}
+
+	target()
+	{
+		return this.targetByName(this.defnName);
+	}
+
+	targetByName(targetName)
+	{
+		return this.targetsByName.get(targetName);
+	}
+
+	targetSet(value)
+	{
+		this.targetsByName.set(this.defnName, value);
+		return this;
+	}
+
+	targetSetByName(name, value)
+	{
+		this.targetsByName.set(name, value);
+		return this;
 	}
 }

@@ -19,17 +19,21 @@ class MediaLibrary
 
 	timer;
 
-	constructor(images, sounds, videos, fonts, textStrings)
+	constructor
+	(
+		images, sounds, videos,
+		fonts, textStrings
+	)
 	{
-		this.images = images;
+		this.images = images || [];
 		this.imagesByName = ArrayHelper.addLookupsByName(this.images);
-		this.sounds = sounds;
+		this.sounds = sounds || [];
 		this.soundsByName = ArrayHelper.addLookupsByName(this.sounds);
-		this.videos = videos;
+		this.videos = videos || [];
 		this.videosByName = ArrayHelper.addLookupsByName(this.videos);
-		this.fonts = fonts;
+		this.fonts = fonts || [];
 		this.fontsByName = ArrayHelper.addLookupsByName(this.fonts);
-		this.textStrings = textStrings;
+		this.textStrings = textStrings || [];
 		this.textStringsByName = ArrayHelper.addLookupsByName(this.textStrings);
 
 		this.collectionsAll =
@@ -49,6 +53,11 @@ class MediaLibrary
 		this.collectionsByName.set("TextStrings", this.textStringsByName);
 	}
 
+	static default()
+	{
+		return MediaLibrary.fromFilePaths([]);
+	}
+
 	static fromFilePaths(mediaFilePaths)
 	{
 		var images = new Array();
@@ -57,36 +66,46 @@ class MediaLibrary
 		var fonts = new Array();
 		var textStrings = new Array();
 
-		var typesAndArraysByFileExtension = new Map
+		var imageTypeDirectoryNameAndArray = [ Image2, "Images", images ];
+		var soundTypeDirectoryNameAndArray = [ Sound, "Audio", sounds ];
+		var textStringTypeDirectoryNameAndArray = [ TextString, "Text", textStrings ];
+
+		var typesDirectoryNamesAndArraysByFileExtension = new Map
 		([
-			[ "jpg", [ Image2, images ] ],
-			[ "png", [ Image2, images ] ],
-			[ "svg", [ Image2, images ] ],
+			[ "jpg", imageTypeDirectoryNameAndArray ],
+			[ "png", imageTypeDirectoryNameAndArray ],
+			[ "svg", imageTypeDirectoryNameAndArray ],
 
-			[ "mp3", [ Sound, sounds ] ],
-			[ "wav", [ Sound, sounds ] ],
+			[ "mp3", soundTypeDirectoryNameAndArray ],
+			[ "wav", soundTypeDirectoryNameAndArray ],
 
-			[ "webm", [ Video, videos ] ],
+			[ "webm", [ Video, "Video", videos ] ],
 
-			[ "ttf", [ Font, fonts ] ],
+			[ "ttf", [ Font, "Fonts", fonts ] ],
 
-			[ "json", [ TextString, textStrings ] ],
-			[ "txt", [ TextString, textStrings ] ],
+			[ "json", textStringTypeDirectoryNameAndArray ],
+			[ "txt", textStringTypeDirectoryNameAndArray ],
 		]);
 
 		for (var i = 0; i < mediaFilePaths.length; i++)
 		{
 			var filePath = mediaFilePaths[i];
+
+			var fileExtension = filePath.substr(filePath.lastIndexOf(".") + 1);
+			var typeDirectoryNameAndArray =
+				typesDirectoryNamesAndArraysByFileExtension.get(fileExtension);
+			var mediaType = typeDirectoryNameAndArray[0];
+			var mediaDirectoryName = typeDirectoryNameAndArray[1];
+			var mediaArray = typeDirectoryNameAndArray[2];
+
 			var filePathParts = filePath.split("/");
-			filePathParts.splice(0, 3); // Remove "../Content/[mediaType]/"
+			var filePathPartIndexForMediaType =
+				filePathParts.indexOf(mediaDirectoryName);
+			filePathParts.splice(0, filePathPartIndexForMediaType + 1);
 			var fileName = filePathParts.join("_");
 			var fileStemAndExtension = fileName.split(".");
 			var fileStem = fileStemAndExtension[0];
-			var fileExtension = fileStemAndExtension[1];
-			var typeAndArray =
-				typesAndArraysByFileExtension.get(fileExtension);
-			var mediaType = typeAndArray[0];
-			var mediaArray = typeAndArray[1];
+
 			var mediaObject = new mediaType(fileStem, filePath);
 			mediaArray.push(mediaObject);
 		}
@@ -184,7 +203,10 @@ class MediaLibrary
 		return areAllItemsLoadedSoFar;
 	}
 
-	waitForItemToLoad(collectionName, itemName, callback)
+	waitForItemToLoad
+	(
+		collectionName, itemName, callback
+	)
 	{
 		var itemToLoad = this.collectionsByName.get(collectionName).get(itemName);
 		this.timer = setInterval
@@ -199,7 +221,7 @@ class MediaLibrary
 		if (itemToLoad.isLoaded)
 		{
 			clearInterval(this.timer);
-			callback.call();
+			callback();
 		}
 	}
 
@@ -217,7 +239,7 @@ class MediaLibrary
 		if (this.areAllItemsLoaded())
 		{
 			clearInterval(this.timer);
-			callback.call();
+			callback();
 		}
 	}
 

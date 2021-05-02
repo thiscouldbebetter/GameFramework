@@ -5,7 +5,7 @@ class DisplayRecorder
 	ticksPerFrame;
 	bufferSizeInFrames;
 	isCircular;
- 
+
 	framesRecordedAsArrayBuffers;
 	isRecording;
 
@@ -24,6 +24,31 @@ class DisplayRecorder
 		this.isRecording = false;
 
 		this.shouldDownload = false;
+	}
+
+	static actionStartStop()
+	{
+		return new Action
+		(
+			"Recording Start/Stop", DisplayRecorder.actionStartStopPerform
+		)
+	}
+
+	static actionStartStopPerform
+	(
+		universe, world, place, actor
+	)
+	{
+		var recorder = universe.displayRecorder;
+		if (recorder.isRecording)
+		{
+			recorder.stop();
+			recorder.framesRecordedDownload(universe);
+		}
+		else
+		{
+			recorder.start();
+		}
 	}
 
 	clear()
@@ -92,7 +117,7 @@ class DisplayRecorder
 			framesRecordedAsTarFile.entries.push(displayAsTarFileEntry);
 		}
 
-		var script = 
+		var script =
 			"#!/bin/sh"
 			+ "\n\n"
 			+ "# The PNG files in this TAR file, once extracted, "
@@ -108,14 +133,30 @@ class DisplayRecorder
 		framesRecordedAsTarFile.downloadAs(fileNameToSaveAs);
 	}
 
+	logStartOrStop()
+	{
+		var startedOrStoppedText =
+			(this.isRecording ? "started" : "stopped");
+
+		var logMessage =
+			DisplayRecorder.name + " " + startedOrStoppedText
+			+ ", ticksPerFrame: " + this.ticksPerFrame
+			+ ", bufferSizeInFrames:" + this.bufferSizeInFrames
+			+ ", isCircular: " + this.isCircular;
+
+		console.log(logMessage);
+	}
+
 	start()
 	{
 		this.isRecording = true;
+		this.logStartOrStop();
 	}
 
 	stop()
 	{
 		this.isRecording = false;
+		this.logStartOrStop();
 	}
 
 	updateForTimerTick(universe)

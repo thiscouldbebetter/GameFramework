@@ -34,7 +34,7 @@ class VenueWorld
 		this.venueControls = new VenueControls
 		(
 			this.world.toControl(universe),
-			true // ignoreKeyboardAndGamepadInputs 
+			true // ignoreKeyboardAndGamepadInputs
 		);
 	}
 

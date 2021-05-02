@@ -28,7 +28,7 @@ class VisualMap
 
 		// Helper variables.
 		this._cameraPos = Coords.create();
-		this._cell = this.map.cellPrototype.clone();
+		this._cell = this.map.cellCreate();
 		this._cellPosEnd = Coords.create();
 		this._cellPosInCells = Coords.create();
 		this._cellPosStart = Coords.create();

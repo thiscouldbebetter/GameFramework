@@ -1,6 +1,6 @@
 
 
-class Starvable extends EntityProperty
+class Starvable
 {
 	satietyMax;
 	satietyLostPerTick;
@@ -15,7 +15,6 @@ class Starvable extends EntityProperty
 		starve
 	)
 	{
-		super();
 		this.satietyMax = satietyMax;
 		this.satietyLostPerTick = satietyLostPerTick;
 		this._starve = starve;
@@ -50,7 +49,15 @@ class Starvable extends EntityProperty
 		return (this.satiety <= 0);
 	}
 
-	updateForTimerTick(universe, world, place, entityStarvable)
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+
+	updateForTimerTick
+	(
+		universe, world, place, entityStarvable
+	)
 	{
 		if (this.isStarving())
 		{

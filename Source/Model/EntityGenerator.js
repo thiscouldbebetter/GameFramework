@@ -1,6 +1,6 @@
 
 
-class Generator extends EntityProperty
+class EntityGenerator
 {
 	entityToGenerate;
 	ticksToGenerate;
@@ -9,9 +9,12 @@ class Generator extends EntityProperty
 	entitiesGenerated;
 	tickLastGenerated
 
-	constructor(entityToGenerate, ticksToGenerate, entitiesGeneratedMax)
+	constructor
+	(
+		entityToGenerate, ticksToGenerate,
+		entitiesGeneratedMax
+	)
 	{
-		super();
 		this.entityToGenerate = entityToGenerate;
 		this.ticksToGenerate = ticksToGenerate;
 		this.entitiesGeneratedMax = entitiesGeneratedMax || 1;
@@ -20,7 +23,15 @@ class Generator extends EntityProperty
 		this.tickLastGenerated = 0 - this.ticksToGenerate;
 	}
 
-	updateForTimerTick(universe, world, place, entityGenerator)
+	// EntityProperty.
+
+	finalize(u, w, p, e){}
+	initialize(u, w, p, e){}
+
+	updateForTimerTick
+	(
+		universe, world, place, entityGenerator
+	)
 	{
 		var placeEntitiesByName = place.entitiesByName;
 
@@ -57,7 +68,7 @@ class Generator extends EntityProperty
 
 	clone()
 	{
-		return new Generator
+		return new EntityGenerator
 		(
 			this.entityToGenerate, this.ticksToGenerate, this.entitiesGeneratedMax
 		);
