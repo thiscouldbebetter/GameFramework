@@ -177,5 +177,10 @@ class Wedge
 	}
 
 	toBox(boxOut){ throw("Not implemented!"); }
+
+	// Transformable.
+
+	transform(transformToApply){ throw("Not implemented!");  }
+
 }
 

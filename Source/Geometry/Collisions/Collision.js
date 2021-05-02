@@ -1,6 +1,6 @@
 
 
-class Collision
+class Collision //
 {
 	pos;
 	distanceToCollision;

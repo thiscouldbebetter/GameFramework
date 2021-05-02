@@ -41,4 +41,9 @@ class ShapeInverse
 	}
 
 	toBox(boxOut){ throw("Not implemented!"); }
+
+	// Transformable.
+
+	transform(transformToApply){ throw("Not implemented!");  }
+
 }

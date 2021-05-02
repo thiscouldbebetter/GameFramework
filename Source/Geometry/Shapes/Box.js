@@ -314,19 +314,6 @@ class Box
 		return this.min().toString() + ":" + this.max().toString();
 	}
 
-	// transformable
-
-	coordsGroupToTranslate()
-	{
-		return [ this.center ];
-	}
-
-	transform(transformToApply)
-	{
-		Transforms.applyTransformToCoordsMany(transformToApply, this.coordsGroupToTranslate());
-		return this;
-	}
-
 	// ShapeBase.
 
 	dimensionForSurfaceClosestToPoint(posToCheck, displacementOverSizeHalf)
@@ -392,4 +379,16 @@ class Box
 		return boxOut.overwriteWith(this);
 	}
 
+	// transformable
+
+	coordsGroupToTranslate()
+	{
+		return [ this.center ];
+	}
+
+	transform(transformToApply)
+	{
+		Transforms.applyTransformToCoordsMany(transformToApply, this.coordsGroupToTranslate());
+		return this;
+	}
 }

@@ -81,5 +81,8 @@ class Shell
 		return this.sphereOuter.toBox(boxOut);
 	}
 
+	// Transformable.
+
+	transform(transformToApply){ throw("Not implemented!");  }
 }
 

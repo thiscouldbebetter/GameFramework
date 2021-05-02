@@ -86,5 +86,12 @@ class Plane
 	surfacePointNearPos(posToCheck, surfacePointOut){ throw("Not implemented!"); }
 
 	toBox(boxOut){ throw("Not implemented!"); }
+
+	// Transformable.
+
+	transform(transformToApply)
+	{
+		throw("Not implemented!");
+	}
 }
 

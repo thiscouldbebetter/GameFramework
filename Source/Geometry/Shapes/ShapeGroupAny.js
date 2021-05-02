@@ -68,5 +68,13 @@ class ShapeGroupAny
 	}
 
 	toBox(boxOut){ throw("Not implemented!"); }
+
+	// Transformable.
+
+	transform(transformToApply)
+	{
+		this.shapes.forEach( (x) => x.transform(transformToApply));
+		return this;
+	}
 }
 

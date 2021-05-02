@@ -45,5 +45,9 @@ class ShapeContainer
 		return this.shape.toBox(boxOut);
 	}
 
+	// Transformable.
+
+	transform(transformToApply){ throw("Not implemented!");  }
+
 }
 

@@ -132,7 +132,10 @@ class Face
 
 	surfacePointNearPos(posToCheck, surfacePointOut){ throw("Not implemented!"); }
 
-	toBox(boxOut){ throw("Not implemented!"); }
+	toBox(boxOut)
+	{
+		return boxOut.ofPoints(this.vertices);
+	}
 
 	// Transformable.
 

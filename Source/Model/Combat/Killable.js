@@ -22,6 +22,11 @@ class Killable
 		this.integrity = this.integrityMax;
 	}
 
+	static fromIntegrityMax(integrityMax)
+	{
+		return new Killable(integrityMax, null, null);
+	}
+
 	damageApply
 	(
 		universe, world, place, entityDamager,

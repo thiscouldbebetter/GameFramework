@@ -11,21 +11,16 @@ class Edge
 
 	constructor(vertices)
 	{
-		this.vertices = vertices;
+		this.vertices = vertices || [ Coords.create(), Coords.create() ];
 
 		this._direction = Coords.create();
 		this._displacement = Coords.create();
 		this._transverse = Coords.create();
 	}
 
-	box()
+	static create()
 	{
-		if (this._box == null)
-		{
-			this._box = new Box(Coords.create(), Coords.create());
-		}
-		this._box.ofPoints(this.vertices);
-		return this._box;
+		return new Edge(null);
 	}
 
 	direction()
@@ -107,4 +102,8 @@ class Edge
 	{
 		return boxOut.ofPoints(this.vertices);
 	}
+
+	// Transformable.
+
+	transform(transformToApply){ throw("Not implemented!");  }
 }

@@ -79,4 +79,12 @@ class Hemispace
 	{
 		throw("Not implemented!");
 	}
+
+	// Transformable.
+
+	transform(transformToApply)
+	{
+		this.plane.transform(transformToApply);
+		return this;
+	}
 }

@@ -69,4 +69,7 @@ class Arc
 		return this.shell.toBox(boxOut);
 	}
 
+	// Transformable.
+
+	transform(transformToApply){ throw("Not implemented!");  }
 }

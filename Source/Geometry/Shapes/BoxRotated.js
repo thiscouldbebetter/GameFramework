@@ -78,7 +78,7 @@ class BoxRotated
 
 	toBox(boxOut){ throw("Not implemented!"); }
 
-	// cloneable
+	// Clonable.
 
 	clone()
 	{
@@ -92,10 +92,12 @@ class BoxRotated
 		return this;
 	}
 
-	// transformable
+	// Transformable.
 
 	coordsGroupToTranslate()
 	{
 		return [ this.box.center ];
 	}
+
+	transform(transformToApply){ throw("Not implemented!");  }
 }

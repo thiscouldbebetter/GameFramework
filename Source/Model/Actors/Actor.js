@@ -12,6 +12,11 @@ class Actor
 		this.actions = [];
 	}
 
+	static create()
+	{
+		return new Actor(null);
+	}
+
 	static fromActivityDefnName(activityDefnName)
 	{
 		var activity = Activity.fromDefnName(activityDefnName);

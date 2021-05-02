@@ -316,5 +316,11 @@ class Mesh_FaceBuilder
 	overwriteWith(other)
 	{
 		ArrayHelper.overwriteWith(this.vertexIndices, other.vertexIndices);
+		return this;
 	}
+
+	// Transformable.
+
+	transform(transformToApply){ throw("Not implemented!");  }
+
 }
